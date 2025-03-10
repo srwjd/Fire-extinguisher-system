@@ -1,0 +1,22 @@
+.headerContainer {
+    height: 70px;
+    background: #FD6E2B;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.logo {
+    height: 50px;
+    width: 50px;
+    background: #ffffff;
+    border-radius: 50%;
+    margin-left: 0.5%;
+}
+.title {
+    font-size: 20px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 1%;
+}

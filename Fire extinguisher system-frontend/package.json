@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@flaticon/flaticon-uicons": "^3.3.1",
+    "antd": "^5.24.3",
     "axios": "^1.8.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

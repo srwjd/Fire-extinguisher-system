@@ -6,6 +6,8 @@ import Login from './Login/Login'
 import SuperAdmin from './SuperAdmin/SuperAdmin'
 import Admin from './Admin/Admin'
 import User from './User/User'
+import MainBranch from './MainBranch/MainBranch'
+import SubBranch from './SubBranch/SubBranch'
 
 function App() {
   const token = localStorage.getItem('token');
@@ -25,6 +27,8 @@ function App() {
         {role === 'SuperAdmin' && <SuperAdmin />}
         {role === 'Admin' && <Admin />}
         {role === 'User' && <User />}
+        {role === 'MainBranch' && <MainBranch />}
+        {role === 'SubBranch' && <SubBranch />}
       </div>
     )
   }
