@@ -21,3 +21,13 @@ export const getUserByUsername = async (username) => {
     const params = [username];
     return await query(sql, params);
 }
+
+export const getReport = async (insp_id) => {
+    const sql = `
+                SELECT *
+                FROM Assigns RIGHT JOIN Reports ON Assigns.report_id = Reports.report_id
+                WHERE Assigns.insp_id = ?
+                `;
+    const params = [insp_id];
+    return await query(sql, params);
+}

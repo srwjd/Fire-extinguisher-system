@@ -1,0 +1,9 @@
+.userContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.userContainer .marvel-device {
+    transform: scale(0.68);
+    transform-origin: top ;
+}
