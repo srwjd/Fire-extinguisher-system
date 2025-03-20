@@ -1,0 +1,240 @@
+.manage-unit-container {
+  width: 100%;
+  margin: 20px auto;
+  margin-left: 10px;
+  /* padding: 10px; */
+  justify-content: center;
+  /* border: 1px solid #ccc; */
+  max-height: 90vh;
+  overflow-y: scroll;
+}
+
+.add-unit-body{
+  /* border: 1px solid #000000; */
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.add-unit-header{
+  background-color: #f97316;
+  color: white;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: left;
+  border-radius: 10px;
+  border-bottom-left-radius: 0px ;
+  border-bottom-right-radius: 0px ;
+  margin-top: 10px;
+  /* cursor: pointer; */
+}
+
+.manage-unit-table-container{
+  border: 1px solid #f97316;
+  border-radius: 10px;
+  overflow-x: auto;
+}
+
+.manage-unit-body{
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  border-top-left-radius: 0px ;
+  border-top-right-radius: 0px ;
+  /* margin-bottom: 20px; */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.form-group label {
+  width: 100px;
+  background-color: #fde4cf;
+  padding: 5px;
+  border-radius: 5px;
+  text-align: right;
+  margin-right: 10px;
+}
+
+.form-group input {
+  flex: 1;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.form-group select {
+  flex: 1;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: white;
+  /* font-size: 14px; */
+}
+
+/* maybe not ues */
+.manage-unit-container{
+  width: 100%;
+  margin: 20px auto;
+  margin-left: 10px;
+  /* padding: 10px; */
+  justify-content: center;
+  /* border: 1px solid #ccc; */
+  max-height: 90vh;
+  overflow-y: scroll;
+}
+
+.manage-unit-header{
+  background-color: #f97316;
+  color: white;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: left;
+  border-radius: 10px;
+  border-bottom-left-radius: 0px ;
+  border-bottom-right-radius: 0px ;
+  margin-top: 10px;
+  /* cursor: pointer; */
+}
+
+.manage-unit-search-bar {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  margin-top: -1px;
+  border: 1px solid #f97316;
+  padding: 5px;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.manage-unit-search-icon {
+  color: #f97316;
+  margin-right: 5px;
+}
+
+.manage-unit-search-bar input {
+  border: none;
+  width: 100%;
+  outline: none;
+}
+
+.manage-unit-form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.manage-unit-form-group label {
+  width: 100px;
+  background-color: #fde4cf;
+  padding: 5px;
+  border-radius: 5px;
+  text-align: right;
+  margin-right: 10px;
+}
+
+.manage-unit-form-group input {
+  flex: 1;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.manage-unit-form-group select {
+  flex: 1;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: white;
+  /* font-size: 14px; */
+}
+
+h3 {
+  background-color: #f97316;
+  padding: 10px;
+  color: white;
+  border-radius: 3px;
+}
+
+label {
+  width: 120px !important;;
+  display: block;
+  margin-top: 10px auto;
+}
+
+/* input {
+  width: 100%;
+  padding: 5px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+} */
+
+.confirm-btn {
+  background-color: #f97316;
+  color: white;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  justify-content: center;
+  display: block;
+  margin: 10px auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #f97316;
+}
+
+th {
+  background-color: #fde4cf;
+}
+
+.unit-details p {
+  margin: 5px 0;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+hr{
+  border: 1px solid #f97316;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.confirm-btn{
+  background-color: #f97316;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: block;
+  margin: 10px auto;
+}
+
+.confirm-btn:hover {
+  background-color: #f97316;
+}

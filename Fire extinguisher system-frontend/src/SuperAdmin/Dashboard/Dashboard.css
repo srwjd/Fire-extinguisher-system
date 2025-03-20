@@ -1,0 +1,134 @@
+/* containerTop */
+.dashboardContainerTop {
+  display: flex;
+  /* justify-content: space-around; */
+  align-items: center;
+}
+
+/* userCard shoe data */
+.dashboard-users-card {
+  background-color: #f97316;
+  color: white;
+  /* padding: 16px; */
+  border-radius: 10px;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 16px;
+}
+
+.dashboard-users-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.dashboard-users-content {
+  background-color: white;
+  color: black;
+  padding: 16px;
+  border-radius: 10px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  /* width: 320px; */
+}
+
+.dashboard-user-item {
+  background-color: #fde4cf;
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-user-count {
+  font-weight: bold;
+}
+
+/* unitCard shoe data */
+.dashboard-units-card {
+  background-color: #f97316;
+  color: white;
+  /* padding: 16px; */
+  border-radius: 10px;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 16px;
+}
+
+.dashboard-units-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.dashboard-units-content {
+  background-color: white;
+  color: black;
+  padding: 16px;
+  border-radius: 10px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  /* width: 320px; */
+}
+
+.dashboard-unit-item {
+  background-color: #fde4cf;
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-unit-count {
+  font-weight: bold;
+}
+
+span {
+  font-size: 14px;
+  font-weight: semi-bold;
+}
+
+/* containerBottom */
+.dashboard-containerBottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* status of fire extinguisher show data */
+.dashboard-status-card {
+  padding: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: #f97316;
+  color: white;
+  border-radius: 10px;
+  width: 100%;
+  margin: 16px;
+  height: 100%;
+}
+
+.dashboard-status-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.dashboard-status-content{
+    background-color: #ffffff;
+    color: black;
+    padding: 16px;
+    border-radius: 10px;
+    /* border-top-left-radius: 0px;
+    border-top-right-radius: 0px; */
+    width: 100%;
+}
