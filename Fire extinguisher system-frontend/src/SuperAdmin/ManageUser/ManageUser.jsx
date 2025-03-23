@@ -21,7 +21,7 @@ const AddUserForm = ({ isOpen, toggleForm, addUser }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.role) {
-      alert("กรุณาเลือก Role ก่อนทำการยืนยัน");
+      alert("Please select a role before adding.");
       return;
     }
 
@@ -210,7 +210,7 @@ const ManageUser = () => {
   const handleSave = (e) => {
     e.preventDefault();
     if (!editUser.role) {
-      alert("กรุณาเลือก Role ก่อนทำการยืนยัน");
+      alert("Please select a role before saving.");
       return;
     }
 
@@ -224,7 +224,7 @@ const ManageUser = () => {
   };
 
   const handleDelete = (id) => {
-    const confirmDelete = window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้นี้?");
+    const confirmDelete = window.confirm("Are you sure you want to delete?");
     if (confirmDelete) {
       const updatedUserList = userList.filter((user) => user.id !== id);
       setUserList(updatedUserList);

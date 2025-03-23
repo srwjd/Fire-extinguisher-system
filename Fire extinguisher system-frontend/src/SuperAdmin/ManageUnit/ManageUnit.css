@@ -1,12 +1,12 @@
-.manage-unit-container {
+.manage-unit-container{
   width: 100%;
   margin: 20px auto;
   margin-left: 10px;
   /* padding: 10px; */
   justify-content: center;
   /* border: 1px solid #ccc; */
-  max-height: 90vh;
-  overflow-y: scroll;
+  /* max-height: 90vh; */
+  /* overflow-y: scroll; */
 }
 
 .add-unit-body{
@@ -43,6 +43,7 @@
 .manage-unit-body{
   background: white;
   padding: 15px;
+  margin-left: -10px;
   border-radius: 10px;
   border-top-left-radius: 0px ;
   border-top-right-radius: 0px ;
@@ -81,18 +82,6 @@
   /* font-size: 14px; */
 }
 
-/* maybe not ues */
-.manage-unit-container{
-  width: 100%;
-  margin: 20px auto;
-  margin-left: 10px;
-  /* padding: 10px; */
-  justify-content: center;
-  /* border: 1px solid #ccc; */
-  max-height: 90vh;
-  overflow-y: scroll;
-}
-
 .manage-unit-header{
   background-color: #f97316;
   color: white;
@@ -104,6 +93,7 @@
   border-bottom-left-radius: 0px ;
   border-bottom-right-radius: 0px ;
   margin-top: 10px;
+  margin-left: -10px;
   /* cursor: pointer; */
 }
 
@@ -181,7 +171,20 @@ label {
   border-radius: 3px;
 } */
 
-.confirm-btn {
+.confirm-manage-unit-btn {
+  background-color: #f97316;
+  color: white;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  justify-content: center;
+  display: block;
+  margin: 10px auto;
+}
+
+.confirm-add-unit-btn {
   background-color: #f97316;
   color: white;
   padding: 10px;
