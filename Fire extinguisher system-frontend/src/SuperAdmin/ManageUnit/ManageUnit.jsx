@@ -68,7 +68,7 @@ const ManageUnit = () => {
       {/* Add Unit Section */}
       <div className="add-unit">
         <div className="add-unit-header">
-          <span>Add Unit</span>
+          <span style={{ fontSize: "18px", fontWeight: "bold" }}>Add Unit</span>
         </div>
         <div className="add-unit-body">
           <div className="manage-unit-form-group">
@@ -122,7 +122,7 @@ const ManageUnit = () => {
       {/* Manage Unit Section */}
       <div className="manage-unit-container">
         <div className="manage-unit-header">
-          <span>Manage Unit</span>
+          <span style={{ fontSize: "18px", fontWeight: "bold" }}>Manage Unit</span>
         </div>
         <div className="manage-unit-body">
           {/* Search Bar */}
@@ -185,7 +185,7 @@ const ManageUnit = () => {
           {/* Edit Section */}
           {editUnit && (
             <div className="unit-details">
-              <h3>Edit Unit ID: {editUnit.id}</h3>
+              <h3>Edit Unit ID : {editUnit.id}</h3>
               <div className="manage-unit-form-group">
                 <label>Phone Company :</label>
                 <input

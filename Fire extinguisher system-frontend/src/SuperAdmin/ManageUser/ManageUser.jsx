@@ -49,7 +49,7 @@ const AddUserForm = ({ isOpen, toggleForm, addUser }) => {
   return (
     <div>
       <div className="manage-user-section-header" onClick={toggleForm}>
-        <span>Add User</span>
+        <span style={{ fontSize: "18px", fontWeight: "bold" }}>Add User</span>
         <span className="manage-user-triangle">{isOpen ? "▲" : "▼"}</span>
       </div>
 
@@ -252,7 +252,7 @@ const ManageUser = () => {
       <AddUserForm isOpen={isOpen} toggleForm={() => setIsOpen(!isOpen)} addUser={addUser} />
 
       <div className="manage-user-header">
-        <span>Manage User</span>
+        <span style={{ fontSize: "18px", fontWeight: "bold" }}>Manage User</span>
       </div>
       <div className="manage-user-manageUserContainer">
         <div className="manage-user-search-bar">
