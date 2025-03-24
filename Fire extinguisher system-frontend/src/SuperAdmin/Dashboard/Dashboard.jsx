@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   BarChart,
   Bar,
@@ -10,8 +11,8 @@ import {
 } from "recharts";
 import "./Dashboard.css";
 
-// data from backend แต่ยังไม่ได้เอามาใส่ รอไปก่อน อันนี้เมคขึ้นมางับ
-const data = [
+// Dummy data (replace with backend data when ready)
+const statusOfFireExtinguishers = [
   { month: "Jan", Installed: 10, Checking: 5, Change: 3 },
   { month: "Feb", Installed: 10, Checking: 10, Change: 6 },
   { month: "Mar", Installed: 10, Checking: 10, Change: 5 },
@@ -27,67 +28,106 @@ const data = [
 ];
 
 function Dashboard() {
+  const [roles, setRoles] = useState([]);
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/fire/countByRole"
+        );
+        setRoles(response.data);
+      } catch (error) {
+        console.error("Error fetching role data :", error);
+      }
+    };
+    fetchRoles();
+  }, []);
+
+  const [units, setUnits] = useState([]);
+  useEffect(() => {
+    const fetchUnits = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/fire/countUnit"
+        );
+        setUnits(response.data);
+      } catch (error) {
+        console.error("Error fetching unit data :", error);
+      }
+    };
+    fetchUnits();
+  }, []);
+  // คำนวณจำนวนสาขาย่อยทั้งหมด
+  const totalBranches = units.reduce(
+    (total, unit) => total + unit.branch_count,
+    0
+  );
+
   return (
     <div>
-      <div className="dashboardContainerTop">
-        {/* UserCard show data */}
-        <div className="dashboard-users-card">
-          <h2 className="dashboard-users-title" style={{ paddingLeft: "15px" }}>
-            Users
-          </h2>
-          <div className="dashboard-users-content">
-            <div className="dashboard-user-item">
-              <span>Super Admins</span> <span className="dashboard-user-count">1</span>
-            </div>
-            <div className="dashboard-user-item">
-              <span>Admins</span> <span className="dashboard-user-count">2</span>
-            </div>
-            <div className="dashboard-user-item">
-              <span>Users</span> <span className="dashboard-user-count">5</span>
-            </div>
-            <div className="dashboard-user-item">
-              <span>Fire extinguisher</span>{" "}
-              <span className="dashboard-user-count">25</span>
-            </div>
+<div className="dashboardContainerTop">
+  {/* Users Card */}
+  <div className="dashboard-user-card">
+    <h2 className="dashboard-users-title" style={{ paddingLeft: "15px" }}>Users</h2>
+    <div className="dashboard-users-content">
+      {roles.length > 0 ? (
+        roles.map((role) => (
+          <div className="dashboard-user-item" key={role.roleName}>
+            <span>{role.roleName || "Unknown Role"}</span>
+            <span style={{ fontWeight: "bold" }}>{role.count || 0}</span>
           </div>
-        </div>
-        {/* UnitCard show data */}
-        <div className="dashboard-units-card">
-          <h2 className="dashboard-units-title" style={{ paddingLeft: "15px" }}>
-            Units
-          </h2>
-          <div className="dashboard-units-content">
-            <div className="dashboard-unit-item">
-              <span>Company</span> <span className="dashboard-unit-count">2</span>
-            </div>
-            <div className="dashboard-unit-item">
-              <span>Branches</span> <span className="dashboard-unit-count">10</span>
-            </div>
-            <div className="dashboard-unit-item">
-              <span>Bank</span> <span className="dashboard-unit-count">7</span>
-            </div>
-            <div className="dashboard-unit-item">
-              <span>Hospital</span> <span className="dashboard-unit-count">3</span>
-            </div>
-          </div>
-        </div>
+        ))
+      ) : (
+        <div>No roles found</div>
+      )}
+    </div>
+  </div>
+
+  {/* Units Card */}
+  <div className="dashboard-unit-card">
+    <h2 className="dashboard-units-title" style={{ paddingLeft: "15px" }}>Units</h2>
+    <div className="dashboard-units-content">
+      <div className="dashboard-unit-item">
+        <span>Company</span>
+        <span style={{ fontWeight: "bold" }}>{units.length}</span>
       </div>
-      {/* status of fire extinguisher show data */}
+      <div className="dashboard-unit-item">
+        <span>Branches</span>
+        <span style={{ fontWeight: "bold" }}>{totalBranches}</span>
+      </div>
+      {units.length > 0 ? (
+        units.map((unit) => (
+          <div className="dashboard-unit-item" key={unit.company_id}>
+            <span>{unit.company_name}</span>
+            <span className="dashboard-unit-count">{unit.branch_count}</span>
+          </div>
+        ))
+      ) : (
+        <div>Loading unit data...</div>
+      )}
+    </div>
+  </div>
+</div>
+
+
+      {/* Status of Fire Extinguishers */}
       <div className="dashboard-containerBottom">
         <div className="dashboard-status-card">
-          <h2 className="dashboard-status-title">Status of Fire Extinguishers</h2>
+          <h2 className="dashboard-status-title">
+            Status of Fire Extinguishers
+          </h2>
           <div className="dashboard-status-content">
-          <ResponsiveContainer width="100%" height={450}>
-            <BarChart data={data}>
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="Installed" fill="#4CB760" />
-              <Bar dataKey="Checking" fill="#F7CE36" />
-              <Bar dataKey="Change" fill="#DB5362" />
-            </BarChart>
-          </ResponsiveContainer>
+            <ResponsiveContainer width="100%" height={450}>
+              <BarChart data={statusOfFireExtinguishers}>
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="Installed" fill="#4CB760" />
+                <Bar dataKey="Checking" fill="#F7CE36" />
+                <Bar dataKey="Change" fill="#DB5362" />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>

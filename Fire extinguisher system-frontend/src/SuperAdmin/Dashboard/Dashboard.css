@@ -1,17 +1,16 @@
 /* containerTop */
 .dashboardContainerTop {
   display: flex;
-  /* justify-content: space-around; */
-  align-items: center;
+  /* justify-content: space-between; */
+  /* align-items: stretch; */
 }
 
-/* userCard shoe data */
-.dashboard-users-card {
+/* userCard show data */
+.dashboard-user-card{
   background-color: #f97316;
   color: white;
-  /* padding: 16px; */
   border-radius: 10px;
-  width: 100%;
+  width: 50%; /* ปรับให้เท่ากัน */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin: 16px;
 }
@@ -48,20 +47,22 @@
   font-weight: bold;
 }
 
-/* unitCard shoe data */
-.dashboard-units-card {
+/* unitCard show data */
+.dashboard-unit-card {
   background-color: #f97316;
   color: white;
-  /* padding: 16px; */
   border-radius: 10px;
-  width: 100%;
+  width: 50%; /* ปรับให้เท่ากัน */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin: 16px;
+  height: 100%;
 }
 
 .dashboard-units-title {
   font-size: 18px;
   font-weight: bold;
+  /* padding-top: 16px; */
+  padding-left: 16px;
   margin-bottom: 8px;
 }
 
@@ -132,3 +133,7 @@ span {
     border-top-right-radius: 0px; */
     width: 100%;
 }
+
+
+
+
