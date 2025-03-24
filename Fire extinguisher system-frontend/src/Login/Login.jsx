@@ -15,12 +15,18 @@ function Login() {
                 username,
                 password
             });
-
+            console.log("Login response:", res.data);
             const token = res.data.token;
             const role = res.data.role;
+            const companyId = res.data.companyId;
+            const userID = res.data.userID;
 
             localStorage.setItem('role', role);
             localStorage.setItem('token', token);
+            localStorage.setItem('companyId', companyId)
+            localStorage.setItem('userID', userID)
+            
+            
 
             alert("Login successful!");
             window.location.reload();  // รีเฟรชหน้า

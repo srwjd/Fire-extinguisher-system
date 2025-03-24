@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:wght@100..800&display=swap');
+
+* {
+    font-family: 'Ubuntu Sans', sans-serif;
+}
+
+.Text-MainBranch {
+    color: #FD6E2B;
+    font-size: 32px;
+}
+
+.Table-MainBranch {
+    width: 500px;
+    font-size: 18px;
+    border: #FD6E2B 1px solid;
+    border-radius: 10px 10px 0 0;
+}
+
+th, td {
+    padding: 12px;
+
+}
+
+th {
+    background-color: #FFD3BE;
+    color: black;
+    font-weight: bold;
+}
+
+/* ทำให้เฉพาะหัวตารางมีมุมโค้ง */
+th:first-child {
+    border-top-left-radius: 10px;
+}
+
+th:last-child {
+    border-top-right-radius: 10px;
+}
