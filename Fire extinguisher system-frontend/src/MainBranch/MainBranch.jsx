@@ -15,8 +15,8 @@ function MainBranch() {
                           <Route path="/" element={<Home />} />
                           <Route path="/home" element={<Home />} />
                           <Route path="/report" element={<Report />} />
-                          <Route path="/report/:fireId" element={<ReportDetail />} />
-                          <Route path="/test" element={<Test />} />
+                          <Route path="/report/:fire_id" element={<ReportDetail />} />
+                          {/* <Route path="/test" element={<Test />} /> */}
                     </Routes>
                 </MyLayout>
             </Router>

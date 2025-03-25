@@ -1,75 +1,98 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import "./Test.css";
 
-function Dashboard() {
-  const [units, setUnits] = useState([]);
+// import "./Report.css";
+// import { FaSearch } from "react-icons/fa";
 
-  useEffect(() => {
-    const fetchUnits = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/fire/test2");
-        setUnits(response.data);
-      } catch (error) {
-        console.error("Error fetching unit data:", error);
-      }
-    };
-    fetchUnits();
-  }, []);
+function Report() {
+    const [report, setReport] = useState([]);
 
-  // คำนวณจำนวนสาขาย่อยทั้งหมด
-  const totalBranches = units.reduce((total, unit) => total + unit.branch_count, 0);
+    useEffect(() => {
+        const fetchReports = async () => {
+            try {
+                const response = await axios.get("http://localhost:3000/fire/report"); // เปลี่ยน URL ตาม backend ของคุณ
+                setReport(response.data);
+            } catch (error) {
+                console.error("Error fetching reports:", error);
+            }
+        };
+    
+        fetchReports();
+    }, []);
 
-  return (
-    <div>
-      <div className="dashboardContainerTop">
-        <div className="dashboard-users-card">
-          <h2 className="dashboard-users-title" style={{ paddingLeft: "15px" }}>
-            Users
-          </h2>
-          <div className="dashboard-users-content">
-            {/* Show users' roles here if available */}
-          </div>
-        </div>
-
-        <div className="dashboard-units-card">
-          <h2 className="dashboard-units-title" style={{ paddingLeft: "15px" }}>
-            Units
-          </h2>
-          <div className="dashboard-units-content">
-            <div className="dashboard-unit-item">
-              <span>Company : {units.length}</span>
-            </div>
-            {/* แสดงจำนวนสาขาย่อยทั้งหมด */}
-            <div>
-              <span className="dashboard-unit-item">Branches: {totalBranches}</span>
-            </div>
-            {units.length > 0 ? (
-              units.map((unit) => (
-                <div className="dashboard-unit-item" key={unit.company_id}>
-                  <span>{unit.company_name}</span>
-                  <span className="dashboard-unit-count">
-                    {unit.branch_count}
-                  </span>
+    
+    return (
+        <div>
+            {/* Header with Search Bar */}
+            <div className="header">
+                <h2>Submitted by user</h2>&nbsp;&nbsp;&nbsp;&nbsp;
+                <div className="search-bar">
+                    {/* <span><FaSearch className="search-icon" /></span> */}
+                    <input type="text" placeholder="Search : S/N" />
                 </div>
-              ))
-            ) : (
-              <div>Loading unit data...</div>
-            )}
-          </div>
-        </div>
-      </div>
+            </div>
+            <div className="inspection-container">
+                <div className="table-container">
+                    {/* Table Section */}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>By</th>
+                                <th>Date</th>
+                                <th>Check</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {report.length > 0 ? (
+                                report.map((item, index) => (
+                                    <tr key={index}>
+                                        <td>{item.serial_number}</td>
+                                        <td>{item.user_id}</td>
+                                        <td>{item.date.split("T")[0]}</td>
+                                        <td><button>Check</button></td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="4">No reports found</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
 
-      <div className="dashboard-containerBottom">
-        <div className="dashboard-status-card">
-          <h2 className="dashboard-status-title">Status of Fire Extinguishers</h2>
-          <div className="dashboard-status-content">
-            {/* Placeholder for Fire Extinguisher Data */}
-          </div>
+                    {/* Pagination */}
+                    <div className="pagination">
+                        <button>{"<"}</button>
+                        <span>1 out of 10</span>
+                        <button>{">"}</button>
+                    </div>
+                </div>
+
+                <div className="checkwork-container">
+                    <h2>Report</h2>
+                    <div className="image-placeholder"></div>
+                    <p><strong>S/N :</strong> NFPA 10-0001</p>
+                    <p><strong>Date :</strong> 03/07/2568</p>
+                    <p><strong>Time :</strong> 12:00 AM</p>
+                    <p><strong>Location :</strong> Sripatum Uni</p>
+
+
+                    <textarea
+                        className="remarks"
+                        placeholder="หมายเหตุ :"
+
+                    />
+
+                    <input type="text" placeholder="User" className='input' /> &nbsp;&nbsp;&nbsp;&nbsp;
+                    <button className="assign-button">Assign</button>
+
+                </div>
+
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }
 
-export default Dashboard;
+
+export default Report;

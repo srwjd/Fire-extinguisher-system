@@ -1,10 +1,42 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { getUserByUsername, getAllBranchs, getBranchById, getBranchesByCompanyId, getFiresByBranchId, getFiresByCompanyId, getAllCompaniesWithBranches } from "../controller/useController.js";
-
+import { getUserByUsername, getAllBranchs, getBranchById, getBranchesByCompanyId, getFiresByBranchId, getFiresByCompanyId, addReport, getFiresById} from "../controller/useController.js";
+import fs from 'fs';
+import path from 'path';
+import multer from 'multer';
+import { fileURLToPath } from 'url';
 
 const router = Router();
+
+// ใช้ fileURLToPath เพื่อแปลง URL ให้เป็นพาธในระบบไฟล์
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ตรวจสอบและสร้างโฟลเดอร์ uploads หากไม่มี
+const uploadDirectory = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDirectory)) {
+    fs.mkdirSync(uploadDirectory, { recursive: true }); // สร้างโฟลเดอร์ถ้ายังไม่มี
+}
+// ตั้งค่าให้บันทึกไฟล์ในโฟลเดอร์ 'uploads' และตั้งชื่อไฟล์
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, uploadDirectory); // กำหนดตำแหน่งการบันทึกไฟล์
+    },
+    filename: (req, file, cb) => {
+        // แยกชื่อไฟล์ออกจากนามสกุล
+        const extname = path.extname(file.originalname); // เช่น .txt
+        const basename = path.basename(file.originalname, extname); // เช่น dashboardAS
+        
+        // สร้างชื่อไฟล์ใหม่ที่มี timestamp ต่อท้าย
+        const timestamp = Date.now();
+        const newFilename = `${basename}-${timestamp}${extname}`; // เช่น dashboardAS-1742929442831.txt
+
+        cb(null, newFilename); // ใช้ชื่อไฟล์ใหม่ที่ประกอบด้วย timestamp
+    },
+});
+
+const upload = multer({ storage: storage });
 
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
@@ -20,17 +52,16 @@ router.post('/login', async (req, res) => {
         }
         // const token = await jwt.sign({ id: result[0].id }, jwt_secret, { expiresIn: '1h' });
         const token = jwt.sign({ id: result[0].id }, 'secret', { expiresIn: '1h' });
-        const role = result[0].roleName
+        const role = result[0].role_ame
         const companyId = result[0].company_id;
-        const userID = result[0].userID
+        const userID = result[0].user_id
 
-        console.log("User ID:", result[0].userID);
+        console.log("User ID:", result[0].user_id);
 
         return res.status(200).json({ message: 'OK success', token, role, companyId, userID});
     } catch (error) {
         res.status(500).json({ message: 'error' });
     }
-    res.status(200).json({ token: 'token' });
 })
 
 // ดึงข้อมูลสาขาทั้งหมด
@@ -58,13 +89,7 @@ router.get("/branches/:branchs_id", async (req, res) => {
         
         //ดึงข้อมูลถังตาม branch_id
         const fires = await getFiresByBranchId(branchs_id)
-
-        
-
-        res.json(
-            // branchDetails: result,
-            fires
-        );
+        res.json(fires);
     } catch (error) {
         console.error("Error fetching branch by ID:", error);
         res.status(500).json({ message: "Internal Server Error" });
@@ -89,7 +114,6 @@ router.get("/company/:company_id", async (req, res) => {
         if (fire.length === 0) {
             return res.status(404).json({ message: "No fires found for this company" });
         }
-        
 
         res.json({ branches: result, fires: fire });
     } catch (error) {
@@ -118,19 +142,43 @@ router.get("/company/:company_id/fires", async (req, res) => {
     }
 });
 
-
-router.get("/test2", async (req, res) => {
+// API Endpoint สำหรับเพิ่มรายงาน
+router.post("/reports", upload.single('filename'), async (req, res) => {
     try {
-        const result = await getAllCompaniesWithBranches(); // ดึงข้อมูลจากฐานข้อมูล
-        if (result.length === 0) {
-            return res.status(404).json({ message: "No companies found" });
+        const { description, date, time, fire_id, user_id } = req.body;
+        const filename = req.file ? req.file.filename : null; // ใช้ชื่อไฟล์จาก multer
+
+        // ตรวจสอบค่าที่ต้องการ
+        if (!filename || !description || !date || !time || !fire_id || !user_id) {
+            return res.status(400).json({ message: "Missing required fields" });
         }
-        res.json(result); // ส่งข้อมูลกลับไปยัง frontend
+
+        const report = { filename, description, date, time, fire_id, user_id };
+
+        // สมมุติว่าใช้ฟังก์ชันเพิ่มรายงาน
+        const result = await addReport(report);
+
+        res.status(201).json({ message: "Report added successfully", data: result });
     } catch (error) {
-        console.error("Error fetching companies:", error.message); // เพิ่มการพิมพ์ error
-        res.status(500).json({ message: "Internal Server Error", error: error.message }); // ส่งข้อผิดพลาดพร้อมรายละเอียด
+        console.error("Error adding report:", error);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
 });
 
+// ดึงข้อมูลถังดับเพลิงตาม fire_id
+router.get("/fire/:fire_id", async (req, res) => {
+    try {
+        const { fire_id } = req.params;
+        const result = await getFiresById(fire_id);
+        if (result.length === 0) {
+            return res.status(404).json({ message: "Fire not found" });
+        }
+        console.log("Fire ID:", fire_id);
+        res.json(result);
+    } catch (error) {
+        console.error("Error fetching fire by ID:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
 
-export default router
+export default router;

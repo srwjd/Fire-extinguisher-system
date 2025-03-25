@@ -93,8 +93,8 @@ function Report() {
                                 <td>{fire.serial_number}</td>
                                 <td>{fire.fire_mfd.split("T")[0]}</td>
                                 <td>{fire.fire_exp.split("T")[0]}</td>
-                                <td>{fire.latestCheck ? fire.latestCheck.split("T")[0] : "N/A"}</td>
-                                <td>{fire.nextCheck ? fire.nextCheck.split("T")[0] : "N/A"}</td>
+                                <td>{fire.latest_check ? fire.latest_check.split("T")[0] : "N/A"}</td>
+                                <td>{fire.next_check ? fire.next_check.split("T")[0] : "N/A"}</td>
                                 <td>{fire.status}</td>
                                 <td>
                                 <Link to={`/report/${fire.fire_id}`}>Report</Link>

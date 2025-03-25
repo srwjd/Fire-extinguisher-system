@@ -15,9 +15,9 @@ export const query = async (sql, params) => {
 }
 
 export const getUserByUsername = async (username) => {
-    const sql = `SELECT Users.*, Roles.roleName, Users.company_id
+    const sql = `SELECT Users.*, Roles.role_name, Users.company_id
         FROM Users 
-        RIGHT JOIN Roles ON Users.roleID = Roles.roleID
+        RIGHT JOIN Roles ON Users.role_id = Roles.role_id
         WHERE Users.username = ?`;
     const params = [username];
     return await query(sql, params);
@@ -87,49 +87,46 @@ export const getFiresByCompanyId = async (company_id) => {
 
 //เพิ่มข้อมูลใน Report
 export const addReport = async (report) => {
+    try {
+        const sql = `
+            INSERT INTO Reports (filename, description, date, time, fire_id, user_id) 
+            VALUES (?, ?, ?, ?, ?, ?)
+        `;  
+        const params = [report.filename, report.description, report.date, report.time, report.fire_id, report.user_id];
+        return await query(sql, params);
+    } catch (error) {
+        console.error("Error adding report:", error);
+        throw error;
+    }
+};
+
+// ดึง Report ตาม report_id
+export const getReportById = async (report_id) => {
     try{
-        const sql = `INSERT INTO Report (report_id, filename, description, date, fire_id, userID) VALUES (?, ?, ?, ?, ?)`
-        const params = [report.report_id, report.filename, report.description, report.fire_id, report.report_date, report.report_status];
+        const sql = `SELECT * FROM Reports WHERE report_id =?`
+        const params = [report_id];
         return await query(sql,params)
     }catch (error){
-        console.error("Error adding report:", error);
+        console.error("Error get report by report_id:", error);
         throw error;
     }
 }
 
 
-export const getRoleCount = async () => {
-    const sql = `
-        SELECT r.roleName, COUNT(*) as count 
-        FROM Users u
-        JOIN Roles r ON u.roleID = r.roleID  -- เชื่อม Users.roleID กับ Roles.id
-        GROUP BY u.roleID
-    `;
-    return await query(sql);
-};
 
-
-export const getAllCompaniesWithBranches = async () => {
-    const sql = `
-        SELECT 
-            c.company_id, 
-            c.company_name, 
-            COUNT(b.branch_id) AS branch_count 
-        FROM 
-            Companys c
-        LEFT JOIN 
-            Branchs b ON c.company_id = b.company_id
-        GROUP BY 
-            c.company_id, c.company_name
-    `;
-    try {
-        const result = await query(sql); // ดึงข้อมูลจากฐานข้อมูล
-        return result;
-    } catch (error) {
-        console.error("Error executing SQL query:", error.message); // เพิ่มการพิมพ์ error
-        throw error; // ส่งข้อผิดพลาดกลับ
+// ดึงข้อมูลใน Fires ตาม fire_id
+export const getFiresById = async (fire_id) => {
+    try{
+        const sql = `SELECT * FROM Fires WHERE fire_id =?`
+        const params = [fire_id];
+        return await query(sql,params)
+    }catch (error){
+        console.error("Error get fire by fire_id:", error);
+        throw error;
     }
-};
+}
+
+
 
 
 
