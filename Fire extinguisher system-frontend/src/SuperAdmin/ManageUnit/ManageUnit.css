@@ -217,6 +217,20 @@ th {
   margin: 5px 0;
 }
 
+.edit-unit-title{
+  background-color: #f97316;
+  color: white;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: left;
+  border-radius: 10px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  margin-top: 10px;
+  /* cursor: pointer; */
+}
+
 .form-group {
   margin-bottom: 10px;
 }

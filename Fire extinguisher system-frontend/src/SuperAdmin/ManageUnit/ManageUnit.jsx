@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
 import "./ManageUnit.css";
 
@@ -7,7 +8,7 @@ const ManageUnit = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [editUnit, setEditUnit] = useState(null);
   const [newUnit, setNewUnit] = useState({
-    compName: "",
+    company_name: "",
     branch: "",
     quantity: "",
     compPhone: "",
@@ -15,9 +16,24 @@ const ManageUnit = () => {
     fexSN: "",
   });
 
+  useEffect(() => {
+    const fetchUnits = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/fire/getAllUnit"
+        );
+        setUnits(response.data);
+      } catch (error) {
+        console.error("Error fetching units data :", error);
+      }
+    };
+    
+    fetchUnits();
+  }, []); // Empty array means this effect runs once when the component mounts
+
   // ฟังก์ชันเพิ่มข้อมูล
   const handleAddUnit = () => {
-    if (!newUnit.compName || !newUnit.branch || !newUnit.quantity || !newUnit.compPhone) {
+    if (!newUnit.company_name || !newUnit.branch || !newUnit.quantity || !newUnit.compPhone) {
       alert("Please fill in all fields.");
       return;
     }
@@ -29,7 +45,7 @@ const ManageUnit = () => {
 
     setUnits([...units, newEntry]);
     setNewUnit({
-      compName: "",
+      company_name: "",
       branch: "",
       quantity: "",
       compPhone: "",
@@ -76,8 +92,8 @@ const ManageUnit = () => {
             <input
               type="text"
               placeholder="เช่น SCB"
-              value={newUnit.compName}
-              onChange={(e) => setNewUnit({ ...newUnit, compName: e.target.value })}
+              value={newUnit.company_name}
+              onChange={(e) => setNewUnit({ ...newUnit, company_name: e.target.value })}
             />
           </div>
           <div className="manage-unit-form-group">
@@ -152,15 +168,15 @@ const ManageUnit = () => {
               <tbody>
                 {units
                   .filter((unit) =>
-                    `${unit.compName} ${unit.branch}`
+                    `${unit.company_name} ${unit.branch}`
                       .toLowerCase()
                       .includes(searchTerm.toLowerCase())
                   )
                   .map((unit) => (
                     <tr key={unit.id}>
-                      <td>{unit.id}</td>
-                      <td>{unit.compName}</td>
-                      <td>{unit.branch}</td>
+                      <td>{unit.company_id}</td>
+                      <td>{unit.company_name}</td>
+                      <td>{unit.branch_name}</td>
                       <td>{unit.quantity}</td>
                       <td>
                         <FaEdit
@@ -185,7 +201,7 @@ const ManageUnit = () => {
           {/* Edit Section */}
           {editUnit && (
             <div className="unit-details">
-              <h3>Edit Unit ID : {editUnit.id}</h3>
+              <h3 className="edit-unit-title">Edit Unit ID : {editUnit.id}</h3>
               <div className="manage-unit-form-group">
                 <label>Phone Company :</label>
                 <input
