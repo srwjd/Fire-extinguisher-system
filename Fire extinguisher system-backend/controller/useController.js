@@ -16,7 +16,7 @@ export const query = async (sql, params) => {
 
 export const getUserByUsername = async (username) => {
     const sql = `SELECT * 
-    FROM Users RIGHT JOIN Roles ON Users.roleID = Roles.roleID
+    FROM Users RIGHT JOIN Roles ON Users.role_id = Roles.role_id
     WHERE username = ?`;
     const params = [username];
     return await query(sql, params);
@@ -25,10 +25,10 @@ export const getUserByUsername = async (username) => {
 // ดึงจำนวน User ใน Role
 export const getUserCountByRole = async () => {
     const sql = 
-        `SELECT r.roleName, COUNT(*) as count 
+        `SELECT r.role_name, COUNT(*) as count 
         FROM Users u
-        JOIN Roles r ON u.roleID = r.roleID  -- เชื่อม Users.roleID กับ Roles.id
-        GROUP BY u.roleID`
+        JOIN Roles r ON u.role_id = r.role_id  -- เชื่อม Users.role_id กับ Roles.id
+        GROUP BY u.role_id`
     ;
     return await query(sql);
 };
@@ -53,5 +53,70 @@ export const getAllCompaniesWithBranches = async () => {
     } catch (error) {
         console.error("Error executing SQL query:", error.message); // เพิ่มการพิมพ์ error
         throw error; // ส่งข้อผิดพลาดกลับ
+    }
+};
+
+// Manage Unit
+export const getAllUser = async () => {
+    try {
+        const sql = `SELECT u.* , r.role_name
+        FROM Users u
+        JOIN Roles r ON u.role_id = r.role_id
+        ORDER BY u.user_id`;
+        return await query(sql);
+    } catch (error) {
+        console.error("Error executing SQL query:", error.message);
+        throw error;
+    }
+};
+
+// Add user
+const sql = `INSERT INTO users (username, password, email, firstName, surname, role, created_at) 
+             VALUES (?, ?, ?, ?, ?, ?, NOW())`; // ใช้ NOW() แทนค่า NULL
+
+export const addUser = async (userData) => {
+    const { username, password, email, firstName, surname, role } = userData;
+    const sql = `INSERT INTO Users (username, password, email, firstname, surname, role_id) 
+                 VALUES (?, ?, ?, ?, ?, (SELECT role_id FROM Roles WHERE role_name = ?))`;
+    const params = [username, password, email, firstName, surname, role];
+
+    try {
+        const result = await query(sql, params);
+        return result;
+    } catch (error) {
+        console.error("Error inserting user:", error.message);
+        throw error;
+    }
+};
+
+// อัปเดตข้อมูลผู้ใช้
+export const updateUser = async (userId, userData) => {
+    const { username, email, firstName, surname, role } = userData;
+    const sql = `UPDATE Users 
+                 SET username = ?, email = ?, firstname = ?, surname = ?, 
+                     role_id = (SELECT role_id FROM Roles WHERE role_name = ?)
+                 WHERE user_id = ?`;
+    const params = [username, email, firstName, surname, role, userId];
+
+    try {
+        const result = await query(sql, params);
+        return result;
+    } catch (error) {
+        console.error("Error updating user:", error.message);
+        throw error;
+    }
+};
+
+// ลบผู้ใช้
+export const deleteUser = async (userId) => {
+    const sql = `DELETE FROM Users WHERE user_id = ?`;
+    const params = [userId];
+
+    try {
+        const result = await query(sql, params);
+        return result;
+    } catch (error) {
+        console.error("Error deleting user:", error.message);
+        throw error;
     }
 };

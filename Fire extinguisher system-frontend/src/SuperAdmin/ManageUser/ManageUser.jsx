@@ -1,49 +1,112 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
 import "./ManageUser.css";
 
-const AddUserForm = ({ isOpen, toggleForm, addUser }) => {
+// const AddUserForm = ({ isOpen, toggleForm, addUser, setUserList }) => {
+//     const [formData, setFormData] = useState({
+//       username: "",
+//       password: "",
+//       email: "",
+//       firstName: "",
+//       surname: "",
+//       role: "",
+//     });
+
+//     const handleSubmit = async (e) => {
+//       e.preventDefault();
+//       if (!formData.role) {
+//           alert("Please select a role before adding.");
+//           return;
+//       }
+
+//       try {
+//           const response = await axios.post("http://localhost:3000/fire/addUser", formData);
+//           alert("User added successfully!");
+//           setUserList(prevUsers => [...prevUsers, formData]); // อัปเดตรายชื่อ user ใน frontend
+//           setFormData({
+//               username: "",
+//               password: "",
+//               email: "",
+//               firstName: "",
+//               surname: "",
+//               role: "",
+//           });
+//       } catch (error) {
+//           console.error("Error adding user:", error);
+//           alert("Failed to add user.");
+//       }
+
+//   const newUser = {
+//       id: Date.now().toString(),
+//       username: formData.username,
+//       email: formData.email,
+//       name: `${formData.firstName} ${formData.surname}`,
+//       role: formData.role,
+//     };
+
+//   addUser(newUser); // ส่งข้อมูลไปยัง ManageUser
+//   setFormData({
+//     username: "",
+//     password: "",
+//     email: "",
+//     firstName: "",
+//     surname: "",
+//     role: "",
+//   });
+// };
+
+const AddUserForm = ({ isOpen, toggleForm, addUser, setUserList }) => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
     email: "",
-    phone: "",
     firstName: "",
     surname: "",
-    address: "",
     role: "",
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.role) {
       alert("Please select a role before adding.");
       return;
     }
 
-    const newUser = {
-      id: Date.now().toString(), // ใช้ timestamp เป็น id
-      username: formData.username,
-      email: formData.email,
-      name: `${formData.firstName} ${formData.surname}`,
-      role: formData.role,
-    };
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/fire/addUser",
+        formData
+      );
+      alert("User added successfully!");
 
-    addUser(newUser); // ส่งข้อมูลไปยัง ManageUser
-    setFormData({
-      username: "",
-      password: "",
-      email: "",
-      phone: "",
-      firstName: "",
-      surname: "",
-      address: "",
-      role: "",
-    });
+      // Add the new user to the list immediately
+      setUserList((prevUsers) => [
+        ...prevUsers,
+        { ...formData, id: Date.now().toString() }, // Adding the new user to the list
+      ]);
+
+      // Reset the form fields
+      setFormData({
+        username: "",
+        password: "",
+        email: "",
+        firstName: "",
+        surname: "",
+        role: "",
+      });
+    } catch (error) {
+      console.error("Error adding user:", error);
+      alert("Failed to add user.");
+    }
   };
 
   return (
@@ -58,35 +121,61 @@ const AddUserForm = ({ isOpen, toggleForm, addUser }) => {
           <form onSubmit={handleSubmit}>
             <div className="manage-user-form-group">
               <label>Username :</label>
-              <input type="text" name="username" value={formData.username} onChange={handleChange} required />
+              <input
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                required
+              />
             </div>
             <div className="manage-user-form-group">
               <label>Password :</label>
-              <input type="password" name="password" value={formData.password} onChange={handleChange} required />
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                autoComplete="new-password"
+              />
             </div>
             <div className="manage-user-form-group">
               <label>Email :</label>
-              <input type="email" name="email" value={formData.email} onChange={handleChange} required />
-            </div>
-            <div className="manage-user-form-group">
-              <label>Phone :</label>
-              <input type="text" name="phone" value={formData.phone} onChange={handleChange} />
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
             </div>
             <div className="manage-user-form-group">
               <label>First name :</label>
-              <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} />
+              <input
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+              />
             </div>
             <div className="manage-user-form-group">
               <label>Surname :</label>
-              <input type="text" name="surname" value={formData.surname} onChange={handleChange} />
-            </div>
-            <div className="manage-user-form-group">
-              <label>Address :</label>
-              <input type="text" name="address" value={formData.address} onChange={handleChange} />
+              <input
+                type="text"
+                name="surname"
+                value={formData.surname}
+                onChange={handleChange}
+              />
             </div>
             <div className="manage-user-form-group">
               <label>Role :</label>
-              <select name="role" value={formData.role} onChange={handleChange} required>
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                required
+              >
                 <option value="">--- Select ---</option>
                 <option value="Super Admin">Super Admin</option>
                 <option value="Admin">Admin</option>
@@ -95,7 +184,9 @@ const AddUserForm = ({ isOpen, toggleForm, addUser }) => {
                 <option value="Sub Branch">Sub Branch</option>
               </select>
             </div>
-            <button type="submit" className="manage-user-confirmAddUser-button">Confirm</button>
+            <button type="submit" className="manage-user-confirmAddUser-button">
+              Confirm
+            </button>
           </form>
         </div>
       )}
@@ -108,129 +199,141 @@ const ManageUser = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [editUser, setEditUser] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [userList, setUserList] = useState([
-    {
-      id: "00001",
-      username: "ArayaKos",
-      email: "ary@gmail.com",
-      name: "Araya Kositkrai",
-      role: "Super Admin",
-    },
-    {
-      id: "00002",
-      username: "JohnDoe",
-      email: "john@gmail.com",
-      name: "John Doe",
-      role: "Admin",
-    },
-    {
-      id: "00003",
-      username: "JaneS",
-      email: "jane@gmail.com",
-      name: "Jane Smith",
-      role: "User",
-    },
-    {
-      id: "00004",
-      username: "Alice",
-      email: "alice@gmail.com",
-      name: "Alice Wonderland",
-      role: "Main Branch",
-    },
-    {
-      id: "00005",
-      username: "Bob",
-      email: "bob@gmail.com",
-      name: "Bob Builder",
-      role: "Sub Branch",
-    },
-    {
-      id: "00006",
-      username: "Charlie",
-      email: "charlie@gmail.com",
-      name: "Charlie Chaplin",
-      role: "User",
-    },
-    {
-      id: "00007",
-      username: "David",
-      email: "david@gmail.com",
-      name: "David Beckham",
-      role: "Admin",
-    },
-    {
-      id: "00008",
-      username: "Emily",
-      email: "emily@gmail.com",
-      name: "Emily Blunt",
-      role: "Super Admin",
-    },
-    // เพิ่มข้อมูลผู้ใช้เพิ่มเติมที่นี่
-  ]);
+  const [userList, setUserList] = useState([]);
 
-    // ฟังก์ชันเพิ่ม User ใหม่
-    const addUser = (newUser) => {
-      // หา ID สูงสุดจาก userList และเพิ่ม 1
-      const maxId = userList.length > 0 ? Math.max(...userList.map(user => parseInt(user.id))) : 0;
-      newUser.id = (maxId + 1).toString().padStart(5, '0'); // ให้ ID เป็นตัวเลข 5 หลัก เช่น "00006"
-    
-      setUserList([...userList, newUser]);
+  // ดูรายชื่อ User
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/fire/showAllUser"
+        );
+        setUserList(response.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
     };
-    
+
+    fetchUsers();
+  }, []);
+
+  // ฟังก์ชันเพิ่ม User ใหม่
+  const addUser = (newUser) => {
+    // หา ID สูงสุดจาก userList และเพิ่ม 1
+    const maxId =
+      userList.length > 0
+        ? Math.max(...userList.map((user) => parseInt(user.id)))
+        : 0;
+    newUser.id = (maxId + 1).toString().padStart(5, "0"); // ให้ ID เป็นตัวเลข 5 หลัก เช่น "00006"
+
+    setUserList([...userList, newUser]);
+  };
 
   const usersPerPage = 5;
 
   const filteredUsers = userList.filter(
     (user) =>
-      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.role.toLowerCase().includes(searchTerm.toLowerCase())
+      (user.username?.toLowerCase() ?? "").includes(searchTerm.toLowerCase()) ||
+      (user.email?.toLowerCase() ?? "").includes(searchTerm.toLowerCase()) ||
+      (user.name?.toLowerCase() ?? "").includes(searchTerm.toLowerCase()) ||
+      (user.role?.toLowerCase() ?? "").includes(searchTerm.toLowerCase())
   );
 
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
-
+  // const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+  const currentUsers = React.useMemo(() => {
+    return filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+  }, [filteredUsers, indexOfFirstUser, indexOfLastUser]);
+  
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+
+  // const handleEdit = (user) => {
+  //   setEditUser({
+  //     id: user.id,
+  //     username: user.username,
+  //     email: user.email,
+  //     firstName: user.name.split(" ")[0] || "",
+  //     surname: user.name.split(" ")[1] || "",
+  //     role: user.role,
+  //   });
+  // };
+
+  // const handleSave = (e) => {
+  //   e.preventDefault();
+  //   if (!editUser.role) {
+  //     alert("Please select a role before saving.");
+  //     return;
+  //   }
+
+  //   setUserList((prevUsers) =>
+  //     prevUsers.map((user) =>
+  //       user.id === editUser.id ? { ...user, ...editUser } : user
+  //     )
+  //   );
+
+  //   setEditUser(null); // ปิดฟอร์มแก้ไข
+  // };
+
+  // const handleDelete = (id) => {
+  //   const confirmDelete = window.confirm("Are you sure you want to delete?");
+  //   if (confirmDelete) {
+  //     const updatedUserList = userList.filter((user) => user.id !== id);
+  //     setUserList(updatedUserList);
+  //   }
+  // };
 
   const handleEdit = (user) => {
     setEditUser({
-      id: user.id,
+      id: user.user_id, // Ensure it matches your database ID field
       username: user.username,
       email: user.email,
-      phone: user.phone || "",
-      firstName: user.name.split(" ")[0] || "",
-      surname: user.name.split(" ")[1] || "",
-      address: user.address || "",
-      role: user.role,
+      firstName: user.firstname || "", // Use correct field names
+      surname: user.surname || "",
+      role: user.role_name, // Ensure the correct role field
     });
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     if (!editUser.role) {
       alert("Please select a role before saving.");
       return;
     }
 
-    setUserList((prevUsers) =>
-      prevUsers.map((user) =>
-        user.id === editUser.id ? { ...user, ...editUser } : user
-      )
-    );
+    try {
+      await axios.put(
+        `http://localhost:3000/fire/updateUser/${editUser.id}`,
+        editUser
+      );
+      alert("User updated successfully!");
 
-    setEditUser(null); // ปิดฟอร์มแก้ไข
-  };
-
-  const handleDelete = (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete?");
-    if (confirmDelete) {
-      const updatedUserList = userList.filter((user) => user.id !== id);
-      setUserList(updatedUserList);
+      setUserList((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === editUser.id ? { ...user, ...editUser } : user
+        )
+      );
+      setEditUser(null);
+    } catch (error) {
+      console.error("Error updating user:", error);
+      alert("Failed to update user.");
     }
   };
-  
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete?");
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://localhost:3000/fire/deleteUser/${id}`);
+        alert("User deleted successfully!");
+
+        setUserList((prevUsers) => prevUsers.filter((user) => user.id !== id));
+      } catch (error) {
+        console.error("Error deleting user:", error);
+        alert("Failed to delete user.");
+      }
+    }
+  };
 
   const handlePreviousPage = () => {
     if (currentPage > 1) {
@@ -245,18 +348,28 @@ const ManageUser = () => {
   };
 
   return (
-    <div className="manage-user-container" style={{
-      height: "100vh",
-      overflowY: "auto",
-    }}>
-      <AddUserForm isOpen={isOpen} toggleForm={() => setIsOpen(!isOpen)} addUser={addUser} />
+    <div
+      className="manage-user-container"
+      style={{
+        height: "100vh",
+        overflowY: "auto",
+      }}
+    >
+      <AddUserForm
+        isOpen={isOpen}
+        toggleForm={() => setIsOpen(!isOpen)}
+        addUser={addUser}
+        setUserList={setUserList} // <-- Ensure this is passed as a prop
+      />
 
       <div className="manage-user-header">
-        <span style={{ fontSize: "18px", fontWeight: "bold" }}>Manage User</span>
+        <span style={{ fontSize: "18px", fontWeight: "bold" }}>
+          Manage User
+        </span>
       </div>
       <div className="manage-user-manageUserContainer">
         <div className="manage-user-search-bar">
-          <FaSearch className="manage-user-search-icon" />
+          {/* <FaSearch className="manage-user-search-icon" /> */}
           <input
             type="text"
             placeholder="Search : username, email, name, role"
@@ -278,27 +391,37 @@ const ManageUser = () => {
               </tr>
             </thead>
             <tbody>
-              {currentUsers.map((user) => (
-                <tr key={user.id}>
-                  <td>{user.id}</td>
-                  <td>{user.username}</td>
-                  <td>{user.email}</td>
-                  <td>{user.name}</td>
-                  <td>{user.role}</td>
-                  <td>
-                    <FaEdit
-                      className="manage-user-edit-icon"
-                      onClick={() => handleEdit(user)}
-                    />
-                  </td>
-                  <td>
-                    <FaTrash
-                      className="manage-user-delete-icon"
-                      onClick={() => handleDelete(user.id)}
-                    />
+              {filteredUsers.length > 0 ? (
+                currentUsers.map((user, index) => (
+                  <tr key={user.user_id || `user-${index}`}>
+                    <td>{user.user_id}</td>
+                    <td>{user.username}</td>
+                    <td>{user.email}</td>
+                    <td>
+                      {user.firstname} {user.surname}
+                    </td>
+                    <td>{user.role_name}</td>
+                    <td>
+                      <FaEdit
+                        className="manage-user-edit-icon"
+                        onClick={() => handleEdit(user)}
+                      />
+                    </td>
+                    <td>
+                      <FaTrash
+                        className="manage-user-delete-icon"
+                        onClick={() => handleDelete(user.user_id)}
+                      />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" style={{ textAlign: "center" }}>
+                    ไม่พบข้อมูลที่ค้นหา
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
@@ -317,7 +440,7 @@ const ManageUser = () => {
             &gt;
           </button>
         </div>
-        
+
         {editUser && (
           <div className="manage-user-edit-form-container">
             <hr />
@@ -344,16 +467,6 @@ const ManageUser = () => {
                 />
               </div>
               <div className="manage-user-form-group">
-                <label>Phone :</label>
-                <input
-                  type="text"
-                  value={editUser.phone}
-                  onChange={(e) =>
-                    setEditUser({ ...editUser, phone: e.target.value })
-                  }
-                />
-              </div>
-              <div className="manage-user-form-group">
                 <label>First name :</label>
                 <input
                   type="text"
@@ -374,16 +487,6 @@ const ManageUser = () => {
                 />
               </div>
               <div className="manage-user-form-group">
-                <label>Address :</label>
-                <input
-                  type="text"
-                  value={editUser.address}
-                  onChange={(e) =>
-                    setEditUser({ ...editUser, address: e.target.value })
-                  }
-                />
-              </div>
-              <div className="manage-user-form-group">
                 <label>Role :</label>
                 <select
                   value={editUser.role}
@@ -399,7 +502,10 @@ const ManageUser = () => {
                   <option value="Sub Branch">Sub Branch</option>
                 </select>
               </div>
-              <button type="submit" className="manage-user-confirmManageUser-button">
+              <button
+                type="submit"
+                className="manage-user-confirmManageUser-button"
+              >
                 Confirm
               </button>
             </form>

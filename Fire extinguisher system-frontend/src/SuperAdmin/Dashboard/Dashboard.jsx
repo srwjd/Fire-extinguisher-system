@@ -72,8 +72,8 @@ function Dashboard() {
     <div className="dashboard-users-content">
       {roles.length > 0 ? (
         roles.map((role) => (
-          <div className="dashboard-user-item" key={role.roleName}>
-            <span>{role.roleName || "Unknown Role"}</span>
+          <div className="dashboard-user-item" key={role.role_name}>
+            <span>{role.role_name || "Unknown Role"}</span>
             <span style={{ fontWeight: "bold" }}>{role.count || 0}</span>
           </div>
         ))
