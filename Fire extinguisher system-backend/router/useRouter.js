@@ -8,7 +8,8 @@ import {
   addUser,
   updateUser,
   deleteUser,
-  getAllUnit
+  getAllUnit,
+  addCompany,
 } from "../controller/useController.js";
 
 const router = Router();
@@ -89,11 +90,10 @@ router.post("/addUser", async (req, res) => {
     res.status(201).json({ message: "User added successfully", result });
   } catch (error) {
     console.error("Error adding user:", error.message);
-    res
-      .status(500)
-      .json({ message: "Internal Server Error", error: error.message });
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });
+
 
 // อัปเดตข้อมูลผู้ใช้
 router.put("/updateUser/:id", async (req, res) => {
@@ -133,16 +133,43 @@ router.delete("/deleteUser/:id", async (req, res) => {
 
 // showAllUnit
 router.get("/getAllUnit", async (req, res) => {
-    try {
-        const result = await getAllUnit();
-        if (!result || result.length === 0) {
-            return res.status(404).json({ message: "No units found" });
-        }
-        res.json(result);
-    } catch (error) {
-        console.error("Error fetching units:", error.message);
-        res.status(500).json({ message: "Internal server error" });
+  try {
+    const result = await getAllUnit();
+    if (!result || result.length === 0) {
+      return res.status(404).json({ message: "No units found" });
     }
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching units:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
+
+// Add Company
+router.post("/addCompany", async (req, res) => {
+  try {
+    const { company_name, branch_name } = req.body;
+
+    // ตรวจสอบว่ามีข้อมูลที่จำเป็นครบถ้วน
+    if (!company_name || !branch_name) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // เรียกใช้ฟังก์ชัน addCompany
+    const result = await addCompany({ company_name, branch_name });
+
+    // ถ้ามี branch_name ซ้ำ ให้ตอบกลับข้อความที่เตือนว่า branch_name ซ้ำ
+    if (result.message.includes("already exists")) {
+      return res.status(409).json(result); // 409 Conflict เพื่อบอกว่ามีข้อมูลซ้ำ
+    }
+
+    // ถ้าเพิ่มได้สำเร็จ
+    res.status(201).json(result);
+  } catch (error) {
+    console.error("Error adding company:", error.message);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+});
+
 
 export default router;

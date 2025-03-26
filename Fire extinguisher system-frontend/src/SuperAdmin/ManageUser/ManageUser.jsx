@@ -3,59 +3,6 @@ import axios from "axios";
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
 import "./ManageUser.css";
 
-// const AddUserForm = ({ isOpen, toggleForm, addUser, setUserList }) => {
-//     const [formData, setFormData] = useState({
-//       username: "",
-//       password: "",
-//       email: "",
-//       firstName: "",
-//       surname: "",
-//       role: "",
-//     });
-
-//     const handleSubmit = async (e) => {
-//       e.preventDefault();
-//       if (!formData.role) {
-//           alert("Please select a role before adding.");
-//           return;
-//       }
-
-//       try {
-//           const response = await axios.post("http://localhost:3000/fire/addUser", formData);
-//           alert("User added successfully!");
-//           setUserList(prevUsers => [...prevUsers, formData]); // อัปเดตรายชื่อ user ใน frontend
-//           setFormData({
-//               username: "",
-//               password: "",
-//               email: "",
-//               firstName: "",
-//               surname: "",
-//               role: "",
-//           });
-//       } catch (error) {
-//           console.error("Error adding user:", error);
-//           alert("Failed to add user.");
-//       }
-
-//   const newUser = {
-//       id: Date.now().toString(),
-//       username: formData.username,
-//       email: formData.email,
-//       name: `${formData.firstName} ${formData.surname}`,
-//       role: formData.role,
-//     };
-
-//   addUser(newUser); // ส่งข้อมูลไปยัง ManageUser
-//   setFormData({
-//     username: "",
-//     password: "",
-//     email: "",
-//     firstName: "",
-//     surname: "",
-//     role: "",
-//   });
-// };
-
 const AddUserForm = ({ isOpen, toggleForm, addUser, setUserList }) => {
   const [formData, setFormData] = useState({
     username: "",
@@ -80,21 +27,21 @@ const AddUserForm = ({ isOpen, toggleForm, addUser, setUserList }) => {
       alert("Please select a role before adding.");
       return;
     }
-
+  
     try {
       const response = await axios.post(
-        "http://localhost:3000/fire/addUser",
+        "http://localhost:3000/fire/addUser", // URL สำหรับ API
         formData
       );
       alert("User added successfully!");
-
-      // Add the new user to the list immediately
+  
+      // เพิ่มผู้ใช้ใหม่ใน list
       setUserList((prevUsers) => [
         ...prevUsers,
-        { ...formData, id: Date.now().toString() }, // Adding the new user to the list
+        { ...formData, id: Date.now().toString() },
       ]);
-
-      // Reset the form fields
+  
+      // รีเซ็ทฟอร์ม
       setFormData({
         username: "",
         password: "",
@@ -248,41 +195,6 @@ const ManageUser = () => {
   
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
-  // const handleEdit = (user) => {
-  //   setEditUser({
-  //     id: user.id,
-  //     username: user.username,
-  //     email: user.email,
-  //     firstName: user.name.split(" ")[0] || "",
-  //     surname: user.name.split(" ")[1] || "",
-  //     role: user.role,
-  //   });
-  // };
-
-  // const handleSave = (e) => {
-  //   e.preventDefault();
-  //   if (!editUser.role) {
-  //     alert("Please select a role before saving.");
-  //     return;
-  //   }
-
-  //   setUserList((prevUsers) =>
-  //     prevUsers.map((user) =>
-  //       user.id === editUser.id ? { ...user, ...editUser } : user
-  //     )
-  //   );
-
-  //   setEditUser(null); // ปิดฟอร์มแก้ไข
-  // };
-
-  // const handleDelete = (id) => {
-  //   const confirmDelete = window.confirm("Are you sure you want to delete?");
-  //   if (confirmDelete) {
-  //     const updatedUserList = userList.filter((user) => user.id !== id);
-  //     setUserList(updatedUserList);
-  //   }
-  // };
-
   const handleEdit = (user) => {
     setEditUser({
       id: user.user_id, // Ensure it matches your database ID field
@@ -369,7 +281,7 @@ const ManageUser = () => {
       </div>
       <div className="manage-user-manageUserContainer">
         <div className="manage-user-search-bar">
-          {/* <FaSearch className="manage-user-search-icon" /> */}
+          <FaSearch className="manage-user-search-icon" />
           <input
             type="text"
             placeholder="Search : username, email, name, role"

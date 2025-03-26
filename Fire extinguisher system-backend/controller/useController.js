@@ -67,13 +67,10 @@ export const getAllUser = async () => {
 };
 
 // Add user
-const sql = `INSERT INTO users (username, password, email, firstName, surname, role, created_at) 
-             VALUES (?, ?, ?, ?, ?, ?, NOW())`; // ใช้ NOW() แทนค่า NULL
-
 export const addUser = async (userData) => {
   const { username, password, email, firstName, surname, role } = userData;
-  const sql = `INSERT INTO Users (username, password, email, firstname, surname, role_id) 
-                 VALUES (?, ?, ?, ?, ?, (SELECT role_id FROM Roles WHERE role_name = ?))`;
+  const sql = `INSERT INTO Users (username, password, email, firstname, surname, role_id, create_at) 
+  VALUES (?, ?, ?, ?, ?, (SELECT role_id FROM Roles WHERE role_name = ?), NOW())`;
   const params = [username, password, email, firstName, surname, role];
 
   try {
@@ -119,24 +116,77 @@ export const deleteUser = async (userId) => {
 
 // showAllUnit
 export const getAllUnit = async () => {
-    try {
-      const sql = 
-        `SELECT 
+  try {
+    const sql = `
+        SELECT 
           c.company_id, 
           c.company_name, 
-          b.branch_name
+          b.branch_name,
+          COUNT(f.fire_id) AS quantity  -- Counting the number of fire extinguishers for each branch
         FROM 
           Companys c
         LEFT JOIN 
           Branchs b ON c.company_id = b.company_id
         LEFT JOIN 
           Fires f ON b.branch_id = f.branch_id
+        GROUP BY 
+          c.company_id, b.branch_name
         ORDER BY 
-          c.company_id, b.branch_name`;
+          c.company_id, b.branch_name
+      `;
+    return await query(sql);
+  } catch (error) {
+    console.error("Error executing SQL query:", error.message);
+    throw error;
+  }
+};
 
-      return await query(sql);
-    } catch (error) {
-      console.error("Error executing SQL query:", error.message);
-      throw error;
+// Add company and branch
+export const addCompany = async (userData) => {
+  const { company_name, branch_name } = userData;
+
+  try {
+    // ตรวจสอบว่า company_name มีอยู่ในตาราง Companys แล้วหรือยัง
+    const checkCompanysSql = `SELECT company_id FROM Companys WHERE company_name = ?`;
+    const existingCompanys = await query(checkCompanysSql, [company_name]);
+
+    let company_id;
+
+    if (existingCompanys.length > 0) {
+      // ถ้ามีอยู่แล้วให้ใช้ company_id เดิม
+      company_id = existingCompanys[0].company_id;
+    } else {
+      // ถ้ายังไม่มี ให้เพิ่มบริษัทใหม่และรับ company_id ที่สร้างขึ้น
+      const insertCompanysSql = `INSERT INTO Companys (company_name) VALUES (?)`;
+      const result = await query(insertCompanysSql, [company_name]);
+      company_id = result.insertId; // ดึง company_id ที่เพิ่มใหม่
     }
-  };
+
+    // เช็คว่า branch_name มีอยู่ในตาราง Branchs หรือยัง
+    const checkBranchSql = `SELECT branch_id FROM Branchs WHERE branch_name = ? AND company_id = ?`;
+    const existingBranch = await query(checkBranchSql, [
+      branch_name,
+      company_id,
+    ]);
+
+    if (existingBranch.length > 0) {
+      // ถ้ามี branch_name นี้แล้ว แจ้งเตือน
+      return {
+        message: `Branch name "${branch_name}" already exists for this company.`,
+        company_id,
+      };
+    } else {
+      // ถ้าไม่มี branch_name นี้ ให้เพิ่มเข้าไป
+      const insertBranchSql = `INSERT INTO Branchs (company_id, branch_name) VALUES (?, ?)`;
+      await query(insertBranchSql, [company_id, branch_name]);
+    }
+
+    return {
+      message: "Company and branch added successfully",
+      company_id,
+    };
+  } catch (error) {
+    console.error("Error inserting company or branch:", error.message);
+    throw new Error("Failed to insert company or branch. " + error.message);
+  }
+};

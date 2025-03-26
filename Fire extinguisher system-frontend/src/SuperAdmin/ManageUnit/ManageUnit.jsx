@@ -5,16 +5,15 @@ import "./ManageUnit.css";
 
 const ManageUnit = () => {
   const [units, setUnits] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [editUnit, setEditUnit] = useState(null);
-  const [newUnit, setNewUnit] = useState({
+  const [newCompany, setNewCompany] = useState({
     company_name: "",
-    branch: "",
-    quantity: "",
-    compPhone: "",
-    branchPhone: "",
-    fexSN: "",
+    branch_name: "",
   });
+
+  const unitsPerPage = 5;
 
   useEffect(() => {
     const fetchUnits = async () => {
@@ -27,55 +26,75 @@ const ManageUnit = () => {
         console.error("Error fetching units data :", error);
       }
     };
-    
-    fetchUnits();
-  }, []); // Empty array means this effect runs once when the component mounts
 
-  // ฟังก์ชันเพิ่มข้อมูล
-  const handleAddUnit = () => {
-    if (!newUnit.company_name || !newUnit.branch || !newUnit.quantity || !newUnit.compPhone) {
+    fetchUnits();
+  }, []);
+
+  // Filter units based on the search term
+  const filteredUnits = units.filter((unit) =>
+    `${unit.company_name} ${unit.branch_name}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
+  // Get current units based on the current page
+  const indexOfLastUnit = currentPage * unitsPerPage;
+  const indexOfFirstUnit = indexOfLastUnit - unitsPerPage;
+  const currentUnits = filteredUnits.slice(indexOfFirstUnit, indexOfLastUnit);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredUnits.length / unitsPerPage);
+
+  // Handle previous page
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  // Handle next page
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  // Function to handle adding a company
+  const handleAddCompany = async () => {
+    if (!newCompany.company_name || !newCompany.branch_name) {
       alert("Please fill in all fields.");
       return;
     }
 
-    const newEntry = {
-      id: String(units.length + 1).padStart(5, "0"),
-      ...newUnit,
-    };
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/fire/addCompany",
+        newCompany
+      );
 
-    setUnits([...units, newEntry]);
-    setNewUnit({
-      company_name: "",
-      branch: "",
-      quantity: "",
-      compPhone: "",
-      branchPhone: "",
-      fexSN: "",
-    });
-  };
+      if (response.data) {
+        alert("Company added successfully!");
 
-  // ฟังก์ชันเลือกหน่วยที่ต้องการแก้ไข
-  const handleEdit = (unit) => {
-    setEditUnit({ ...unit });
-  };
+        // Update the units array to reflect the new company
+        setUnits((prevUnits) => [
+          ...prevUnits,
+          {
+            company_name: newCompany.company_name,
+            branch_name: newCompany.branch_name,
+          },
+        ]);
 
-  // ฟังก์ชันอัปเดตค่าที่แก้ไข
-  const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setEditUnit({ ...editUnit, [name]: value });
-  };
-
-  // ฟังก์ชันบันทึกการแก้ไข
-  const handleSaveEdit = () => {
-    if (!editUnit) return;
-    setUnits(units.map((unit) => (unit.id === editUnit.id ? editUnit : unit)));
-    setEditUnit(null);
-  };
-
-  // ฟังก์ชันลบข้อมูล
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this unit?")) {
-      setUnits(units.filter((unit) => unit.id !== id));
+        // Clear the form after adding successfully
+        setNewCompany({
+          company_name: "",
+          branch_name: "",
+        });
+      } else {
+        alert("Error: No valid response from server.");
+      }
+    } catch (error) {
+      console.error("Error adding unit:", error.response ? error.response.data : error.message);
+      alert("Failed to add unit. Please try again.");
     }
   };
 
@@ -91,45 +110,23 @@ const ManageUnit = () => {
             <label>Company Name :</label>
             <input
               type="text"
-              placeholder="เช่น SCB"
-              value={newUnit.company_name}
-              onChange={(e) => setNewUnit({ ...newUnit, company_name: e.target.value })}
+              name="company_name"
+              value={newCompany.company_name}
+              onChange={(e) =>
+                setNewCompany({ ...newCompany, company_name: e.target.value })
+              }
             />
-          </div>
-          <div className="manage-unit-form-group">
-            <label>Branch :</label>
+            <label>Branch Name :</label>
             <input
               type="text"
-              placeholder="เช่น Sripatum U"
-              value={newUnit.branch}
-              onChange={(e) => setNewUnit({ ...newUnit, branch: e.target.value })}
+              name="branch_name"
+              value={newCompany.branch_name}
+              onChange={(e) =>
+                setNewCompany({ ...newCompany, branch_name: e.target.value })
+              }
             />
           </div>
-          <div className="manage-unit-form-group">
-            <label>Quantity :</label>
-            <input
-              type="number"
-              value={newUnit.quantity}
-              onChange={(e) => setNewUnit({ ...newUnit, quantity: e.target.value })}
-            />
-          </div>
-          <div className="manage-unit-form-group">
-            <label>Phone Company :</label>
-            <input
-              type="text"
-              value={newUnit.compPhone}
-              onChange={(e) => setNewUnit({ ...newUnit, compPhone: e.target.value })}
-            />
-          </div>
-          <div className="manage-unit-form-group">
-            <label>Phone Branch :</label>
-            <input
-              type="text"
-              value={newUnit.branchPhone}
-              onChange={(e) => setNewUnit({ ...newUnit, branchPhone: e.target.value })}
-            />
-          </div>
-          <button className="confirm-add-unit-btn" onClick={handleAddUnit}>
+          <button className="confirm-add-unit-btn" onClick={handleAddCompany}>
             Confirm
           </button>
         </div>
@@ -138,7 +135,9 @@ const ManageUnit = () => {
       {/* Manage Unit Section */}
       <div className="manage-unit-container">
         <div className="manage-unit-header">
-          <span style={{ fontSize: "18px", fontWeight: "bold" }}>Manage Unit</span>
+          <span style={{ fontSize: "18px", fontWeight: "bold" }}>
+            Manage Unit
+          </span>
         </div>
         <div className="manage-unit-body">
           {/* Search Bar */}
@@ -157,7 +156,6 @@ const ManageUnit = () => {
             <table>
               <thead>
                 <tr>
-                  <th>ID</th>
                   <th>Company Name</th>
                   <th>Branch</th>
                   <th>Quantity</th>
@@ -166,66 +164,72 @@ const ManageUnit = () => {
                 </tr>
               </thead>
               <tbody>
-                {units
-                  .filter((unit) =>
-                    `${unit.company_name} ${unit.branch}`
-                      .toLowerCase()
-                      .includes(searchTerm.toLowerCase())
-                  )
-                  .map((unit) => (
-                    <tr key={unit.id}>
-                      <td>{unit.company_id}</td>
-                      <td>{unit.company_name}</td>
-                      <td>{unit.branch_name}</td>
-                      <td>{unit.quantity}</td>
-                      <td>
-                        <FaEdit
-                          className="manage-user-edit-icon"
-                          onClick={() => handleEdit(unit)}
-                        />
-                      </td>
-                      <td>
-                        <FaTrash
-                          className="manage-user-delete-icon"
-                          onClick={() => handleDelete(unit.id)}
-                        />
-                      </td>
-                    </tr>
-                  ))}
+                {currentUnits.map((unit) => (
+                  <tr key={unit.unit_id}>
+                    <td>{unit.company_name}</td>
+                    <td>{unit.branch_name}</td>
+                    <td>{unit.quantity}</td>
+                    <td>
+                      <FaEdit
+                        className="manage-user-edit-icon"
+                        onClick={() => handleEdit(unit)}
+                      />
+                    </td>
+                    <td>
+                      <FaTrash
+                        className="manage-user-delete-icon"
+                        onClick={() => handleDelete(unit.unit_id)}
+                      />
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
 
+          {/* Pagination */}
+          <div className="manage-unit-pagination">
+            <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+              &lt;
+            </button>
+            <span>
+              {currentPage} out of {totalPages}
+            </span>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+            >
+              &gt;
+            </button>
+          </div>
           <hr />
 
           {/* Edit Section */}
           {editUnit && (
             <div className="unit-details">
-              <h3 className="edit-unit-title">Edit Unit ID : {editUnit.id}</h3>
+              <h3 className="edit-unit-title">
+                Edit Unit ID : {editUnit.unit_id}
+              </h3>
               <div className="manage-unit-form-group">
-                <label>Phone Company :</label>
+                <label>Company Name :</label>
                 <input
                   type="text"
-                  name="compPhone"
-                  value={editUnit.compPhone}
+                  name="company_name"
+                  value={editUnit?.company_name}
                   onChange={handleEditChange}
                 />
-              </div>
-              <div className="manage-unit-form-group">
-                <label>Phone Branch :</label>
+                <label>Branch Name :</label>
                 <input
                   type="text"
-                  name="branchPhone"
-                  value={editUnit.branchPhone}
+                  name="branch_name"
+                  value={editUnit?.branch_name}
                   onChange={handleEditChange}
                 />
-              </div>
-              <div className="manage-unit-form-group">
                 <label>Quantity :</label>
                 <input
                   type="number"
                   name="quantity"
-                  value={editUnit.quantity}
+                  value={editUnit?.quantity || ""}
                   onChange={handleEditChange}
                 />
               </div>
@@ -238,7 +242,10 @@ const ManageUnit = () => {
                   onChange={handleEditChange}
                 />
               </div>
-              <button className="confirm-manage-unit-btn" onClick={handleSaveEdit}>
+              <button
+                className="confirm-manage-unit-btn"
+                onClick={handleSaveEdit}
+              >
                 Confirm
               </button>
             </div>
