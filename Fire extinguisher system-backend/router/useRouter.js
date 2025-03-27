@@ -10,6 +10,7 @@ import {
   deleteUser,
   getAllUnit,
   addCompany,
+  editCompany,
 } from "../controller/useController.js";
 
 const router = Router();
@@ -67,7 +68,7 @@ router.get("/countUnit", async (req, res) => {
   }
 });
 
-// Manage Unit
+// Manage User
 router.get("/showAllUser", async (req, res) => {
   try {
     const result = await getAllUser();
@@ -90,10 +91,11 @@ router.post("/addUser", async (req, res) => {
     res.status(201).json({ message: "User added successfully", result });
   } catch (error) {
     console.error("Error adding user:", error.message);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 });
-
 
 // อัปเดตข้อมูลผู้ใช้
 router.put("/updateUser/:id", async (req, res) => {
@@ -135,13 +137,13 @@ router.delete("/deleteUser/:id", async (req, res) => {
 router.get("/getAllUnit", async (req, res) => {
   try {
     const result = await getAllUnit();
-    if (!result || result.length === 0) {
+    if (result.length === 0) {
       return res.status(404).json({ message: "No units found" });
     }
     res.json(result);
   } catch (error) {
-    console.error("Error fetching units:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
 
@@ -167,6 +169,40 @@ router.post("/addCompany", async (req, res) => {
     res.status(201).json(result);
   } catch (error) {
     console.error("Error adding company:", error.message);
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+});
+
+// Edit company and branch
+router.put("/editCompany/:company_id/:branch_id", async (req, res) => {
+  const { company_id, branch_id } = req.params;
+  const { branch_name, ...extraFields } = req.body;
+
+  if (!branch_name) {
+    return res.status(400).json({ error: "Branch name must be provided." });
+  }
+
+  console.log("Received parameters:", { company_id, branch_id, branch_name });
+
+  const allowedFields = ['branch_name'];
+  const invalidFields = Object.keys(extraFields).filter(field => !allowedFields.includes(field));
+
+  if (invalidFields.length > 0) {
+    return res.status(400).json({ error: `Invalid fields: ${invalidFields.join(', ')}` });
+  }
+
+  try {
+    const result = await editCompany(company_id, branch_id, { branch_name });
+
+    if (result) {
+      return res.status(200).json(result);
+    }
+
+    res.status(500).json({ message: "Failed to update branch." });
+  } catch (error) {
+    console.error("Error updating branch:", error.message);
     res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });

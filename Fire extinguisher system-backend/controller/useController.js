@@ -118,21 +118,15 @@ export const deleteUser = async (userId) => {
 export const getAllUnit = async () => {
   try {
     const sql = `
-        SELECT 
-          c.company_id, 
-          c.company_name, 
-          b.branch_name,
-          COUNT(f.fire_id) AS quantity  -- Counting the number of fire extinguishers for each branch
-        FROM 
-          Companys c
-        LEFT JOIN 
-          Branchs b ON c.company_id = b.company_id
-        LEFT JOIN 
-          Fires f ON b.branch_id = f.branch_id
-        GROUP BY 
-          c.company_id, b.branch_name
-        ORDER BY 
-          c.company_id, b.branch_name
+      SELECT Companys.company_id, 
+      Companys.company_name, 
+      Branchs.branch_id,
+      Branchs.branch_name,
+      COUNT(Fires.fire_id) AS fire_count
+      FROM Companys
+      LEFT JOIN Branchs ON Companys.company_id = Branchs.company_id
+      LEFT JOIN Fires ON Companys.company_id = Fires.company_id
+      GROUP BY Companys.company_id, Branchs.branch_id
       `;
     return await query(sql);
   } catch (error) {
@@ -142,27 +136,29 @@ export const getAllUnit = async () => {
 };
 
 // Add company and branch
+import { v4 as uuidv4 } from "uuid"; // For generating unique serial_number
+
 export const addCompany = async (userData) => {
   const { company_name, branch_name } = userData;
 
   try {
-    // ตรวจสอบว่า company_name มีอยู่ในตาราง Companys แล้วหรือยัง
+    // Step 1: Check if the company already exists
     const checkCompanysSql = `SELECT company_id FROM Companys WHERE company_name = ?`;
     const existingCompanys = await query(checkCompanysSql, [company_name]);
 
     let company_id;
 
     if (existingCompanys.length > 0) {
-      // ถ้ามีอยู่แล้วให้ใช้ company_id เดิม
+      // If company exists, use the existing company_id
       company_id = existingCompanys[0].company_id;
     } else {
-      // ถ้ายังไม่มี ให้เพิ่มบริษัทใหม่และรับ company_id ที่สร้างขึ้น
+      // If company doesn't exist, insert a new company and get its company_id
       const insertCompanysSql = `INSERT INTO Companys (company_name) VALUES (?)`;
       const result = await query(insertCompanysSql, [company_name]);
-      company_id = result.insertId; // ดึง company_id ที่เพิ่มใหม่
+      company_id = result.insertId; // Get the newly created company_id
     }
 
-    // เช็คว่า branch_name มีอยู่ในตาราง Branchs หรือยัง
+    // Step 2: Check if the branch already exists
     const checkBranchSql = `SELECT branch_id FROM Branchs WHERE branch_name = ? AND company_id = ?`;
     const existingBranch = await query(checkBranchSql, [
       branch_name,
@@ -170,23 +166,95 @@ export const addCompany = async (userData) => {
     ]);
 
     if (existingBranch.length > 0) {
-      // ถ้ามี branch_name นี้แล้ว แจ้งเตือน
+      // If the branch already exists, return a message
       return {
         message: `Branch name "${branch_name}" already exists for this company.`,
         company_id,
       };
     } else {
-      // ถ้าไม่มี branch_name นี้ ให้เพิ่มเข้าไป
+      // If the branch doesn't exist, insert the new branch
       const insertBranchSql = `INSERT INTO Branchs (company_id, branch_name) VALUES (?, ?)`;
-      await query(insertBranchSql, [company_id, branch_name]);
-    }
+      const branchResult = await query(insertBranchSql, [
+        company_id,
+        branch_name,
+      ]);
+      const branch_id = branchResult.insertId; // Get the newly created branch_id
 
-    return {
-      message: "Company and branch added successfully",
-      company_id,
-    };
+      // Step 3: Insert 5 fire extinguishers with auto-generated serial numbers
+      const fireInsertPromises = [];
+      const insertDate = new Date().toISOString().split("T")[0]; // วันที่ปัจจุบัน (YYYY-MM-DD)
+
+      // คำนวณวันหมดอายุ (fire_exp) = fire_mfd + 10 ปี
+      const expireDate = new Date();
+      expireDate.setFullYear(expireDate.getFullYear() + 10);
+      const fire_exp = expireDate.toISOString().split("T")[0]; // แปลงเป็น YYYY-MM-DD
+
+      // คำนวณ latest_check = fire_mfd และ next_check = latest_check + 3 เดือน
+      const latestCheck = insertDate;
+      const nextCheckDate = new Date();
+      nextCheckDate.setMonth(nextCheckDate.getMonth() + 3);
+      const nextCheck = nextCheckDate.toISOString().split("T")[0];
+
+      for (let i = 0; i < 5; i++) {
+        const serial_number = uuidv4();
+        const insertFireSql = `
+          INSERT INTO Fires (serial_number, fire_mfd, fire_exp, latest_check, next_check, company_id, branch_id) 
+          VALUES (?, ?, ?, ?, ?, ?, ?)`;
+        fireInsertPromises.push(
+          query(insertFireSql, [
+            serial_number,
+            insertDate,
+            fire_exp,
+            latestCheck,
+            nextCheck,
+            company_id,
+            branch_id,
+          ])
+        );
+      }
+
+      await Promise.all(fireInsertPromises);
+
+      return {
+        message:
+          "Company and branch added successfully, along with 5 fire extinguishers.",
+        company_id,
+        branch_id,
+        fire_count: 5, // Return the number of fire extinguishers added
+      };
+    }
   } catch (error) {
     console.error("Error inserting company or branch:", error.message);
     throw new Error("Failed to insert company or branch. " + error.message);
+  }
+};
+
+// Edit company and branch
+export const editCompany = async (company_id, branch_id, newCompanyData) => {
+  const { branch_name } = newCompanyData;
+
+  if (!branch_name) {
+    throw new Error("Branch name must be provided.");
+  }
+
+  console.log("Parameters received:", { company_id, branch_id, branch_name });
+
+  try {
+    const updateBranchSql = `UPDATE Branchs SET branch_name = ? WHERE company_id = ? AND branch_id = ?`;
+    const result = await query(updateBranchSql, [branch_name, company_id, branch_id]);
+
+    if (result.affectedRows === 0) {
+      throw new Error("No rows affected. Possibly, the branch doesn't exist.");
+    }
+
+    return {
+      message: "Branch name updated successfully",
+      company_id,
+      branch_id,
+      new_branch_name: branch_name,
+    };
+  } catch (error) {
+    console.error("Error updating branch:", error.message);
+    throw new Error("Failed to update branch. " + error.message);
   }
 };

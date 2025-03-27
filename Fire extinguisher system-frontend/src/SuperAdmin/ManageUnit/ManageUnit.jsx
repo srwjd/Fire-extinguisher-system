@@ -93,9 +93,68 @@ const ManageUnit = () => {
         alert("Error: No valid response from server.");
       }
     } catch (error) {
-      console.error("Error adding unit:", error.response ? error.response.data : error.message);
+      console.error(
+        "Error adding unit:",
+        error.response ? error.response.data : error.message
+      );
       alert("Failed to add unit. Please try again.");
     }
+  };
+
+const handleSaveEdit = async () => {
+  if (!editUnit.branch_name) {
+    alert("Please fill in all fields.");
+    return;
+  }
+
+  try {
+    // ส่งข้อมูลไปยัง backend เพื่อแก้ไขข้อมูลในฐานข้อมูล
+    const response = await axios.put(
+      `http://localhost:3000/fire/editCompany/${editUnit.company_id}/${editUnit.branch_id}`,
+      {
+        branch_name: editUnit.branch_name, // ส่งเฉพาะข้อมูลที่แก้ไข
+      }
+    );
+
+    if (response.data) {
+      alert("Company and branch updated successfully!");
+
+      // อัปเดตข้อมูลใน UI หลังจากที่ทำการแก้ไขสำเร็จ
+      setUnits((prevUnits) =>
+        prevUnits.map((unit) =>
+          unit.company_id === editUnit.company_id && unit.branch_id === editUnit.branch_id
+            ? {
+                ...unit,
+                branch_name: editUnit.branch_name, // อัปเดตชื่อ branch ที่ถูกแก้ไข
+              }
+            : unit
+        )
+      );
+
+      setEditUnit(null); // รีเซ็ตสถานะการแก้ไข
+    } else {
+      alert("Error: No valid response from server.");
+    }
+  } catch (error) {
+    console.error("Error updating company:", error.response?.data || error.message);
+    alert("Failed to update company. Please try again.");
+  }
+};
+
+  const handleEdit = (unit) => {
+    if (!unit.branch_id) {
+      console.warn("branch_id is missing, generating fake id");
+      unit.branch_id = unit.branch_name ? unit.branch_name.length : 0; // ใช้วิธีสร้าง branch_id ชั่วคราว
+    }
+    console.log("Edit Unit:", unit);
+    setEditUnit({ ...unit });
+  };
+
+  const handleEditChange = (e) => {
+    setEditUnit({
+      ...editUnit,
+      [e.target.name]: e.target.value,
+    });
   };
 
   return (
@@ -168,7 +227,7 @@ const ManageUnit = () => {
                   <tr key={unit.unit_id}>
                     <td>{unit.company_name}</td>
                     <td>{unit.branch_name}</td>
-                    <td>{unit.quantity}</td>
+                    <td>{unit.fire_count}</td>
                     <td>
                       <FaEdit
                         className="manage-user-edit-icon"
@@ -189,56 +248,42 @@ const ManageUnit = () => {
 
           {/* Pagination */}
           <div className="manage-unit-pagination">
-            <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+            <button
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1 || totalPages === 0}
+            >
               &lt;
             </button>
             <span>
-              {currentPage} out of {totalPages}
+              {currentPage} out of {totalPages > 0 ? totalPages : 1}
             </span>
             <button
               onClick={handleNextPage}
-              disabled={currentPage === totalPages}
+              disabled={currentPage === totalPages || totalPages === 0}
             >
               &gt;
             </button>
           </div>
+
           <hr />
 
           {/* Edit Section */}
           {editUnit && (
             <div className="unit-details">
-              <h3 className="edit-unit-title">
-                Edit Unit ID : {editUnit.unit_id}
-              </h3>
+              {/* <h3 className="edit-unit-title">Edit Unit ID : {editUnit.unit_id}</h3> */}
               <div className="manage-unit-form-group">
                 <label>Company Name :</label>
                 <input
                   type="text"
                   name="company_name"
                   value={editUnit?.company_name}
-                  onChange={handleEditChange}
+                  disabled // ปิดการแก้ไข
                 />
                 <label>Branch Name :</label>
                 <input
                   type="text"
                   name="branch_name"
                   value={editUnit?.branch_name}
-                  onChange={handleEditChange}
-                />
-                <label>Quantity :</label>
-                <input
-                  type="number"
-                  name="quantity"
-                  value={editUnit?.quantity || ""}
-                  onChange={handleEditChange}
-                />
-              </div>
-              <div className="manage-unit-form-group">
-                <label>Fex S/N :</label>
-                <input
-                  type="text"
-                  name="fexSN"
-                  value={editUnit.fexSN}
                   onChange={handleEditChange}
                 />
               </div>
