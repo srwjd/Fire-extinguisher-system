@@ -101,45 +101,49 @@ const ManageUnit = () => {
     }
   };
 
-const handleSaveEdit = async () => {
-  if (!editUnit.branch_name) {
-    alert("Please fill in all fields.");
-    return;
-  }
+  const handleSaveEdit = async () => {
+    if (!editUnit.branch_name) {
+      alert("Please fill in all fields.");
+      return;
+    }
 
-  try {
-    // ส่งข้อมูลไปยัง backend เพื่อแก้ไขข้อมูลในฐานข้อมูล
-    const response = await axios.put(
-      `http://localhost:3000/fire/editCompany/${editUnit.company_id}/${editUnit.branch_id}`,
-      {
-        branch_name: editUnit.branch_name, // ส่งเฉพาะข้อมูลที่แก้ไข
-      }
-    );
-
-    if (response.data) {
-      alert("Company and branch updated successfully!");
-
-      // อัปเดตข้อมูลใน UI หลังจากที่ทำการแก้ไขสำเร็จ
-      setUnits((prevUnits) =>
-        prevUnits.map((unit) =>
-          unit.company_id === editUnit.company_id && unit.branch_id === editUnit.branch_id
-            ? {
-                ...unit,
-                branch_name: editUnit.branch_name, // อัปเดตชื่อ branch ที่ถูกแก้ไข
-              }
-            : unit
-        )
+    try {
+      // ส่งข้อมูลไปยัง backend เพื่อแก้ไขข้อมูลในฐานข้อมูล
+      const response = await axios.put(
+        `http://localhost:3000/fire/editCompany/${editUnit.company_id}/${editUnit.branch_id}`,
+        {
+          branch_name: editUnit.branch_name, // ส่งเฉพาะข้อมูลที่แก้ไข
+        }
       );
 
-      setEditUnit(null); // รีเซ็ตสถานะการแก้ไข
-    } else {
-      alert("Error: No valid response from server.");
+      if (response.data) {
+        alert("Company and branch updated successfully!");
+
+        // อัปเดตข้อมูลใน UI หลังจากที่ทำการแก้ไขสำเร็จ
+        setUnits((prevUnits) =>
+          prevUnits.map((unit) =>
+            unit.company_id === editUnit.company_id &&
+            unit.branch_id === editUnit.branch_id
+              ? {
+                  ...unit,
+                  branch_name: editUnit.branch_name, // อัปเดตชื่อ branch ที่ถูกแก้ไข
+                }
+              : unit
+          )
+        );
+
+        setEditUnit(null); // รีเซ็ตสถานะการแก้ไข
+      } else {
+        alert("Error: No valid response from server.");
+      }
+    } catch (error) {
+      console.error(
+        "Error updating company:",
+        error.response?.data || error.message
+      );
+      alert("Failed to update company. Please try again.");
     }
-  } catch (error) {
-    console.error("Error updating company:", error.response?.data || error.message);
-    alert("Failed to update company. Please try again.");
-  }
-};
+  };
 
   const handleEdit = (unit) => {
     if (!unit.branch_id) {
@@ -237,7 +241,7 @@ const handleSaveEdit = async () => {
                     <td>
                       <FaTrash
                         className="manage-user-delete-icon"
-                        onClick={() => handleDelete(unit.unit_id)}
+                        onClick={() => handleDeleteBranch(unit.branch_id)}
                       />
                     </td>
                   </tr>

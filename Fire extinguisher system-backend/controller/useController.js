@@ -258,3 +258,4 @@ export const editCompany = async (company_id, branch_id, newCompanyData) => {
     throw new Error("Failed to update branch. " + error.message);
   }
 };
+
