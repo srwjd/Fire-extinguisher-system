@@ -212,6 +212,8 @@ const ManageUnit = () => {
                 setNewCompany({ ...newCompany, company_name: e.target.value })
               }
             />
+          </div>
+          <div className="manage-unit-form-group">
             <label>Branch Name :</label>
             <input
               type="text"
@@ -317,6 +319,8 @@ const ManageUnit = () => {
                   value={editUnit?.company_name}
                   disabled // ปิดการแก้ไข
                 />
+              </div>
+              <div className="manage-unit-form-group">
                 <label>Branch Name :</label>
                 <input
                   type="text"
