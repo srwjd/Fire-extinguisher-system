@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -13,7 +12,7 @@ import './Home.css';
 
 const StyledTableContainer = styled(TableContainer)``;
 const StyledTableHead = styled(TableHead)``;
-const StyledTableCell = styled(TableCell)``;
+// const StyledTableCell = styled(TableCell)``;
 
 function createData(bank, fireExtinguishers, location) {
   return { bank, fireExtinguishers, location };

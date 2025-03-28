@@ -18,7 +18,7 @@ export const query = async (sql, params) => {
 // ดึงข้อมูลผู้ใช้ตาม username
 export const getUserByUsername = async (username) => {
     const sql = `SELECT * 
-    FROM Users RIGHT JOIN Roles ON Users.roleID = Roles.roleID
+    FROM Users RIGHT JOIN Roles ON Users.role_id = Roles.role_id
     WHERE username = ?`;
     const params = [username];
     return await query(sql, params);

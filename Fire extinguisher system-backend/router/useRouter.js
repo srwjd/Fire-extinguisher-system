@@ -10,34 +10,25 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret"; // ใช้ ENV เพ�
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
     try {
-        const result = await getUserByUsername(username);
+        const result = await getUserByUsername(username)
         if (result.length === 0) {
-            return res.status(400).json({ message: "User not found" });
+            return res.status(400).json({ message: 'not found' });
         }
-
-        const user = result[0];
-        const match = await bcrypt.compare(password, user.password); // ใช้ bcrypt เปรียบเทียบรหัสผ่าน
+        // const match = await bcrypt.compare(password, result[0].password);
+        const match = password === result[0].password
         if (!match) {
-            return res.status(400).json({ message: "Incorrect password" });
+            return res.status(400).json({ message: 'not found' })
         }
-
-        const token = jwt.sign({ id: user.id, role: user.roleName }, JWT_SECRET, { expiresIn: "1h" });
-
-        return res.status(200).json({
-            message: "Login success",
-            token,
-            user: {
-                id: user.id,
-                username: user.username,
-                role: user.roleName
-            }
-        });
-
+        // const token = await jwt.sign({ id: result[0].id }, jwt_secret, { expiresIn: '1h' });
+        const token = jwt.sign({ id: result[0].id }, 'secret', { expiresIn: '1h' });
+        const role = result[0].role_name
+        const userID = result[0].user_id
+        return res.status(200).json({ message: 'OK success', token, role, userID });
     } catch (error) {
-        console.error("Login Error:", error);
-        return res.status(500).json({ message: "Server error" });
+        res.status(500).json({ message: 'error' });
     }
-});
+    res.status(200).json({ token: 'token' });
+})
 
 // 📌 API ดึงข้อมูลสาขาทั้งหมด
 router.get('/branches', async (req, res) => {

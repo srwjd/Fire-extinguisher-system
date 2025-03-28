@@ -18,9 +18,11 @@ function Login() {
 
             const token = res.data.token;
             const role = res.data.role;
+            const userID = res.data.userID;
 
             localStorage.setItem('role', role);
             localStorage.setItem('token', token);
+            localStorage.setItem('userID', userID);
 
             alert("Login successful!");
             window.location.reload();  // รีเฟรชหน้า
