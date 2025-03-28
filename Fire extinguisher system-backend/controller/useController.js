@@ -259,5 +259,30 @@ export const editCompany = async (company_id, branch_id, newCompanyData) => {
   }
 };
 
-// Delete company and branch
+// Delete Branch And Extinguishers
+// ลบ Branch และ Fire extinguishers ที่เกี่ยวข้อง
+export const deleteBranchAndFires = async (branch_id) => {
+  try {
+    // Step 1: Delete fires associated with the branch
+    const deleteFiresSql = `DELETE FROM Fires WHERE branch_id = ?`;
+    await query(deleteFiresSql, [branch_id]);
+
+    // Step 2: Delete the branch itself
+    const deleteBranchSql = `DELETE FROM Branchs WHERE branch_id = ?`;
+    const result = await query(deleteBranchSql, [branch_id]);
+
+    if (result.affectedRows === 0) {
+      throw new Error("No branch found with the given ID.");
+    }
+
+    return {
+      message: "Branch and associated fire extinguishers deleted successfully.",
+      branch_id,
+    };
+  } catch (error) {
+    console.error("Error deleting branch and fire extinguishers:", error.message);
+    throw new Error("Failed to delete branch and extinguishers. " + error.message);
+  }
+};
+
 

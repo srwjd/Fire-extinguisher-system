@@ -11,6 +11,7 @@ import {
   getAllUnit,
   addCompany,
   editCompany,
+  deleteBranchAndFires,
 } from "../controller/useController.js";
 
 const router = Router();
@@ -207,7 +208,16 @@ router.put("/editCompany/:company_id/:branch_id", async (req, res) => {
   }
 });
 
-// deleteBranch
-
+// Delete Branch And Extinguishers
+router.delete("/deleteBranchAndFires/:branch_id", async (req, res) => {
+  const branchId = req.params.branch_id; // รับค่า branch_id จาก URL
+  try {
+    const result = await deleteBranchAndFires(branchId); // เรียกใช้ฟังก์ชัน deleteBranchAndFires
+    res.status(200).json(result); // ส่งผลลัพธ์การลบกลับ
+  } catch (error) {
+    console.error("Error deleting branch and fire extinguishers:", error.message);
+    res.status(500).json({ message: "Failed to delete branch and extinguishers", error: error.message });
+  }
+});
 
 export default router;

@@ -166,6 +166,34 @@ const ManageUnit = () => {
     });
   };
 
+  const handleDelete = async (unitId) => {
+    // ถามผู้ใช้ก่อนลบข้อมูล
+    if (!window.confirm("Are you sure you want to delete this unit?")) return;
+
+    try {
+      // ใช้ `branch_id` แทน `unit_id` ในการลบ
+      const response = await axios.delete(
+        `http://localhost:3000/fire/deleteBranchAndFires/${unitId}`
+      );
+
+      if (response.data) {
+        alert("Unit deleted successfully.");
+        // ลบหน่วยงานที่มี `branch_id` ตรงกับ `unitId`
+        setUnits((prevUnits) =>
+          prevUnits.filter((unit) => unit.branch_id !== unitId)
+        );
+      } else {
+        alert("Error: No valid response from server.");
+      }
+    } catch (error) {
+      console.error(
+        "Error deleting unit:",
+        error.response?.data || error.message
+      );
+      alert("Failed to delete unit. Please try again.");
+    }
+  };
+
   return (
     <div className="manage-unit-container">
       {/* Add Unit Section */}
@@ -247,7 +275,7 @@ const ManageUnit = () => {
                     <td>
                       <FaTrash
                         className="manage-user-delete-icon"
-                        onClick={() => handleDelete(unit.unit_id)}
+                        onClick={() => handleDelete(unit.branch_id)} // ส่ง `branch_id` แทน `unit_id`
                       />
                     </td>
                   </tr>
