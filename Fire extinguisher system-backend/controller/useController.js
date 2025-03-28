@@ -145,7 +145,7 @@ export const getAllUnit = async () => {
       COUNT(Fires.fire_id) AS fire_count
       FROM Companys
       LEFT JOIN Branchs ON Companys.company_id = Branchs.company_id
-      LEFT JOIN Fires ON Companys.company_id = Fires.company_id
+      LEFT JOIN Fires ON Branchs.branch_id = Fires.branch_id
       GROUP BY Companys.company_id, Branchs.branch_id
       `;
     return await query(sql);
