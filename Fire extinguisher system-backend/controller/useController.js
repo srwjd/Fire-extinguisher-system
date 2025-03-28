@@ -52,6 +52,26 @@ export const getAllCompaniesWithBranches = async () => {
   }
 };
 
+// ดึงจำนวนถังดับเพลิงและสถานะมาโชว์
+export const getFireExtinguishersByMonth = async () => {
+  const sql = `
+    SELECT 
+      DATE_FORMAT(fire_mfd, '%Y-%m') AS month, 
+      status,
+      COUNT(*) AS count
+    FROM Fires
+    GROUP BY month, status
+    ORDER BY month DESC;
+  `;
+  
+  try {
+    return await query(sql);
+  } catch (error) {
+    console.error("Error fetching fire extinguishers data:", error.message);
+    throw error;
+  }
+};
+
 // Manage User
 export const getAllUser = async () => {
   try {
@@ -259,7 +279,6 @@ export const editCompany = async (company_id, branch_id, newCompanyData) => {
   }
 };
 
-// Delete Branch And Extinguishers
 // ลบ Branch และ Fire extinguishers ที่เกี่ยวข้อง
 export const deleteBranchAndFires = async (branch_id) => {
   try {
