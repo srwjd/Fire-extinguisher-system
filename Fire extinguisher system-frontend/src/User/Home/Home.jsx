@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+// Home.js
 import './Home.css';
 import Bar from '../Layouts/Bar/Bar';
 import { Link } from 'react-router-dom';
@@ -8,6 +10,8 @@ import { IoIosArrowDropright, IoIosArrowDropleft } from "react-icons/io";
 
 function Home() {
     const [fireList, setFireList] = useState([]);
+    const [fireIdList, setFireIdList] = useState([]);
+    const [descriptionList, setDescriptionList] = useState([]); // เก็บ description แยก
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [error, setError] = useState(null);
@@ -15,22 +19,49 @@ function Home() {
     const userID = localStorage.getItem('userID');
 
     useEffect(() => {
-        fetchFireList();
+        fetchFireIdList();
     }, []);
 
-    const fetchFireList = async () => {
+    useEffect(() => {
+        if (fireIdList.length > 0) {
+            fetchFireList();
+        }
+    }, [fireIdList]); // ทำงานเมื่อ fireIdList เปลี่ยนแปลง
+
+    const fetchFireIdList = async () => {
         try {
             const response = await axios.get(`http://localhost:3000/fire/getreports/${userID}`);
-            setFireList(response.data.result);
+            const idList = response.data.result.map((fire) => fire.fire_id);
+            const descriptions = response.data.result.map((fire) => fire.description);
+            setFireIdList(idList); // เก็บ fire_id
+            setDescriptionList(descriptions); // เก็บ description แยก
         } catch (error) {
             setError(error.message);
         }
     };
 
-    // กรองรายการตาม searchTerm
-    // กรองรายการตาม searchTerm
+    const fetchFireList = async () => {
+        try {
+            const fireIds = fireIdList.join(',');
+            const response = await axios.get(`http://localhost:3000/fire/getfire/${fireIds}`);
+
+            // กรองเฉพาะ fire ที่มี status เป็น "report"
+            const filteredFires = response.data.result.filter(fire => fire.status === "report");
+
+            // เพิ่ม description ให้กับ fireList โดยการจับคู่ fire_id
+            const fireListWithDescriptions = filteredFires.map(fire => {
+                const description = descriptionList[fireIdList.indexOf(fire.fire_id)] || '';
+                return { ...fire, description };
+            });
+
+            setFireList(fireListWithDescriptions);
+        } catch (error) {
+            setError(error.message);
+        }
+    };
+
+
     const filteredList = fireList.filter((fire) => {
-        // ตรวจสอบว่าแต่ละฟิลด์มีค่าหรือไม่ก่อนที่จะใช้ .toLowerCase()
         const serialNumber = fire.serial_number ? fire.serial_number.toLowerCase() : '';
         const company = fire.company ? fire.company.toLowerCase() : '';
         const branch = fire.branch ? fire.branch.toLowerCase() : '';
@@ -43,7 +74,6 @@ function Home() {
             description.includes(searchTerm.toLowerCase())
         );
     });
-
 
     const totalPages = Math.ceil(filteredList.length / itemsPerPage);
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -58,7 +88,7 @@ function Home() {
         if (currentPage > 1) setCurrentPage((prev) => prev - 1);
     };
 
-    if (error) return <p>❌ {error}</p>;
+    if (error) return <p>{error}</p>;
 
     return (
         <div className='homeContainer'>
@@ -73,14 +103,10 @@ function Home() {
                             value={searchTerm}
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
-                                setCurrentPage(1); // รีเซ็ตหน้าเมื่อมีการค้นหาใหม่
+                                setCurrentPage(1);
                             }}
                         />
-                        {searchTerm && (
-                            <button onClick={() => setSearchTerm('')} className="clear-search">
-                                ล้าง
-                            </button>
-                        )}
+
                     </div>
                 </div>
 
@@ -88,12 +114,13 @@ function Home() {
                     {currentItems.length > 0 ? (
                         currentItems.map((fire) => (
                             <Link
-                                to={`/fire-details/${fire.serial_number}`}
-                                key={Math.random()}
+                                to={`/fire-details/${fire.fire_id}`}
+                                key={fire.fire_id}
                                 className="fire-card-link"
                             >
                                 <div className='card'>
-                                    <span>S/N : {fire.fire_id || 'ไม่พบข้อมูล'}</span>
+                                    <span>S/N : {fire.serial_number || 'ไม่พบข้อมูล'}</span>
+                                    <span>สถานที่ : {fire.company_name || 'ไม่พบข้อมูล'}, {fire.branch_name || 'ไม่พบข้อมูล'}</span>
                                     <span>หมายเหตุ : {fire.description || 'ไม่พบข้อมูล'}</span>
                                 </div>
                             </Link>

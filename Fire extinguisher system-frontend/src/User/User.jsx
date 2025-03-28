@@ -7,20 +7,20 @@ import 'react-device-frameset/styles/marvel-devices.min.css'
 
 import Home from "./Home/Home";
 import Profile from './Profile/Profile';
-import Fire_details from './Fire_details/Fire_details';
+import FireDetails from './Fire_details/Fire_details';
 
 function User() {
     return (
         <div className='userContainer'>
             <DeviceFrameset device="iPhone X">
-                <Router className='frame'>
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/home" element={<Home />} />
-                        <Route path='/profile' element={<Profile />} />
-                        <Route path="/fire-details/:serialNumber" element={<Fire_details />} />
-                    </Routes>
-                </Router>
+                    <Router className='frame'>
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/home" element={<Home />} />
+                            <Route path='/profile' element={<Profile />} />
+                            <Route path="/fire-details/:fire_id" element={<FireDetails />} />
+                        </Routes>
+                    </Router>
             </DeviceFrameset>
         </div>
     );
