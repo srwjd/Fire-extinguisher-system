@@ -73,18 +73,23 @@ const ManageUnit = () => {
       );
 
       if (response.data) {
-        alert("Company added successfully!");
+        const { company_id, branch_id, fire_count } = response.data;
 
-        // Update the units array to reflect the new company
+        alert("Company and branch added successfully!");
+
+        // Update the units array with new branch and fire count
         setUnits((prevUnits) => [
           ...prevUnits,
           {
+            company_id,
+            branch_id,
             company_name: newCompany.company_name,
             branch_name: newCompany.branch_name,
+            fire_count, // Add this field to track fire extinguisher count per branch
           },
         ]);
 
-        // Clear the form after adding successfully
+        // Clear form
         setNewCompany({
           company_name: "",
           branch_name: "",
@@ -227,11 +232,12 @@ const ManageUnit = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentUnits.map((unit) => (
-                  <tr key={unit.unit_id}>
+                {currentUnits.map((unit, index) => (
+                  <tr key={index}>
                     <td>{unit.company_name}</td>
                     <td>{unit.branch_name}</td>
-                    <td>{unit.fire_count}</td>
+                    <td>{unit.fire_count || 0}</td>{" "}
+                    {/* แสดงเฉพาะ fire_count ของ branch */}
                     <td>
                       <FaEdit
                         className="manage-user-edit-icon"
@@ -241,7 +247,7 @@ const ManageUnit = () => {
                     <td>
                       <FaTrash
                         className="manage-user-delete-icon"
-                        onClick={() => handleDeleteBranch(unit.branch_id)}
+                        onClick={() => handleDelete(unit.unit_id)}
                       />
                     </td>
                   </tr>

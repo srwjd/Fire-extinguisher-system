@@ -259,3 +259,5 @@ export const editCompany = async (company_id, branch_id, newCompanyData) => {
   }
 };
 
+// Delete company and branch
+

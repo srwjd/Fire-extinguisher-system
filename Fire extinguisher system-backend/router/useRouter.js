@@ -207,6 +207,7 @@ router.put("/editCompany/:company_id/:branch_id", async (req, res) => {
   }
 });
 
+// deleteBranch
 
 
 export default router;
