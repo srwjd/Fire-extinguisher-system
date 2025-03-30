@@ -17,7 +17,7 @@ export const query = async (sql, params) => {
 export const getUserByUsername = async (username) => {
     const sql = `SELECT Users.*, Roles.role_name, Users.company_id
         FROM Users 
-        RIGHT JOIN Roles ON Users.role_id = Roles.role_id
+        LEFT JOIN Roles ON Users.role_id = Roles.role_id
         WHERE Users.username = ?`;
     const params = [username];
     return await query(sql, params);
@@ -88,17 +88,25 @@ export const getFiresByCompanyId = async (company_id) => {
 //เพิ่มข้อมูลใน Report
 export const addReport = async (report) => {
     try {
-        const sql = `
+        // 🔹 เพิ่ม Report ลงในตาราง Reports
+        const sqlInsert = `
             INSERT INTO Reports (filename, description, date, time, fire_id, user_id) 
             VALUES (?, ?, ?, ?, ?, ?)
-        `;  
-        const params = [report.filename, report.description, report.date, report.time, report.fire_id, report.user_id];
-        return await query(sql, params);
+        `;
+        const paramsInsert = [report.filename, report.description, report.date, report.time, report.fire_id, report.user_id];
+        await query(sqlInsert, paramsInsert);
+
+        // 🔹 อัปเดตสถานะของ Fire เป็น "report"
+        const sqlUpdate = `UPDATE Fires SET status = 'report' WHERE fire_id = ?`;
+        await query(sqlUpdate, [report.fire_id]);
+
+        return { success: true, message: "Report added and fire status updated successfully" };
     } catch (error) {
         console.error("Error adding report:", error);
         throw error;
     }
 };
+
 
 // ดึง Report ตาม report_id
 export const getReportById = async (report_id) => {

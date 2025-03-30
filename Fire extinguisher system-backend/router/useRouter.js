@@ -52,12 +52,12 @@ router.post('/login', async (req, res) => {
         }
         // const token = await jwt.sign({ id: result[0].id }, jwt_secret, { expiresIn: '1h' });
         const token = jwt.sign({ id: result[0].id }, 'secret', { expiresIn: '1h' });
-        const role = result[0].role_ame
+        const role = result[0].role_name;
         const companyId = result[0].company_id;
         const userID = result[0].user_id
 
         console.log("User ID:", result[0].user_id);
-
+        console.log("Company ID:", result[0].company_id);
         return res.status(200).json({ message: 'OK success', token, role, companyId, userID});
     } catch (error) {
         res.status(500).json({ message: 'error' });
@@ -165,6 +165,7 @@ router.post("/reports", upload.single('filename'), async (req, res) => {
     }
 });
 
+
 // ดึงข้อมูลถังดับเพลิงตาม fire_id
 router.get("/fire/:fire_id", async (req, res) => {
     try {
@@ -180,5 +181,6 @@ router.get("/fire/:fire_id", async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 });
+
 
 export default router;

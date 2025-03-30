@@ -7,7 +7,7 @@ function Sidebar() {
         <div className='sidebarContainer'>
             <Link to="/home" style={{ color: "#000000" }}>Home</Link>
             <Link to="/report" style={{ color: "#000000" }}>Report</Link>
-            <Link to="/test" style={{ color: "#000000" }}>Test</Link>
+            
         </div>
     );
 }
