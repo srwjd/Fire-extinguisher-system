@@ -1,14 +1,15 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import "./ReportDetail.css";
 
 function ReportDetail() {
     const navigate = useNavigate();
-    const { fire_id } = useParams(); // ดึง fire_id จาก URL
+    const { fire_id } = useParams();
     const [fire, setFire] = useState(null);
     const [loading, setLoading] = useState(true);
     const [currentTime, setCurrentTime] = useState(new Date());
-    const [description, setDescription] = useState(""); // เก็บค่าหมายเหตุ
+    const [description, setDescription] = useState("");
     const [file, setFile] = useState(null);
     const userID = localStorage.getItem("userID");
 
@@ -21,8 +22,8 @@ function ReportDetail() {
         axios
             .get(`http://localhost:3000/fire/fire/${fire_id}`)
             .then((response) => {
-                console.log(response.data); // ตรวจสอบข้อมูลที่ได้รับ
-                setFire(response.data); // ตั้งค่าข้อมูลของ fire
+                console.log(response.data);
+                setFire(response.data);
                 setLoading(false);
             })
             .catch((error) => {
@@ -61,7 +62,7 @@ function ReportDetail() {
             });
             alert("บันทึกข้อมูลเรียบร้อยแล้ว");
             console.log("Report Response:", response.data);
-            navigate(-1); // กลับไปหน้าก่อนหน้า
+            navigate(-1);
         } catch (error) {
             console.error("Error submitting report:", error);
             alert("เกิดข้อผิดพลาดในการบันทึกรายงาน");
@@ -71,35 +72,27 @@ function ReportDetail() {
     if (loading) return <p>Loading...</p>;
 
     return (
-        <div>
-            <h1>Report Detail</h1>
-            {fire ? (
-                <>
-                    <button onClick={() => navigate(-1)}>Back</button>
-                    <br />
+        <>
+            <button className="back-button" onClick={() => navigate(-1)}>Back</button>
 
-                    <input
-                        type="file"
-                        onChange={(e) => setFile(e.target.files[0])}
-                    />
-                                        
-                    <input
-                        type="text"
-                        placeholder="หมายเหตุ: "
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                    />
+            <div className="container">
+                {fire ? (
+                    <>
+                        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+                                            
+                        <input type="text" placeholder="หมายเหตุ: " value={description} onChange={(e) => setDescription(e.target.value)} />
 
-                    <p><strong>Date:</strong> {currentTime.toLocaleDateString()}</p>
-                    <p><strong>Time:</strong> {currentTime.toLocaleTimeString()}</p>
-                    <p><strong>S/N : </strong> {fire[0].serial_number}</p>
+                        <p><strong>Date :</strong> {currentTime.toLocaleDateString()}</p>
+                        <p><strong>Time :</strong> {currentTime.toLocaleTimeString()}</p>
+                        <p><strong>S/N : </strong> {fire[0].serial_number}</p>
 
-                    <button onClick={handleReportSubmit}>Report</button>
-                </>
-            ) : (
-                <p>ไม่พบข้อมูลถังดับเพลิง</p>
-            )}
-        </div>
+                        <button onClick={handleReportSubmit}>Report</button>
+                    </>
+                ) : (
+                    <p>ไม่พบข้อมูลถังดับเพลิง</p>
+                )}
+            </div>
+        </>
     );
 }
 
