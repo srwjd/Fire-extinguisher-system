@@ -10,6 +10,8 @@ function AssignHistory() {
         setSearchTerm(event.target.value);
     };
 
+    
+
     // กรองข้อมูล Assigns ตามค่าค้นหา
     const filteredAssigns = assign.filter(item => 
         item.serial_number?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -65,7 +67,7 @@ function AssignHistory() {
                                 filteredAssigns.map((item, index) => (
                                     <tr key={index}>
                                         <td>{item.serial_number}</td>
-                                        <td>{item.insp_id}</td>
+                                        <td>{item.username}</td>
                                         <td>{item.assign_by}</td>
                                         <td>{item.date.split("T")[0]}</td>
                                         <td>{item.time}</td>

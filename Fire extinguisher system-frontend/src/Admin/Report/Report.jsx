@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Report.css";
-import { FaSearch } from "react-icons/fa";
+// import { FaSearch } from "react-icons/fa";
 
 function Report() {
     const [report, setReport] = useState([]);
@@ -9,6 +9,7 @@ function Report() {
     const [selectedReport, setSelectedReport] = useState(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+    const [assignUser, setAssignUser] = useState("");
 
     useEffect(() => {
         const fetchReports = async () => {
@@ -20,40 +21,76 @@ function Report() {
                 console.error("Error fetching reports:", error);
             }
         };
-        
+
         fetchReports();
     }, []);
 
     const handleSearch = (e) => {
-        const term = e.target.value.toLocaleLowerCase();
+        const term = e.target.value.toLowerCase();
         setSearchTerm(term);
-    
+
         if (!term) {
             setFilteredReport(report);
         } else {
             setFilteredReport(
                 report.filter((item) => {
-                    const serial = item.serial_number ? String(item.serial_number).toLocaleLowerCase() : "";
-                    const user = item.user_id ? String(item.user_id).toLocaleLowerCase() : "";
+                    const serial = item.serial_number ? String(item.serial_number).toLowerCase() : "";
+                    const user = item.user_id ? String(item.user_id).toLowerCase() : "";
                     return serial.includes(term) || user.includes(term);
                 })
             );
         }
     };
-    
-    
 
     const handleRowClick = (item) => {
         setSelectedReport(item);
     };
 
     const handlePopupOpen = (item) => {
-        setSelectedReport(item);
-        setIsPopupOpen(true);
-    };
+      setSelectedReport(item);  // This is where the state is set
+      console.log("Selected Report ID:", item.report_id);  // Make sure the item has the 'id' field
+      setIsPopupOpen(true);
+  };
 
     const handlePopupClose = () => {
         setIsPopupOpen(false);
+        setAssignUser(""); // รีเซ็ตค่า assignUser
+    };
+
+    const handleAssign = async () => {
+        if (!selectedReport || !assignUser.trim()) {
+            alert("Please select a report and enter an inspector ID.");
+            return;
+        }
+
+        const now = new Date();
+        const formattedDate = now.toISOString().slice(0, 10); // YYYY-MM-DD
+        const formattedTime = now.toLocaleTimeString("en-GB"); // HH:MM:SS
+
+        const assignBy = localStorage.getItem("userID");
+
+     if (!assignBy) {
+         alert("No user ID found in localStorage.");
+         return;
+     }
+
+        try {
+            const response = await axios.put("http://localhost:3000/fire/sendAssign", {
+                date: formattedDate,
+                time: formattedTime,
+                assign_by: assignBy, // เปลี่ยนเป็นชื่อผู้ใช้จริง
+                report_id: selectedReport.report_id,
+                insp_id: assignUser.trim()
+            });
+
+            if (response.status === 200) {
+                alert("Assignment successful!");
+                handlePopupClose();
+            }
+        } catch (error) {
+            console.error("Error assigning report:", error);
+            alert("Failed to assign report.");
+        }
     };
 
     return (
@@ -61,10 +98,10 @@ function Report() {
             <div className="header">
                 <h2>Submitted by user</h2>&nbsp;&nbsp;&nbsp;&nbsp;
                 <div className="search-bar">
-                    <input 
-                        type="text" 
-                        placeholder="Search by ID or S/N" 
-                        value={searchTerm} 
+                    <input
+                        type="text"
+                        placeholder="Search by ID or S/N"
+                        value={searchTerm}
                         onChange={handleSearch}
                     />
                 </div>
@@ -87,7 +124,9 @@ function Report() {
                                         <td>{item.serial_number}</td>
                                         <td>{item.user_id}</td>
                                         <td>{item.date.split("T")[0]}</td>
-                                        <td><button onClick={(e) => { e.stopPropagation(); handlePopupOpen(item); }}>📋</button></td>
+                                        <td>
+                                            <button onClick={(e) => { e.stopPropagation(); handlePopupOpen(item); }}>📋</button>
+                                        </td>
                                     </tr>
                                 ))
                             ) : (
@@ -114,12 +153,19 @@ function Report() {
                                 <p><strong>S/N :</strong> {selectedReport.serial_number}</p>
                                 <p><strong>Date :</strong> {selectedReport.date.split("T")[0]}</p>
                                 <p><strong>Time :</strong> {selectedReport.time}</p>
+                                <p className="remarks">{selectedReport?.description}</p>
                             </>
                         )}
-                        <p>Select a report to view details</p>
-                        <textarea className="remarks" placeholder="หมายเหตุ :" />
-                        <input type="text" placeholder="User" className='input' /> &nbsp;&nbsp;&nbsp;&nbsp;
-                        <button className="assign-button">Assign</button>
+                        <input
+                            type="text"
+                            placeholder="User ID"
+                            className="input"
+                            value={assignUser}
+                            onChange={(e) => setAssignUser(e.target.value)}
+                            onClick={(e) => e.stopPropagation()}
+                        />
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <button className="assign-button" onClick={handleAssign}>Assign</button>
                         <button onClick={handlePopupClose} className="close-button">Close</button>
                     </div>
                 )}

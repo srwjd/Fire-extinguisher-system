@@ -1,7 +1,7 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { getUserByUsername, getReport, getInspection, getAssign  } from "../controller/useController.js";
+import { getUserByUsername, getReport, getInspection, getAssign, sendAssign , getFire ,  fireUpdateStatus, sendReports, deleteProcess, updatedStatus, updatedStatusComplete} from "../controller/useController.js";
 
 
 
@@ -21,8 +21,12 @@ router.post('/login', async (req, res) => {
         }
         // const token = await jwt.sign({ id: result[0].id }, jwt_secret, { expiresIn: '1h' });
         const token = jwt.sign({ id: result[0].id }, 'secret', { expiresIn: '1h' });
-        const role = result[0].roleName
-        return res.status(200).json({ message: 'OK success', token, role });
+        const role = result[0].role_name;
+        const userID = result[0].user_id
+
+        console.log("User ID:", result[0].user_id);
+
+        return res.status(200).json({ message: 'OK success', token, role, userID });
     } catch (error) {
         res.status(500).json({ message: 'error' });
     }
@@ -72,5 +76,105 @@ router.get('/assign', async (req, res) => {
     }
 });
 
-export default router
 
+router.put('/sendAssign', async (req, res) => {
+   try{
+    const { date, time, assign_by, report_id, insp_id } = req.body;
+    const result = await sendAssign({date, time, assign_by, report_id, insp_id});
+    if (result.length === 0) {
+        return res.status(404).json({ message: 'No fire extinguishers found' });
+    }
+    return res.status(200).json({ message: 'OK success', result });
+   }catch(error){
+    console.error(error)
+    return res.status(500).json({ message: 'Internal Server Error' });
+   }
+})
+
+router.get('/fire', async (req, res) => {
+    try {
+        const result = await getFire();
+        if (result.length === 0) {
+            return res.status(404).json({ message: 'No fire extinguishers found' });
+        }
+        return res.status(200).json({ message: 'OK success', result });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+
+router.put('/fireUpdateStatus', async (req, res) => {
+    const { report_id, status } = req.body;
+    
+    try {
+        const result = await fireUpdateStatus({ report_id, status });
+        if (result.length === 0) {
+            return res.status(404).json({ message: 'No fire extinguishers found' });
+        }
+        return res.status(200).json({ message: 'OK success', result });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+  });
+
+  router.post("/sendReports", async (req, res) => {
+    try {
+        const { description, date, time, fire_id, user_id } = req.body;
+        const filename = null;
+
+        // Check for required fields
+        if (!description || !date || !time || !fire_id || !user_id) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        const report = { filename, description, date, time, fire_id, user_id };
+
+        // Add report and assign simultaneously
+        const result = await sendReports(report);
+        console.log("sendReports body", req.body);
+        res.status(201).json({ message: "Report added successfully", data: result });
+    } catch (error) {
+        console.error("Error adding report:", error);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+});
+
+
+router.delete("/deleteProcess", async (req, res) => {
+    try {
+        const { inspection_id} = req.body;
+        const result = await deleteProcess(inspection_id);
+        res.status(200).json({ message: "Report deleted successfully", data: result });
+    } catch (error) {
+        console.error("Error deleting report:", error);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+});
+
+router.post("/updatedStatus", async (req, res) => {
+    try {
+        const { fire_id } = req.body;
+        const result = await updatedStatus (fire_id);
+        res.status(200).json({ message: "Status updated successfully", data: result });
+    } catch (error) {
+        console.error("Error updating status:", error);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+});
+
+
+router.post("/updatedStatusComplete", async (req, res) => {
+    try {
+        const { fire_id } = req.body;
+        const result = await updatedStatusComplete (fire_id);
+        res.status(200).json({ message: "Status updated successfully", data: result });
+    } catch (error) {
+        console.error("Error updating status:", error);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+});
+
+export default router
