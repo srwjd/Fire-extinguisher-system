@@ -39,7 +39,6 @@ function Home() {
 
     return (
         <div>
-            <h3 className='Text-MainBranch'>Main-branch</h3>
             <table className='Table-MainBranch'>
                 <thead>
                     <tr>
@@ -73,14 +72,16 @@ function Home() {
                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
                     disabled={currentPage === 1}
                 >
-                    Previous
+                    &lt;
                 </button>
-                <span> Page {currentPage} of {totalPages} </span>
+                <span>
+            {currentPage} out of {totalPages}
+          </span>
                 <button 
                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
                     disabled={currentPage === totalPages}
                 >
-                    Next
+                    &gt;
                 </button>
             </div>
         </div>
