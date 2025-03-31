@@ -1,0 +1,28 @@
+.barContainer {
+    margin-bottom: 5px;
+    /* background-color: #FD6E2B; */
+}
+.barIcons {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    align-items: center;  
+}
+.homeIcon, .userIcon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 14px;
+}
+.qrIcon {
+    background-color:  #FD6E2B;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50px;
+    margin-bottom: 10px;
+}

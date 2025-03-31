@@ -1,11 +1,29 @@
+import './User.css'
 
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import { DeviceFrameset } from 'react-device-frameset'
+import 'react-device-frameset/styles/marvel-devices.min.css'
+
+import Home from "./Home/Home";
+import Profile from './Profile/Profile';
+import FireDetails from './Fire_details/Fire_details';
 
 function User() {
-    return ( 
-        <div>
-            <h1>User</h1>
+    return (
+        <div className='userContainer'>
+            <DeviceFrameset device="iPhone X">
+                    <Router className='frame'>
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/home" element={<Home />} />
+                            <Route path='/profile' element={<Profile />} />
+                            <Route path="/fire-details/:fire_id" element={<FireDetails />} />
+                        </Routes>
+                    </Router>
+            </DeviceFrameset>
         </div>
-     );
+    );
 }
 
 export default User;
