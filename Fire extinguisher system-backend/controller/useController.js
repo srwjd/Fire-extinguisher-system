@@ -72,22 +72,3 @@ export const updateStatus = async (data) => {
         console.error("Error occurred while updating status:", error);
     }
 }
-
-export const getUnit = async () => {
-    try {
-        const sql = `
-                    SELECT Companys.company_id, 
-                    Companys.company_name, 
-                    Branchs.branch_id,
-                    Branchs.branch_name,
-                    COUNT(Fires.fire_id) AS fire_count
-                    FROM Companys
-                    LEFT JOIN Branchs ON Companys.company_id = Branchs.company_id
-                    LEFT JOIN Fires ON Companys.company_id = Fires.company_id
-                    GROUP BY Companys.company_id, Branchs.branch_id
-                    `;
-        return await query(sql);
-    } catch (error) {
-        console.error("Error occurred while getting units:", error);
-    }
-}
