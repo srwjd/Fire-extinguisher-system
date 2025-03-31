@@ -2,13 +2,15 @@ import './Fire_details.css';
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaCamera } from "react-icons/fa";
 
 function FireDetails() {
   const { fire_id } = useParams();
   const [fire, setFire] = useState(null);
   const userID = localStorage.getItem('userID');
   const [inspectionMore, setInspectionMore] = useState('');
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [inspectionData, setInspectionData] = useState({
     condition_ok: false,
     pressure_ok: false,
@@ -31,12 +33,14 @@ function FireDetails() {
             month: '2-digit',
             year: 'numeric'
           });
+          
 
           setFire({
             ...fireResponse.data.result[0],
             description: fireReport.description,
             timeReported: formattedDate,
-            assign_id: fireReport.assign_id
+            assign_id: fireReport.assign_id,
+            filename: fireReport.filename
           });
         }
       } catch (error) {
@@ -47,39 +51,54 @@ function FireDetails() {
     fetchFireDetails();
   }, [userID, fire_id]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const formattedDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const time = new Date().toLocaleTimeString('th-TH', {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
-    })
+    });
 
+    const formData = new FormData();
+    formData.append("fire_id", fire_id);
+    formData.append("filename", file);
+    formData.append("description", inspectionMore);
+    formData.append("date", formattedDate);
+    formData.append("time", time);
+    formData.append("user_id", userID);
+    formData.append("assign_id", fire.assign_id);
+    formData.append("condition_ok", inspectionData.condition_ok);
+    formData.append("pressure_ok", inspectionData.pressure_ok);
+    formData.append("nozzle_clear", inspectionData.nozzle_clear);
+    formData.append("pin_sealed", inspectionData.pin_sealed);
+    formData.append("placement_correct", inspectionData.placement_correct);
 
-    axios.put(`http://localhost:3000/fire/insertinspection/${fire_id}`, {
-      fire_id: fire_id,
-      filename: "ยังไม่มีไฟล์",
-      description: inspectionMore,
-      date: formattedDate,
-      time: time,
-      user_id: userID,
-      assign_id: fire.assign_id,
-      condition_ok: inspectionData.condition_ok,
-      pressure_ok: inspectionData.pressure_ok,
-      nozzle_clear: inspectionData.nozzle_clear,
-      pin_sealed: inspectionData.pin_sealed,
-      placement_correct: inspectionData.placement_correct
-    }).then(() => {
-      axios.post(`http://localhost:3000/fire/updatestatus`, {
-        fire_id: fire_id
-      })
-    }).then(() => {
+    try {
+      await axios.put(`http://localhost:3000/fire/insertinspection/${fire_id}`, formData);
+
+      await axios.post(`http://localhost:3000/fire/updatestatus`, { fire_id });
+
       alert("บันทึกผลการตรวจสอบเรียบร้อย");
       window.history.back();
-    }).catch(error => {
+    } catch (error) {
       console.error("Error saving inspection:", error);
-    });
+    }
   };
+
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      if (!selectedFile.type.startsWith("image/")) {
+        alert("กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น");
+        return;
+      }
+      setFile(selectedFile);
+      setPreview(URL.createObjectURL(selectedFile));
+    }
+  };
+
+
 
   return (
     <div className="fireDetailsContainer">
@@ -98,8 +117,17 @@ function FireDetails() {
             <div className="fireReportContent">
               <div className="fireReportImgContainer">
                 <div className="fireImageContainer">
+                  {/* ตรวจสอบหากมี URL รูปภาพ */}
+                  {fire.filename ? (
+                    <img src={`http://localhost:3000/fire/uploads/${fire.filename}`} 
+                    alt="Fire Extinguisher" 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '10px' }} />
+                  ) : (
+                    <FaCamera size={30} color="#888" />
+                  )}
                 </div>
               </div>
+
 
               <p>S/N : {fire.serial_number}</p>
               <p>Location : {fire.company_name}, {fire.branch_name}</p>
@@ -110,8 +138,14 @@ function FireDetails() {
 
           <div className="fireInspectionContainer">
             <div className="fireInspectionImgContainer">
-              <div className="fireInspectionImg">
+              <div
+                className="fireInspectionImg"
+                style={{ backgroundImage: preview ? `url(${preview})` : 'none' }}
+              >
+                {!preview && <FaCamera size={30} color="#fff" />} {/* แสดงไอคอนถ้ายังไม่มีรูป */}
+                <input type="file" accept="image/*" onChange={handleFileChange} />
               </div>
+
             </div>
             <div className="fireInspectionContent">
               <table>

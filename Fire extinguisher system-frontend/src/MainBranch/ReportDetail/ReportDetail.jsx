@@ -60,6 +60,7 @@ function ReportDetail() {
                 },
             });
             alert("บันทึกข้อมูลเรียบร้อยแล้ว");
+            console.log("Report Response:", response.data);
             navigate(-1); // กลับไปหน้าก่อนหน้า
         } catch (error) {
             console.error("Error submitting report:", error);

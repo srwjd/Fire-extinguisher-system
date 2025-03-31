@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import path from "path"; // เพิ่มการ import path
 import router from "./router/useRouter.js";
 
 import swaggerJSDoc from "swagger-jsdoc";
@@ -7,6 +8,7 @@ import swaggerUi from "swagger-ui-express";
 
 const app = express();
 
+// ตั้งค่า swaggerSpec สำหรับ OpenAPI
 const swaggerSpec = swaggerJSDoc({
     definition: {
         openapi: "3.0.0",
@@ -48,14 +50,18 @@ const swaggerSpec = swaggerJSDoc({
             },
         ],
     },
-    apis: ["./router/useRouter.js"],
+    apis: ["./router/useRouter.js"], // ตรวจสอบว่า router มีการใส่ annotations สำหรับ Swagger
 });
+
 
 app.use(cors());
 app.use(express.json());
 
+// ใช้ router สำหรับเส้นทาง '/fire'
 app.use('/fire', router);
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec)); // ย้ายมาหลังจาก app ถูกกำหนดค่า
+// ตั้งค่าให้ Swagger UI สามารถเข้าถึงได้ที่ /api-docs
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+// เริ่มเซิร์ฟเวอร์ที่พอร์ต 3000
 app.listen(3000, () => console.log("Server running on port 3000"));

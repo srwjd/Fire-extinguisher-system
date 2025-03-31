@@ -36,6 +36,7 @@
 .fireReportContainer p {
     margin: 0;
     font-size: 18px;
+    font-family: 'Prompt', sans-serif;
 }
 
 .fireReportContent {
@@ -77,6 +78,7 @@
 .fireInspectionContainer p {
     margin: 0;
     font-size: 18px;
+    font-family: 'Prompt', sans-serif;
 }
 
 .fireInspectionContent {
@@ -102,13 +104,27 @@
 .fireInspectionImg {
     width: 100px;
     height: 100px;
-    /* background-image: url(''); */
-    background-size: contain;
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-color: #FD6E2B;
     border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
 }
+
+.fireInspectionImg input {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    cursor: pointer;
+}
+
 
 .fireInspectionMoreContainer {
     display: flex;
@@ -147,6 +163,7 @@
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     outline: none;
 }
+
 .fireInspectionMore::placeholder {
     color: #999;
     font-size: 16px;
@@ -156,7 +173,7 @@
 .fireSubmitContainer {
     display: flex;
     justify-content: center;
-    margin: 0  0 40px 0;
+    margin: 0 0 40px 0;
 }
 
 .fireSubmit {
@@ -182,7 +199,8 @@
     background-color: #C94C1A;
     box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.3);
 }
-button{
+
+button {
     cursor: pointer;
     font-family: 'prompt';
 }

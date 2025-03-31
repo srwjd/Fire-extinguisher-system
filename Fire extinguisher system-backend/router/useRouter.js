@@ -6,10 +6,10 @@ import {
   addCompany, editCompany, deleteBranchAndFires, getReport, getFiresByIds, insertInspection, updateStatus
 } from "../controller/useController.js";
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 import path from 'path';
 import fs from 'fs';
 import multer from 'multer';
+import express from 'express';
 
 
 const router = Router();
@@ -17,6 +17,9 @@ const router = Router();
 // ใช้ fileURLToPath เพื่อแปลง URL ให้เป็นพาธในระบบไฟล์
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+
+router.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ตรวจสอบและสร้างโฟลเดอร์ uploads หากไม่มี
 const uploadDirectory = path.join(__dirname, 'uploads');
@@ -413,7 +416,6 @@ router.get("/fire/:fire_id", async (req, res) => {
   }
 });
 
-
 /**
  * @swagger
  * /fire/getreports/{userID}:
@@ -441,17 +443,17 @@ router.get("/fire/:fire_id", async (req, res) => {
  *                   type: object
  */
 router.get('/getreports/:userID', async (req, res) => {
-    const { userID } = req.params;
-    try {
-        const result = await getReport(userID);
-        if (result.length === 0) {
-            return res.status(404).json({ message: 'Not found' });
-        }
-        return res.status(200).json({ message: 'OK success', result });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal Server Error' });
+  const { userID } = req.params;
+  try {
+    const result = await getReport(userID);
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'Not found' });
     }
+    return res.status(200).json({ message: 'OK success', result });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 });
 
 /**
@@ -481,23 +483,23 @@ router.get('/getreports/:userID', async (req, res) => {
  *                   type: object
  */
 router.get('/getfire/:fire_ids', async (req, res) => {
-    try {
-        const fireIds = req.params.fire_ids.split(",").map(id => parseInt(id.trim(), 10)).filter(id => !isNaN(id));
+  try {
+    const fireIds = req.params.fire_ids.split(",").map(id => parseInt(id.trim(), 10)).filter(id => !isNaN(id));
 
-        if (fireIds.length === 0) {
-            return res.status(400).json({ message: "Invalid fire IDs" });
-        }
-
-        const result = await getFiresByIds(fireIds);
-        if (result.length === 0) {
-            return res.status(404).json({ message: 'No fire extinguishers found' });
-        }
-        return res.status(200).json({ message: 'OK success', result });
-
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Internal Server Error' });
+    if (fireIds.length === 0) {
+      return res.status(400).json({ message: "Invalid fire IDs" });
     }
+
+    const result = await getFiresByIds(fireIds);
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'No fire extinguishers found' });
+    }
+    return res.status(200).json({ message: 'OK success', result });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
 });
 
 /**
@@ -553,27 +555,42 @@ router.get('/getfire/:fire_ids', async (req, res) => {
  *                 message:
  *                   type: string
  */
-router.put('/insertinspection/:fire_id', async (req, res) => {
-    try {
-        const { fire_id } = req.params;
-        const { filename, description, date, time, user_id, assign_id, condition_ok, pressure_ok, nozzle_clear, pin_sealed, placement_correct } = req.body;
+router.put('/insertinspection/:fire_id', upload.single('filename'), async (req, res) => {
+  try {
+    const { fire_id } = req.params;
+    const filename = req.file ? req.file.filename : null;
+    const {
+      description, date, time, user_id, assign_id,
+      condition_ok, pressure_ok, nozzle_clear, pin_sealed, placement_correct
+    } = req.body;
 
-        // เรียกใช้ insertInspection และรอผล
-        await insertInspection({
-            fire_id, filename, description, date, time, user_id, assign_id,
-            condition_ok, pressure_ok, nozzle_clear, pin_sealed, placement_correct
-        });
+    // แปลงค่าจาก 'true' หรือ 'false' เป็น 1 หรือ 0
+    const inspectionData = {
+      fire_id,
+      filename,
+      description,
+      date,
+      time,
+      user_id,
+      assign_id,
+      condition_ok: condition_ok === 'true' ? 1 : 0,
+      pressure_ok: pressure_ok === 'true' ? 1 : 0,
+      nozzle_clear: nozzle_clear === 'true' ? 1 : 0,
+      pin_sealed: pin_sealed === 'true' ? 1 : 0,
+      placement_correct: placement_correct === 'true' ? 1 : 0
+    };
 
-        // ส่ง Response ถ้าบันทึกสำเร็จ
-        return res.status(200).json({ message: 'บันทึกผลการตรวจสอบเรียบร้อย' });
+    // บันทึกข้อมูลลงฐานข้อมูล
+    await insertInspection(inspectionData);
 
-    } catch (error) {
-        console.error("Error occurred while inserting inspection:", error);
+    return res.status(200).json({ message: 'บันทึกผลการตรวจสอบเรียบร้อย' });
 
-        // ส่ง Response เมื่อเกิดข้อผิดพลาด
-        return res.status(500).json({ message: 'เกิดข้อผิดพลาดในการบันทึกข้อมูล', error: error.message });
-    }
+  } catch (error) {
+    console.error("Error occurred while inserting inspection:", error);
+    return res.status(500).json({ message: 'เกิดข้อผิดพลาดในการบันทึกข้อมูล', error: error.message });
+  }
 });
+
 
 /**
  * @swagger
@@ -603,17 +620,17 @@ router.put('/insertinspection/:fire_id', async (req, res) => {
  *                   type: string
  */
 router.post('/updatestatus', async (req, res) => {
-    const { fire_id } = req.body;
-    try {
-        const result = await updateStatus({fire_id});
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Fire extinguisher not found' });
-        }
-        return res.status(200).json({ message: 'OK success' });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Internal Server Error' });
+  const { fire_id } = req.body;
+  try {
+    const result = await updateStatus({ fire_id });
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Fire extinguisher not found' });
     }
+    return res.status(200).json({ message: 'OK success' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
 });
 
 export default router
