@@ -5,9 +5,9 @@ import { Link } from 'react-router';
 function Sidebar() {
     return ( 
         <div className='sidebarContainer'>
-            <Link to="/dashboard" style={{color: "#000000"}}>Dashboard</Link>
-            <Link to="/manageuser" style={{color: "#000000"}}>Manage User</Link>
-            <Link to="/manageunit" style={{color: "#000000"}}>Manage Unit</Link>
+            <Link to="/dashboard" className='dashboardSB'>Dashboard</Link>
+            <Link to="/manageuser"  className='manageuserSB'>Manage User</Link>
+            <Link to="/manageunit" className='manageunitSB'>Manage Unit</Link>
         </div>
      );
 }

@@ -1,0 +1,208 @@
+.manage-user-container {
+  width: 100%;
+  margin: 20px auto;
+  margin-left: 10px;
+  /* padding: 10px; */
+  justify-content: center;
+  /* border: 1px solid #ccc; */
+  max-height: 90vh;
+  overflow-y: scroll;
+}
+
+.manage-user-header {
+  background-color: #f97316;
+  color: white;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: left;
+  border-radius: 10px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  margin-top: 10px;
+  /* cursor: pointer; */
+}
+
+.manage-user-form-container {
+  border: 1px solid #f97316;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  margin-bottom: 10px;
+}
+
+.manage-user-form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.manage-user-form-group label {
+  width: 100px;
+  background-color: #fde4cf;
+  padding: 5px;
+  border-radius: 5px;
+  text-align: right;
+  margin-right: 10px;
+}
+
+.manage-user-form-group input {
+  flex: 1;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.manage-user-form-group select {
+  flex: 1;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: white;
+  /* font-size: 14px; */
+}
+
+.manage-user-confirmAddUser-button {
+  background-color: #f97316;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: block;
+  margin: 10px auto;
+}
+
+.manage-user-confirmManageUser-button {
+  background-color: #f97316;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: block;
+  margin: 10px auto;
+}
+
+.manage-user-confirm-button:hover {
+  background-color: #f97316;
+}
+
+/* manage user */
+.manage-user-manageUserContainer {
+  width: 100%;
+  background-color: #fff;
+  justify-content: center;
+  border: #f97316 1px solid;
+  border-radius: 10px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  padding: 10px;
+}
+
+.manage-user-section-header {
+  background-color: #f97316;
+  color: white;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.manage-user-triangle {
+  transition: transform 0.3s ease;
+}
+
+.manage-user-search-bar {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  margin-top: -1px;
+  border: 1px solid #f97316;
+  padding: 5px;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.manage-user-search-icon {
+  color: #f97316;
+  margin-right: 5px;
+}
+
+.manage-user-search-bar input {
+  border: none;
+  width: 100%;
+  outline: none;
+}
+
+.manage-user-table-container {
+  border: 1px solid #f97316;
+  border-radius: 10px;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #f97316;
+}
+
+th {
+  background-color: #fde4cf;
+}
+
+.manage-user-edit-icon,
+.delete-icon {
+  cursor: pointer;
+}
+
+.manage-user-edit-icon {
+  color: #f7ce36;
+}
+
+.manage-user-delete-icon {
+  color: #db5362;
+  cursor: pointer;
+}
+
+.manage-user-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.manage-user-pagination button {
+  background-color: #f97316;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+.manage-user-pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+hr {
+  border: 1px solid #f97316;
+  margin-top: 15px;
+}
