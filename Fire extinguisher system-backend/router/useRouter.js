@@ -2,9 +2,15 @@ import { Router } from "express";
 import jwt from "jsonwebtoken";
 import {
   getUserByUsername, getAllBranchs, getBranchById, getBranchesByCompanyId, getFiresByBranchId, getFiresByCompanyId, addReport, getFiresById,
-  getUserCountByRole,  getAllCompaniesWithBranches, getFireExtinguishersByMonth, getAllUser, addUser, updateUser, deleteUser, getAllUnit,
+  getUserCountByRole, getAllCompaniesWithBranches, getFireExtinguishersByMonth, getAllUser, addUser, updateUser, deleteUser, getAllUnit,
   addCompany, editCompany, deleteBranchAndFires,
 } from "../controller/useController.js";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import path from 'path';
+import fs from 'fs';
+import multer from 'multer';
+
 
 const router = Router();
 
@@ -51,7 +57,7 @@ router.post('/login', async (req, res) => {
     }
     // const token = await jwt.sign({ id: result[0].id }, jwt_secret, { expiresIn: '1h' });
     const token = jwt.sign({ id: result[0].id }, 'secret', { expiresIn: '1h' });
-    const role = result[0].roleName
+    const role = result[0].role_name
     const companyId = result[0].company_id;
     const userID = result[0].user_id
 
@@ -77,6 +83,7 @@ router.get("/countByRole", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 router.get("/countUnit", async (req, res) => {
   try {
     const result = await getAllCompaniesWithBranches(); // ดึงข้อมูลจากฐานข้อมูล
@@ -256,101 +263,101 @@ router.delete("/deleteBranchAndFires/:branch_id", async (req, res) => {
 
 router.get("/branches", async (req, res) => {
   try {
-      const result = await getAllBranchs();
-      if (result.length === 0) {
-          return res.status(404).json({ message: "No branches found" });
-      }
-      res.json(result);
+    const result = await getAllBranchs();
+    if (result.length === 0) {
+      return res.status(404).json({ message: "No branches found" });
+    }
+    res.json(result);
   } catch (error) {
-      console.error("Error fetching branches:", error);
-      res.status(500).json({ message: "Internal Server Error" });
+    console.error("Error fetching branches:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
 // ดึงข้อมูลสาขาและถังดับเพลิงตาม branch_id
 router.get("/branches/:branchs_id", async (req, res) => {
   try {
-      const { branchs_id } = req.params;
-      const result = await getBranchById(branchs_id);
-  if (result === 0) {
-          return res.status(404).json({ message: "Branch not found" });
-      }
-      
-      //ดึงข้อมูลถังตาม branch_id
-      const fires = await getFiresByBranchId(branchs_id)
-      res.json(fires);
+    const { branchs_id } = req.params;
+    const result = await getBranchById(branchs_id);
+    if (result === 0) {
+      return res.status(404).json({ message: "Branch not found" });
+    }
+
+    //ดึงข้อมูลถังตาม branch_id
+    const fires = await getFiresByBranchId(branchs_id)
+    res.json(fires);
   } catch (error) {
-      console.error("Error fetching branch by ID:", error);
-      res.status(500).json({ message: "Internal Server Error" });
+    console.error("Error fetching branch by ID:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
 // ดึงข้อมูลสาขาและถังดับเพลิงตาม company_id
 router.get("/company/:company_id", async (req, res) => {
   try {
-      const { company_id } = req.params;
+    const { company_id } = req.params;
 
-      if (!company_id) {
-          return res.status(400).json({ message: "Invalid company ID" });
-      }
+    if (!company_id) {
+      return res.status(400).json({ message: "Invalid company ID" });
+    }
 
-      const result = await getBranchesByCompanyId(company_id);
-      if (result.length === 0) {
-          return res.status(404).json({ message: "No branches found for this company" });
-      }
+    const result = await getBranchesByCompanyId(company_id);
+    if (result.length === 0) {
+      return res.status(404).json({ message: "No branches found for this company" });
+    }
 
-      const fire = await getFiresByCompanyId(company_id)
-      if (fire.length === 0) {
-          return res.status(404).json({ message: "No fires found for this company" });
-      }
+    const fire = await getFiresByCompanyId(company_id)
+    if (fire.length === 0) {
+      return res.status(404).json({ message: "No fires found for this company" });
+    }
 
-      res.json({ branches: result, fires: fire });
+    res.json({ branches: result, fires: fire });
   } catch (error) {
-      console.error("Error fetching branches by company ID:", error);
-      res.status(500).json({ message: "Internal Server Error" });
+    console.error("Error fetching branches by company ID:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
 // ดึงถังดับเพลิงตาม company_id
 router.get("/company/:company_id/fires", async (req, res) => {
   try {
-      const { company_id } = req.params;
+    const { company_id } = req.params;
 
-      if (!company_id) {
-          return res.status(400).json({ message: "Invalid company ID" });
-      }
+    if (!company_id) {
+      return res.status(400).json({ message: "Invalid company ID" });
+    }
 
-      // ดึงข้อมูลถังดับเพลิงทั้งหมดของบริษัท โดยไม่สนใจสาขา
-      const fires = await getFiresByCompanyId(company_id);
+    // ดึงข้อมูลถังดับเพลิงทั้งหมดของบริษัท โดยไม่สนใจสาขา
+    const fires = await getFiresByCompanyId(company_id);
 
-      // ถ้าไม่มีถังดับเพลิงเลย ก็ให้ส่งอาร์เรย์ว่างแทนที่จะส่ง error 404
-      res.json(fires || []);
+    // ถ้าไม่มีถังดับเพลิงเลย ก็ให้ส่งอาร์เรย์ว่างแทนที่จะส่ง error 404
+    res.json(fires || []);
   } catch (error) {
-      console.error("Error fetching fires by company ID:", error);
-      res.status(500).json({ message: "Internal Server Error" });
+    console.error("Error fetching fires by company ID:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
 // API Endpoint สำหรับเพิ่มรายงาน
 router.post("/reports", upload.single('filename'), async (req, res) => {
   try {
-      const { description, date, time, fire_id, user_id } = req.body;
-      const filename = req.file ? req.file.filename : null; // ใช้ชื่อไฟล์จาก multer
+    const { description, date, time, fire_id, user_id } = req.body;
+    const filename = req.file ? req.file.filename : null; // ใช้ชื่อไฟล์จาก multer
 
-      // ตรวจสอบค่าที่ต้องการ
-      if (!filename || !description || !date || !time || !fire_id || !user_id) {
-          return res.status(400).json({ message: "Missing required fields" });
-      }
+    // ตรวจสอบค่าที่ต้องการ
+    if (!filename || !description || !date || !time || !fire_id || !user_id) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
 
-      const report = { filename, description, date, time, fire_id, user_id };
+    const report = { filename, description, date, time, fire_id, user_id };
 
-      // สมมุติว่าใช้ฟังก์ชันเพิ่มรายงาน
-      const result = await addReport(report);
+    // สมมุติว่าใช้ฟังก์ชันเพิ่มรายงาน
+    const result = await addReport(report);
 
-      res.status(201).json({ message: "Report added successfully", data: result });
+    res.status(201).json({ message: "Report added successfully", data: result });
   } catch (error) {
-      console.error("Error adding report:", error);
-      res.status(500).json({ message: "Internal Server Error", error: error.message });
+    console.error("Error adding report:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });
 
@@ -358,16 +365,16 @@ router.post("/reports", upload.single('filename'), async (req, res) => {
 // ดึงข้อมูลถังดับเพลิงตาม fire_id
 router.get("/fire/:fire_id", async (req, res) => {
   try {
-      const { fire_id } = req.params;
-      const result = await getFiresById(fire_id);
-      if (result.length === 0) {
-          return res.status(404).json({ message: "Fire not found" });
-      }
-      console.log("Fire ID:", fire_id);
-      res.json(result);
+    const { fire_id } = req.params;
+    const result = await getFiresById(fire_id);
+    if (result.length === 0) {
+      return res.status(404).json({ message: "Fire not found" });
+    }
+    console.log("Fire ID:", fire_id);
+    res.json(result);
   } catch (error) {
-      console.error("Error fetching fire by ID:", error);
-      res.status(500).json({ message: "Internal Server Error" });
+    console.error("Error fetching fire by ID:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
