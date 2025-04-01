@@ -1,7 +1,7 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken";
 import {
-  getUserByUsername, getAllBranchs, getBranchById, getBranchesByCompanyId, getFiresByBranchId, getFiresByCompanyId, addReport, getFiresById,
+  getUserByUsername, getAllBranchs, getAllBranches, getBranchById, getBranchesByCompanyId, getFiresByBranchId, getFiresByCompanyId, addReport, getFiresById,
   getUserCountByRole, getAllCompaniesWithBranches, getFireExtinguishersByMonth, getAllUser, addUser, updateUser, deleteUser, getAllUnit,
   addCompany, editCompany, deleteBranchAndFires, getReport, getFiresByIds, insertInspection, updateStatus
 } from "../controller/useController.js";
@@ -47,6 +47,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
+// 📌 API Login
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -471,4 +472,4 @@ router.post('/updatestatus', async (req, res) => {
   }
 });
 
-export default router
+export default router;

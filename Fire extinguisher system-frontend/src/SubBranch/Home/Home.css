@@ -1,0 +1,89 @@
+.container {
+    width: 100%;
+    max-width: 48rem;
+    margin: 1.25rem auto 0;
+  }
+  
+  .heading {
+    color: #E65100;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  /* จัดหน้า Pagination */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    gap: 15px;
+  }
+  
+  /* Table styles */
+  .styled-table-container {
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+    border-radius: 10px; /* ✅ ทำมุมโค้ง */
+    overflow: hidden; /* ✅ ป้องกันมุมโค้งไม่ทำงาน */
+    border: 1px solid #FFA07A; /* ✅ เพิ่มเส้นขอบบางๆ */
+  }
+  
+  .styled-table {
+    width: 100%;
+    min-width: 650px;
+    border-collapse: separate; /* ✅ ใช้ border spacing แทน border collapse */
+    border-spacing: 0; /* ✅ ป้องกันเส้นเกิน */
+  }
+  
+  .styled-table-head {
+    background-color: #FFCCBC;
+  }
+  
+  .styled-table-head th {
+    font-weight: bold;
+    color: #8B4513;
+    border-right: 1px solid #FFA07A;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .styled-table-head th:first-child {
+    border-top-left-radius: 10px; /* ✅ ทำให้มุมซ้ายบนโค้ง */
+  }
+  
+  .styled-table-head th:last-child {
+    border-right: none;
+    border-top-right-radius: 10px; /* ✅ ทำให้มุมขวาบนโค้ง */
+  }
+  
+  .styled-table-body td {
+    border-right: 1px solid #FFA07A;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .styled-table-body td:last-child {
+    border-right: none;
+  }
+  
+  .styled-table-body tr:last-child td {
+    border-bottom-left-radius: 10px; /* ✅ ทำให้มุมล่างซ้ายโค้ง */
+    border-bottom-right-radius: 10px; /* ✅ ทำให้มุมล่างขวาโค้ง */
+  }
+  
+  /* ปรับแต่งปุ่ม Pagination */
+  .pagination button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #E65100;
+  }
+  
+  .pagination button:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+  }
+  

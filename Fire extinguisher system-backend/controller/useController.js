@@ -7,6 +7,7 @@ const config = {
   database: "fire_system",
 };
 
+// ฟังก์ชันสำหรับ execute SQL query
 export const query = async (sql, params) => {
   const connection = await mysql.createConnection(config);
   const [rows] = await connection.execute(sql, params);
@@ -14,6 +15,7 @@ export const query = async (sql, params) => {
   return rows;
 };
 
+// ดึงข้อมูลผู้ใช้ตาม username
 export const getUserByUsername = async (username) => {
   const sql = `SELECT Users.*, Roles.role_name, Users.company_id
   FROM Users 
@@ -327,6 +329,11 @@ export const getBranchById = async (branch_id) => {
     console.error("Error fetching branch by ID:", error);
     throw error;
   }
+}
+
+export const getAllBranches = async () => {
+  const sql = "SELECT * FROM Branchs";
+  return await query(sql);
 }
 
 //ดูสาขาย่อยตาม company_id

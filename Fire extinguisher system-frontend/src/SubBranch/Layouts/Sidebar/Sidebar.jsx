@@ -1,12 +1,23 @@
 import './Sidebar.css';
-
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router-dom';
 
 function Sidebar() {
+    const location = useLocation();
+
     return (
         <div className='sidebarContainer'>
-            <Link to="/home" style={{ color: "#000000" }}>Home</Link>
-            <Link to="/report" style={{ color: "#000000" }}>Report</Link>
+            <Link 
+                to="/home" 
+                className={location.pathname === "/home" ? "activeLink" : ""}
+            >
+                Home
+            </Link>
+            <Link 
+                to="/report" 
+                className={location.pathname === "/report" ? "activeLink" : ""}
+            >
+                Report
+            </Link>
         </div>
     );
 }

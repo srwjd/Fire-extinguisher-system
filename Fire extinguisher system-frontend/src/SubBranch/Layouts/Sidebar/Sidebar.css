@@ -8,3 +8,22 @@
     padding: 10px 20px;
     gap: 10px;
 }
+
+.sidebarContainer a {
+    text-decoration: none;
+    color: #000000;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.sidebarContainer a:hover {
+    background-color: rgba(253, 110, 43, 0.2); /* ทำให้ hover ดูมีเอฟเฟกต์ */
+}
+
+.activeLink {
+    background-color: #FD6E2B; /* สีของลิงก์ที่ถูกเลือก */
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 10px;
+}
