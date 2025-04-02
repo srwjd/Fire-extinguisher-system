@@ -126,7 +126,7 @@ router.get("/showAllUser", async (req, res) => {
     }
     res.json(result);
   } catch (error) {
-    onsole.error("Error fetching companies:", error.message); // เพิ่มการพิมพ์ error
+    console.error("Error fetching companies:", error.message); // เพิ่มการพิมพ์ error
     res
       .status(500)
       .json({ message: "Internal Server Error", error: error.message });
