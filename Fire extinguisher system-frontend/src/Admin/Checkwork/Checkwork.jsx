@@ -1,9 +1,218 @@
-function Checkwork() {
-    return ( 
+import { useEffect, useState } from "react";
+import axios from "axios";
+import "./Checkwork.css";
+import { FaSearch } from "react-icons/fa";
+
+function checkWork() {
+    const [report, setReport] = useState([]);
+    const [filteredReport, setFilteredReport] = useState([]);
+    const [selectedReport, setSelectedReport] = useState(null);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [checkboxes, setCheckboxes] = useState({
+        damage: false,
+        pressure: false,
+        headValve: false,
+        safetySeal: false,
+        position: false,
+    });
+
+
+    useEffect(() => {
+        const fetchReports = async () => {
+            try {
+                const response = await axios.get("http://localhost:3000/fire/inspec");
+                const filteredData = response.data.filter(item => item.status === "process");
+                setReport(filteredData);
+                setFilteredReport(filteredData);
+            } catch (error) {
+                console.error("Error fetching reports:", error);
+            }
+        };
+
+        fetchReports();
+    }, [])
+
+    const handleSearch = (e) => {
+        const term = e.target.value.toLocaleLowerCase();
+        setSearchTerm(term);
+
+        if (!term) {
+            setFilteredReport(report);
+        } else {
+            setFilteredReport(
+                report.filter((item) => {
+                    const serial = item.serial_number ? String(item.serial_number).toLocaleLowerCase() : "";
+                    const user = item.user_id ? String(item.user_id).toLocaleLowerCase() : "";
+                    return serial.includes(term) || user.includes(term);
+                })
+            );
+        }
+    };
+
+    const handleRowClick = (item) => {
+        setSelectedReport(item);
+    };
+
+    const handlePopupOpen = (item) => {
+        setSelectedReport(item);
+        setIsPopupOpen(true);
+    };
+
+    const handlePopupClose = () => {
+        setIsPopupOpen(false);
+    };
+
+    const handleCheckboxChange = (e) => {
+        setCheckboxes({ ...checkboxes, [e.target.name]: e.target.checked });
+    };
+
+    const handleFail = async () => {
+        if (!selectedReport) return;
+
+        try {
+            // ลบรายงานออกจากฐานข้อมูล
+            await axios.delete("http://localhost:3000/fire/deleteProcess", {
+                data: { inspection_id: selectedReport.inspection_id },
+            });
+
+            // อัปเดตสถานะของ Fire
+            await axios.post("http://localhost:3000/fire/updatedStatus", {
+                fire_id: selectedReport.fire_id,
+            });
+
+            alert("Report deleted and status updated successfully!");
+            setIsPopupOpen(false);
+
+            // อัปเดตรายการใหม่
+            setReport((prevReports) => prevReports.filter(report => report.inspection_id !== selectedReport.inspection_id));
+            setFilteredReport((prevReports) => prevReports.filter(report => report.inspection_id !== selectedReport.inspection_id));
+
+        } catch (error) {
+            console.error("Error handling fail:", error);
+            alert("Failed to process the fail action.");
+        }
+    };
+
+    const handlePass = async () => {
+        if (!selectedReport) return;
+
+        try {
+            // อัปเดตสถานะเป็น "complete"
+            await axios.post("http://localhost:3000/fire/updatedStatusComplete", {
+                fire_id: selectedReport.fire_id,
+            });
+
+            alert("Status updated to complete successfully!");
+            setIsPopupOpen(false);
+
+            // อัปเดตรายการให้ไม่แสดงรายการที่ pass แล้ว
+            setReport((prevReports) => prevReports.filter(report => report.fire_id !== selectedReport.fire_id));
+            setFilteredReport((prevReports) => prevReports.filter(report => report.fire_id !== selectedReport.fire_id));
+
+        } catch (error) {
+            console.error("Error handling pass:", error);
+            alert("Failed to update status to complete.");
+        }
+    };
+
+    return (
         <div>
-            <h1>Checkwork</h1>
+            <div className="header">
+                <h2>Submitted by user</h2>&nbsp;&nbsp;&nbsp;&nbsp;
+                <div className="search-bar">
+                    <input
+                        type="text"
+                        placeholder="Search by ID or S/N"
+                        value={searchTerm}
+                        onChange={handleSearch}
+                    />
+                </div>
+            </div>
+            <div className="inspection-container">
+                <div className="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>By</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Check</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredReport.length > 0 ? (
+                                filteredReport.map((item, index) => (
+                                    <tr key={index} onClick={() => handleRowClick(item)}>
+                                        <td>{item.serial_number}</td>
+                                        <td>{item.username}</td>
+                                        <td>{item.date.split("T")[0]}</td>
+                                        <td className={item.status === "process" ? "status-process" : "status-other"}>
+                                            {item.status}
+                                        </td>
+                                        <td>
+                                            <button onClick={(e) => { e.stopPropagation(); handlePopupOpen(item); }}>
+                                                📋
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="5">No reports found</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+
+                    <div className="pagination">
+                        <button>{"<"}</button>
+                        <span>1 out of 10</span>
+                        <button>{">"}</button>
+                    </div>
+                </div>
+
+                {isPopupOpen && (
+                    <div className="checkwork-container" onClick={handlePopupClose}>
+                        <h2>Report Details</h2>
+                        <div className="image-placeholder" onClick={(e) => e.stopPropagation()}></div>
+                        {selectedReport && (
+                            <>
+                                <p><strong>S/N :</strong> {selectedReport.serial_number}</p>
+                                <p><strong>Date :</strong> {selectedReport.date.split("T")[0]}</p>
+                                <p><strong>Time :</strong> {selectedReport.time}</p>
+                            </>
+                        )}
+                        <div>
+                            <label>
+                                <input type="checkbox" name="damage" checked={selectedReport?.condition_ok} readOnly /> สภาพของถังไม่เสียหาย
+                            </label><br />
+                            <label>
+                                <input type="checkbox" name="pressure" checked={selectedReport?.pressure_ok} readOnly /> ความดันของถังอยู่ในระดับที่เหมาะสม
+                            </label><br />
+                            <label>
+                                <input type="checkbox" name="headValve" checked={selectedReport?.nozzle_clear} readOnly /> หัวฉีดและวาล์วไม่อุดตัน
+                            </label><br />
+                            <label>
+                                <input type="checkbox" name="safetySeal" checked={selectedReport?.pin_sealed} readOnly /> สลักนิรภัยและซีลป้องกันไม่ถูกดึงออก
+                            </label><br />
+                            <label>
+                                <input type="checkbox" name="position" checked={selectedReport?.placement_correct} readOnly /> ตำแหน่งการติดตั้งเหมาะสม
+                            </label><br />
+                        </div>
+                        <textarea className="remarks" placeholder="หมายเหตุ :" /> &nbsp;&nbsp;&nbsp;&nbsp;
+                        <button onClick={handleFail} className="assign-button" style={{ backgroundColor: "red" }}>
+                            Fail
+                        </button>
+                        <button onClick={handlePass} className="close-button" style={{ backgroundColor: "green" }}>
+                            Pass
+                        </button>
+                    </div>
+                )}
+            </div>
         </div>
-     );
+    );
 }
 
-export default Checkwork;
+export default checkWork;

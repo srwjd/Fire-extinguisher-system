@@ -21,6 +21,7 @@ function Login() {
             const companyId = res.data.companyId;
             const userID = res.data.userID;
 
+            localStorage.setItem('userID', userID);
             localStorage.setItem('role', role);
             localStorage.setItem('token', token);
             localStorage.setItem('companyId', companyId)
