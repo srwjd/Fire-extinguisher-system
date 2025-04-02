@@ -1,0 +1,147 @@
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  border: 1px solid #f97316;
+  padding: 5px;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.search-icon {
+  color: #f97316;
+  margin-left: 10px;
+  margin-right: 5px;
+}
+
+.search-input{
+  border: none;
+  width: 100%;
+  outline: none;
+  align-items: center;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.pagination button {
+  background-color: #f97316;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.branch-select {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 5px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 18px;
+    border: 1px solid #fd6e2b;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  /* สไตล์สำหรับส่วนหัวของตาราง */
+  thead {
+    background-color: #fd6e2b;
+    color: white;
+    font-weight: bold;
+  }
+  
+  thead tr th,
+  thead tr td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #f97316;
+  }
+  
+  /* ทำให้มุมของ thead โค้ง */
+  thead tr th:first-child,
+  thead tr td:first-child {
+    border-top-left-radius: 10px;
+  }
+  
+  thead tr th:last-child,
+  thead tr td:last-child {
+    border-top-right-radius: 10px;
+  }
+  
+  /* สไตล์สำหรับแต่ละแถว */
+  tbody tr {
+    background-color: white;
+    transition: background-color 0.3s ease;
+  }
+  
+  tbody tr:hover {
+    background-color: #ffe0cc;
+  }
+  
+  /* สไตล์สำหรับเซลล์ในตาราง */
+  td {
+    padding: 12px;
+    border-bottom: 1px solid #f97316;
+  }
+  
+  /* ปรับแต่งปุ่ม Pagination */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+  }
+  
+  .pagination button {
+    background-color: #f97316;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 0 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .pagination button:hover {
+    background-color: #e65c00;
+  }
+  
+  .pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  /* ปรับแต่ง dropdown เลือกสาขา */
+  .branch-select select {
+    padding: 10px;
+    border: 1px solid #fd6e2b;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #fd6e2b;
+    cursor: pointer;
+    margin-bottom: 15px;
+    width: 150px;
+  }
+  

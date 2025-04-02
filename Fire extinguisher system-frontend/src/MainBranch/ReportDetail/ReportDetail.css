@@ -1,0 +1,73 @@
+.container {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 20px;
+  border: 1px solid #fd6e2b;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  text-align: center;
+}
+
+/* ปรับแต่งปุ่ม */
+button {
+  background-color: #f97316;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin: 10px 5px;
+}
+
+button:hover {
+  background-color: #e65c00;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* ปรับแต่ง input file */
+input[type="file"] {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  border: 1px solid #fd6e2b;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+/* ปรับแต่ง input text */
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #fd6e2b;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+/* สไตล์ของข้อความ */
+p {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+/* ปุ่ม Back แยกออกมาข้างนอก */
+.back-button {
+  display: start;
+  margin: 20px auto;
+  background-color: #f97316;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+

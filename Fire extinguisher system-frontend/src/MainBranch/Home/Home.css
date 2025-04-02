@@ -1,37 +1,73 @@
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:wght@100..800&display=swap');
-
-* {
-    font-family: 'Ubuntu Sans', sans-serif;
-}
-
-.Text-MainBranch {
-    color: #FD6E2B;
-    font-size: 32px;
-}
-
 .Table-MainBranch {
-    width: 500px;
+    width: 100%;
     font-size: 18px;
-    border: #FD6E2B 1px solid;
-    border-radius: 10px 10px 0 0;
+    border: #fd6e2b 1px solid;
+    border-radius: 10px; /* ทำให้ทั้งตารางมีมุมโค้ง */
+    border-collapse: separate; /* ป้องกัน border-radius ไม่ทำงาน */
+    border-spacing: 0; /* ป้องกันการเกิดช่องว่าง */
+  }
+  
+  /* ทำให้เฉพาะมุมของ thead มีโค้ง */
+  .Table-MainBranch thead th:first-child {
+    border-top-left-radius: 10px;
+  }
+  
+  .Table-MainBranch thead th:last-child {
+    border-top-right-radius: 10px;
+  }
+  
+
+table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-th, td {
-    padding: 12px;
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
 
+.pagination button {
+  background-color: #f97316;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* 
+tr{
+    border: #FD6E2B 1px solid;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+} */
+
+th,
+td {
+  padding: 10px;
+  text-align: left;
 }
 
 th {
-    background-color: #FFD3BE;
-    color: black;
-    font-weight: bold;
+  background-color: #fd6e2b;
+  color: rgb(255, 255, 255);
+  font-weight: bold;
 }
 
 /* ทำให้เฉพาะหัวตารางมีมุมโค้ง */
-th:first-child {
+/* th:first-child {
     border-top-left-radius: 10px;
 }
 
 th:last-child {
     border-top-right-radius: 10px;
-}
+} */
