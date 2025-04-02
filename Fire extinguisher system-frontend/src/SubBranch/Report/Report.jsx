@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { TbReportSearch } from "react-icons/tb";
 import "./Report.css";
 
 function Report() {
@@ -33,7 +34,7 @@ function Report() {
     }, [branchId]);
 
     return (
-        <div className="reportContainer">
+        <div>
             <div className="reportTable">
                 <table className="tableContainer">
                     <thead>
@@ -53,7 +54,7 @@ function Report() {
                                     <td>{fire.fire_mfd ? fire.fire_mfd.split("T")[0] : "N/A"}</td>
                                     <td>{fire.fire_exp ? fire.fire_exp.split("T")[0] : "N/A"}</td>
                                     <td>{fire.latest_check ? fire.latest_check.split("T")[0] : "N/A"}</td>
-                                    <td><a href={`/report/${fire.fire_id}`}>Report</a></td>
+                                    <td><a href={`/report/${fire.fire_id}`}  style={{ color: "#000000"}}><TbReportSearch /></a></td>
                                 </tr>
                             ))
                         ) : (

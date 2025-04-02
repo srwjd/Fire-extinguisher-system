@@ -72,7 +72,7 @@ function ReportDetail() {
     if (loading) return <p>Loading...</p>;
 
     return (
-        <>
+        <div>
             <button className="back-button" onClick={() => navigate(-1)}>Back</button>
 
             <div className="container">
@@ -80,10 +80,10 @@ function ReportDetail() {
                     <>
                         <input type="file" onChange={(e) => setFile(e.target.files[0])} />
                                             
-                        <input type="text" placeholder="หมายเหตุ: " value={description} onChange={(e) => setDescription(e.target.value)} />
+                        <input type="text" placeholder="หมายเหตุ : " value={description} onChange={(e) => setDescription(e.target.value)} />
 
-                        <p><strong>Date :</strong> {currentTime.toLocaleDateString()}</p>
-                        <p><strong>Time :</strong> {currentTime.toLocaleTimeString()}</p>
+                        <p><strong>Date : </strong> {currentTime.toLocaleDateString()}</p>
+                        <p><strong>Time : </strong> {currentTime.toLocaleTimeString()}</p>
                         <p><strong>S/N : </strong> {fire[0].serial_number}</p>
 
                         <button onClick={handleReportSubmit}>Report</button>
@@ -92,7 +92,7 @@ function ReportDetail() {
                     <p>ไม่พบข้อมูลถังดับเพลิง</p>
                 )}
             </div>
-        </>
+        </div>
     );
 }
 

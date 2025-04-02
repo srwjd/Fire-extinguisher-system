@@ -11,8 +11,8 @@ function SubBranch() {
             <Router>
                 <MyLayout>
                     <Routes>
-                          <Route path="/" element={<Home />} />
-                          <Route path="/home" element={<Home />} />
+                          <Route path="/" element={<Report />} />
+                          {/* <Route path="/home" element={<Home />} /> */}
                           <Route path="/report" element={<Report />} />
                           <Route path="/report/:fire_id" element={<ReportDetail />} />
                     </Routes>

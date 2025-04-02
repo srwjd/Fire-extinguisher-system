@@ -5,10 +5,10 @@ import { Link } from 'react-router';
 function Sidebar() {
     return ( 
         <div className='sidebarContainer'>
-            <Link to="/inspection" style={{color: "#000000"}}>Inspection</Link>
-            <Link to="/checkwork" style={{color: "#000000"}}>Checkwork</Link>
-            <Link to="/report" style={{color: "#000000"}}>Report</Link>
-            <Link to="/assignhistory" style={{color: "#000000"}}>Assign History</Link>
+            <Link to="/inspection" className='dashboardSB'>Inspection</Link>
+            <Link to="/checkwork" className='dashboardSB'>Checkwork</Link>
+            <Link to="/report" className='dashboardSB'>Report</Link>
+            <Link to="/assignhistory" className='dashboardSB'>Assign History</Link>
         </div>
      );
 }

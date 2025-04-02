@@ -10,9 +10,7 @@
     /* background-color: #fff; */
 }
 
-.dashboardSB,
-.manageuserSB,
-.manageunitSB {
+.dashboardSB{
     font-weight: larger;
     color: #000000;
     padding: 10px 15px;
@@ -21,24 +19,18 @@
     transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, transform 0.2s;
 }
 
-.dashboardSB:hover,
-.manageuserSB:hover,
-.manageunitSB:hover {
+.dashboardSB:hover{
     background-color: #FD6E2B;
     color: #fff;
     transform: scale(1.05); /* ขยายเล็กน้อยให้ดู smooth */
 }
 
-.dashboardSB:active,
-.manageuserSB:active,
-.manageunitSB:active {
+.dashboardSB:active{
     background-color: #FFD3BE;
     transform: scale(0.98); /* หดลงเล็กน้อยเมื่อกด */
 }
 
-.dashboardSB:focus,
-.manageuserSB:focus,
-.manageunitSB:focus {
+.dashboardSB:focus{
     background-color: #FFD3BE;
     outline: none;
 }
