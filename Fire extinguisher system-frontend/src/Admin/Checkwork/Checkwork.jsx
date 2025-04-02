@@ -118,14 +118,15 @@ function checkWork() {
 
     return (
         <div>
-            <div className="header">
-                <h2>Submitted by user</h2>&nbsp;&nbsp;&nbsp;&nbsp;
-                <div className="search-bar">
+            <div className="admin-header">
+                <div className="admin-search-bar">
+                     <FaSearch className="admin-search-bar-icon" />
                     <input
                         type="text"
                         placeholder="Search by ID or S/N"
                         value={searchTerm}
                         onChange={handleSearch}
+                        style={{ border: "none" }}
                     />
                 </div>
             </div>

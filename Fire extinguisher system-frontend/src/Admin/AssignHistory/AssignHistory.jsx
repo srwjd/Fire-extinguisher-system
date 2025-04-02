@@ -39,14 +39,15 @@ function AssignHistory() {
 
     return (
         <div className="assign-history-container">
-            <div className="header">
-                <h2>Assign History</h2>&nbsp;&nbsp;&nbsp;&nbsp;
-                <div className="search-bar">
+            <div className="admin-header">
+                <div className="admin-search-bar">
+                <FaSearch className="admin-search-bar-icon" />
                     <input 
                         type="text" 
                         placeholder="Search : S/N" 
                         value={searchTerm} 
                         onChange={handleSearchChange} 
+                        style={{ border: "none" }}
                     />
                 </div>
             </div>

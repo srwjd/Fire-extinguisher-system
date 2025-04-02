@@ -1,24 +1,16 @@
 .inspection-container {
   width: 100%;
   display: flex;
-  flex-direction: row; /* จัดวางให้อยู่แถวเดียว */
+  flex-direction: row;
   align-items: flex-start;
 }
 
 .table-container{
-  width: 50%; /* กำหนดให้แต่ละฝั่งมีขนาดเท่ากัน */
+  width: 50%;
   border-radius: 10px;
   align-self: start;
 
 } 
-
-.header {
-  display: flex;
-  /* justify-content: space-between; */
-  align-items: center;
-  width: 100%;
-
-}
 
 h2 {
   color: #ff7043;
@@ -109,7 +101,7 @@ button:hover {
   background: #FFD3BE;
   text-align: center;
   font-family: Arial, sans-serif;
-  align-self: start; /* จัดให้อยู่ด้านบนสุดของ container */
+  align-self: start;
 }
 
 .image-placeholder {

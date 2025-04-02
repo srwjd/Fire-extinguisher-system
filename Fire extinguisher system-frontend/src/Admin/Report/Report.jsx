@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Report.css";
-// import { FaSearch } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 
 function Report() {
     const [report, setReport] = useState([]);
@@ -95,19 +95,20 @@ function Report() {
 
     return (
         <div>
-            <div className="header">
-                <h2>Submitted by user</h2>&nbsp;&nbsp;&nbsp;&nbsp;
-                <div className="search-bar">
+            <div className="admin-header">
+                <div className="admin-search-bar">
+                    <FaSearch className="admin-search-bar-icon" />
                     <input
                         type="text"
                         placeholder="Search by ID or S/N"
                         value={searchTerm}
                         onChange={handleSearch}
+                        style={{ border: "none" }}
                     />
                 </div>
             </div>
             <div className="inspection-container">
-                <div className="table-container">
+                <div className="admin-table-container">
                     <table>
                         <thead>
                             <tr>

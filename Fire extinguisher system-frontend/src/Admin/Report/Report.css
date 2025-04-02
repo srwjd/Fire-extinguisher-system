@@ -5,20 +5,13 @@
     align-items: flex-start;
 }
 
-.table-container{
-    width: 50%; /* กำหนดให้แต่ละฝั่งมีขนาดเท่ากัน */
+.admin-table-container{
+    width: 100%; /* กำหนดให้แต่ละฝั่งมีขนาดเท่ากัน */
     border-radius: 10px;
     align-self: start;
 
 } 
-  
-  .header {
-    display: flex;
-    /* justify-content: space-between; */
-    align-items: center;
-    width: 100%;
 
-  }
   
   h2 {
     color: #ff7043;
@@ -50,29 +43,19 @@
   
 
   table {
-    width: 80%;
+    width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
-    border-radius: 10px;
+    background-color: white;
   }
   
   th, td {
-    border: 1px solid #ddd;
     padding: 10px;
-    text-align: center;
+    text-align: left;
+    border-bottom: 1px solid #f97316;
   }
   
   th {
-    background-color: #ff7043;
-  color: white;
-  }
-  
-  tbody tr:nth-child(even) {
-    background-color: #ffe0d4;
-  }
-  
-  tbody tr:nth-child(odd) {
-    background-color: white;
+    background-color: #fde4cf;
   }
   
   .pagination {
