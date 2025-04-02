@@ -64,11 +64,12 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign({ id: result[0].id }, 'secret', { expiresIn: '1h' });
     const role = result[0].role_name
     const companyId = result[0].company_id;
+    const branchId = result[0].branch_id
     const userID = result[0].user_id
 
     console.log("User ID:", result[0].user_id);
     console.log("Company ID:", result[0].company_id);
-    return res.status(200).json({ message: 'OK success', token, role, companyId, userID });
+    return res.status(200).json({ message: 'OK success', token, role, companyId, userID, branchId });
   } catch (error) {
     res.status(500).json({ message: 'error' });
   }
@@ -280,22 +281,32 @@ router.get("/branches", async (req, res) => {
 });
 
 // ดึงข้อมูลสาขาและถังดับเพลิงตาม branch_id
-router.get("/branches/:branchs_id", async (req, res) => {
+router.get("/branches/:branch_id", async (req, res) => {
   try {
-    const { branchs_id } = req.params;
-    const result = await getBranchById(branchs_id);
-    if (result === 0) {
+    const { branch_id } = req.params;
+
+    if (!branch_id) {
+      return res.status(400).json({ message: "Branch ID is required" });
+    }
+
+    const result = await getBranchById(branch_id);
+    if (!result) {  // เปลี่ยนจาก result === 0 เป็น !result
       return res.status(404).json({ message: "Branch not found" });
     }
 
-    //ดึงข้อมูลถังตาม branch_id
-    const fires = await getFiresByBranchId(branchs_id)
-    res.json(fires);
+    // ดึงข้อมูลถังดับเพลิงตาม branch_id
+    const fires = await getFiresByBranchId(branch_id);
+    if (!fires) {
+      return res.status(500).json({ message: "Failed to fetch fire extinguisher data" });
+    }
+
+    res.json({ branch: fires });
   } catch (error) {
     console.error("Error fetching branch by ID:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
 
 // ดึงข้อมูลสาขาและถังดับเพลิงตาม company_id
 router.get("/company/:company_id", async (req, res) => {
@@ -342,7 +353,6 @@ router.get("/company/:company_id/fires", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-
 // API Endpoint สำหรับเพิ่มรายงาน
 router.post("/reports", upload.single('filename'), async (req, res) => {
   try {

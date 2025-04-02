@@ -24,6 +24,7 @@ function Login() {
             localStorage.setItem('role', role);
             localStorage.setItem('token', token);
             localStorage.setItem('companyId', companyId)
+            localStorage.setItem('branchId', res.data.branchId)
             localStorage.setItem('userID', userID)
             
             
