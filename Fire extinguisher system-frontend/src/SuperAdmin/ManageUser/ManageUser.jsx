@@ -124,11 +124,11 @@ const AddUserForm = ({ isOpen, toggleForm, addUser, setUserList }) => {
                 required
               >
                 <option value="">--- Select ---</option>
-                <option value="Super Admin">Super Admin</option>
+                <option value="SuperAdmin">Super Admin</option>
                 <option value="Admin">Admin</option>
                 <option value="User">User</option>
-                <option value="Main Branch">Main Branch</option>
-                <option value="Sub Branch">Sub Branch</option>
+                <option value="MainBranch">Main Branch</option>
+                <option value="SubBranch">Sub Branch</option>
               </select>
             </div>
             <button type="submit" className="manage-user-confirmAddUser-button">
