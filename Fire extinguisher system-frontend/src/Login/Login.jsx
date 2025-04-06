@@ -6,7 +6,8 @@ import axios from 'axios';
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    // const navigate = useNavigate();
+    const [loginFailed, setLoginFailed] = useState(false);
+    const [loginSuccess, setLoginSuccess] = useState(false);
 
 
     const loginClick = async () => {
@@ -27,28 +28,41 @@ function Login() {
             localStorage.setItem('companyId', companyId)
             localStorage.setItem('branchId', res.data.branchId)
             localStorage.setItem('userID', userID)
-            
-            
 
-            alert("Login successful!");
-            window.location.reload();  // รีเฟรชหน้า
+
+
+            setLoginSuccess(true);
+            setTimeout(() => {
+                setLoginSuccess(false);
+                window.location.reload();  // รีเฟรชหน้า
+            }, 1000);
         } catch (err) {
-            alert("Login failed! Please check your username and password.");
+            setLoginFailed(true);
+            setTimeout(() => {
+                setLoginFailed(false);
+                setUsername('');
+                setPassword('');
+            }, 1000);
             console.error("Login error:", err);
         }
     }
 
     return (
-        <div>
+        <div className='loginContainer'>
+            <div className='bgImage'>
+                <img src="/bg.jpg" alt="" />
+            </div>
             <div className='loginForm'>
                 <h1>Login</h1>
                 <input
+                    className='inputLogin'
                     type="text"
                     placeholder="Username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
                 <input
+                    className='inputLogin'
                     type="password"
                     placeholder="Password"
                     value={password}
@@ -58,6 +72,17 @@ function Login() {
                     Submit
                 </button>
             </div>
+
+            {loginFailed && (
+                <div className="loginFailedAlert">
+                    Login failed! Please check your username and password.
+                </div>
+            )}
+            {loginSuccess && (
+                <div className="loginSuccessAlert">
+                    Login successful!
+                </div>
+            )}
         </div>
     );
 }

@@ -17,9 +17,10 @@ export const query = async (sql, params) => {
 
 // ดึงข้อมูลผู้ใช้ตาม username
 export const getUserByUsername = async (username) => {
-  const sql = `SELECT Users.*, Roles.role_name, Users.company_id
+  const sql = `SELECT Users.*, Roles.role_name, Branchs.company_id
   FROM Users 
   LEFT JOIN Roles ON Users.role_id = Roles.role_id
+  LEFT JOIN Branchs ON Users.branch_id = Branchs.branch_id
   WHERE Users.username = ?`;
   const params = [username];
   return await query(sql, params);
@@ -36,16 +37,10 @@ export const getUserCountByRole = async () => {
 
 // ดึงจำนวน Unit
 export const getAllCompaniesWithBranches = async () => {
-  const sql = `SELECT 
-            c.company_id, 
-            c.company_name, 
-            COUNT(b.branch_id) AS branch_count 
-        FROM 
-            Companys c
-        LEFT JOIN 
-            Branchs b ON c.company_id = b.company_id
-        GROUP BY 
-            c.company_id, c.company_name`;
+  const sql = `SELECT c.company_id, c.company_name, COUNT(b.branch_id) AS branch_count 
+        FROM Companys c
+        LEFT JOIN Branchs b ON c.company_id = b.company_id
+        GROUP BY c.company_id, c.company_name`;
   try {
     const result = await query(sql); // ดึงข้อมูลจากฐานข้อมูล
     return result;

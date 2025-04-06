@@ -32,7 +32,7 @@ button:disabled {
 }
 
 /* ปรับแต่ง input file */
-input[type="file"] {
+.inputFile {
   display: block;
   margin: 10px auto;
   padding: 10px;
@@ -42,7 +42,7 @@ input[type="file"] {
 }
 
 /* ปรับแต่ง input text */
-input[type="text"] {
+.inputText {
   width: 100%;
   padding: 10px;
   margin-top: 10px;

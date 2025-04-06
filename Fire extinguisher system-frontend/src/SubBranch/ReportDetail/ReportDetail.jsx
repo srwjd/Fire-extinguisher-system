@@ -83,9 +83,10 @@ function ReportDetail() {
       <div className="container">
         {fire ? (
           <>
-            <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+            <input className="file-input" type="file" onChange={(e) => setFile(e.target.files[0])} />
 
             <input
+              className="text-input"
               type="text"
               placeholder="หมายเหตุ : "
               value={description}
