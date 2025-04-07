@@ -1,7 +1,7 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken";
 import {
-  getUserByUsername, getAllBranchs, getAllBranches, getBranchById, getBranchesByCompanyId, getFiresByBranchId, getFiresByCompanyId, addReport, getFiresById,
+  getUserByUsername, getAllBranchs, getAllBranches, getAllCompanys, getBranchById, getBranchesByCompanyId, getFiresByBranchId, getFiresByCompanyId, addReport, getFiresById,
   getUserCountByRole, getAllCompaniesWithBranches, getFireExtinguishersByMonth, getAllUser, addUser, updateUser, deleteUser, getAllUnit,
   addCompany, editCompany, deleteBranchAndFires, getReport, getFiresByIds, insertInspection, updateStatus, getReportAdmin, getInspection, 
   getAssign, sendAssign , getFire ,  fireUpdateStatus, sendReports, deleteProcess, updatedStatus, updatedStatusComplete
@@ -140,9 +140,7 @@ router.post("/addUser", async (req, res) => {
     res.status(201).json({ message: "User added successfully", result });
   } catch (error) {
     console.error("Error adding user:", error.message);
-    res
-      .status(500)
-      .json({ message: "Internal Server Error", error: error.message });
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });
 
@@ -265,6 +263,19 @@ router.delete("/deleteBranchAndFires/:branch_id", async (req, res) => {
   } catch (error) {
     console.error("Error deleting branch and fire extinguishers:", error.message);
     res.status(500).json({ message: "Failed to delete branch and extinguishers", error: error.message });
+  }
+});
+
+router.get("/companys", async (req, res) => {
+  try {
+    const result = await getAllCompanys();
+    if (result.length === 0) {
+      return res.status(404).json({ message: "No companys found" });
+    }
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching companys:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 

@@ -11,7 +11,23 @@ const AddUserForm = ({ isOpen, toggleForm, addUser, setUserList }) => {
     firstName: "",
     surname: "",
     role: "",
+    company_id: "",
+    branch_id: "",
   });
+
+  const [companys, setCompanys] = useState([]);
+  const [branches, setBranches] = useState([]);
+
+  useEffect(() => {
+    // Fetch companys
+    axios.get("http://localhost:3000/fire/companys").then((res) => {
+      setCompanys(res.data);
+    });
+    // Fetch branches
+    axios.get("http://localhost:3000/fire/branches").then((res) => {
+      setBranches(res.data);
+    });
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,21 +43,17 @@ const AddUserForm = ({ isOpen, toggleForm, addUser, setUserList }) => {
       alert("Please select a role before adding.");
       return;
     }
-  
+
     try {
       const response = await axios.post(
-        "http://localhost:3000/fire/addUser", // URL สำหรับ API
+        "http://localhost:3000/fire/addUser",
         formData
       );
       alert("User added successfully!");
-  
-      // เพิ่มผู้ใช้ใหม่ใน list
       setUserList((prevUsers) => [
         ...prevUsers,
         { ...formData, id: Date.now().toString() },
       ]);
-  
-      // รีเซ็ทฟอร์ม
       setFormData({
         username: "",
         password: "",
@@ -49,6 +61,8 @@ const AddUserForm = ({ isOpen, toggleForm, addUser, setUserList }) => {
         firstName: "",
         surname: "",
         role: "",
+        company_id: "",
+        branch_id: "",
       });
     } catch (error) {
       console.error("Error adding user:", error);
@@ -131,6 +145,45 @@ const AddUserForm = ({ isOpen, toggleForm, addUser, setUserList }) => {
                 <option value="SubBranch">Sub Branch</option>
               </select>
             </div>
+
+            {formData.role === "MainBranch" && (
+              <div className="manage-user-form-group">
+                <label>Company :</label>
+                <select
+                  name="company_id"
+                  value={formData.company_id}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">--- Select Company ---</option>
+                  {companys.map((companys) => (
+                    <option key={companys.company_id} value={companys.company_id}>
+                      {companys.company_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {formData.role === "SubBranch" && (
+              <div className="manage-user-form-group">
+                <label>Branch :</label>
+                <select
+                  name="branch_id"
+                  value={formData.branch_id}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">--- Select Branch ---</option>
+                  {branches.map((branch) => (
+                    <option key={branch.branch_id} value={branch.branch_id}>
+                      {branch.branch_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             <button type="submit" className="manage-user-confirmAddUser-button">
               Confirm
             </button>
@@ -147,6 +200,31 @@ const ManageUser = () => {
   const [editUser, setEditUser] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [userList, setUserList] = useState([]);
+  const [companys, setCompanys] = useState([]);
+  const [branches, setBranches] = useState([]);
+
+  useEffect(() => {
+    const fetchCompanys = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/companys");
+        setCompanys(response.data);
+      } catch (error) {
+        console.error("Error fetching companies:", error);
+      }
+    };
+
+    const fetchBranches = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/branches");
+        setBranches(response.data);
+      } catch (error) {
+        console.error("Error fetching branches:", error);
+      }
+    };
+
+    fetchCompanys();
+    fetchBranches();
+  }, []);
 
   // ดูรายชื่อ User
   useEffect(() => {
@@ -192,7 +270,7 @@ const ManageUser = () => {
   const currentUsers = React.useMemo(() => {
     return filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
   }, [filteredUsers, indexOfFirstUser, indexOfLastUser]);
-  
+
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   const handleEdit = (user) => {
@@ -414,6 +492,43 @@ const ManageUser = () => {
                   <option value="Sub Branch">Sub Branch</option>
                 </select>
               </div>
+              <div className="manage-user-form-group">
+                <label>Company :</label>
+                <select
+                  value={editUser.company_id || ""}
+                  onChange={(e) =>
+                    setEditUser({ ...editUser, company_id: e.target.value })
+                  }
+                  required
+                >
+                  <option value="">--- Select Company ---</option>
+                  {companys.map((comp) => (
+                    <option key={comp.company_id} value={comp.company_id}>
+                      {comp.company_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {editUser.role === "Sub Branch" && (
+                <div className="manage-user-form-group">
+                  <label>Branch :</label>
+                  <select
+                    value={editUser.branch_id || ""}
+                    onChange={(e) =>
+                      setEditUser({ ...editUser, branch_id: e.target.value })
+                    }
+                    required
+                  >
+                    <option value="">--- Select Branch ---</option>
+                    {branches.map((branch) => (
+                      <option key={branch.branch_id} value={branch.branch_id}>
+                        {branch.branch_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
               <button
                 type="submit"
                 className="manage-user-confirmManageUser-button"

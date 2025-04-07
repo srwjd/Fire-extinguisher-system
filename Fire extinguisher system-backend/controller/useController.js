@@ -84,12 +84,45 @@ export const getAllUser = async () => {
   }
 };
 
-// Add user
+// ดึง company_id จาก branch_id ที่เลือก
+export const getCompanyIdByBranch = async (branchId) => {
+  const sql = `SELECT company_id FROM Branchs WHERE branch_id = ?`;
+  const params = [branchId];
+
+  try {
+    const result = await query(sql, params);
+    return result.length > 0 ? result[0].company_id : null;  // คืนค่า company_id ที่สังกัด
+  } catch (error) {
+    console.error("Error fetching company_id by branch_id:", error.message);
+    throw error;
+  }
+};
+
 export const addUser = async (userData) => {
-  const { username, password, email, firstName, surname, role } = userData;
-  const sql = `INSERT INTO Users (username, password, email, firstname, surname, role_id, create_at) 
-  VALUES (?, ?, ?, ?, ?, (SELECT role_id FROM Roles WHERE role_name = ?), NOW())`;
-  const params = [username, password, email, firstName, surname, role];
+  const { username, password, email, firstName, surname, role, company_id, branch_id } = userData;
+
+  let sql;
+  let params;
+
+  // เช็คว่าเลือก role เป็น Main Branch หรือ Sub Branch
+  if (role === "MainBranch") {
+    // สำหรับ Main Branch เก็บแค่ company_id
+    sql = `INSERT INTO Users (username, password, email, firstname, surname, role_id, company_id, create_at)
+           VALUES (?, ?, ?, ?, ?, (SELECT role_id FROM Roles WHERE role_name = ?), ?, NOW())`;
+    params = [username, password, email, firstName, surname, role, company_id];
+  } else if (role === "SubBranch") {
+    // สำหรับ Sub Branch ให้ดึง company_id ที่สังกัดอยู่กับ branch_id
+    const companyId = await getCompanyIdByBranch(branch_id); // ดึง company_id จาก branch_id
+
+    if (!companyId) {
+      throw new Error("Branch does not belong to any company.");
+    }
+
+    // สำหรับ Sub Branch เก็บแค่ branch_id และ company_id ที่ดึงมา
+    sql = `INSERT INTO Users (username, password, email, firstname, surname, role_id, company_id, branch_id, create_at)
+           VALUES (?, ?, ?, ?, ?, (SELECT role_id FROM Roles WHERE role_name = ?), ?, ?, NOW())`;
+    params = [username, password, email, firstName, surname, role, companyId, branch_id];
+  }
 
   try {
     const result = await query(sql, params);
@@ -99,6 +132,7 @@ export const addUser = async (userData) => {
     throw error;
   }
 };
+
 
 // อัปเดตข้อมูล user
 export const updateUser = async (userId, userData) => {
@@ -324,6 +358,11 @@ export const getBranchById = async (branch_id) => {
     console.error("Error fetching branch by ID:", error);
     throw error;
   }
+}
+
+export const getAllCompanys = async () => {
+  const sql = "SELECT * FROM Companys";
+  return await query(sql);
 }
 
 export const getAllBranches = async () => {
