@@ -229,8 +229,6 @@ export const getAllUnit = async () => {
 };
 
 // Add company and branch
-import { v4 as uuidv4 } from "uuid"; // For generating unique serial_number
-
 export const addCompany = async (userData) => {
   const { company_name, branch_name } = userData;
 
@@ -242,57 +240,65 @@ export const addCompany = async (userData) => {
     let company_id;
 
     if (existingCompanys.length > 0) {
-      // If company exists, use the existing company_id
       company_id = existingCompanys[0].company_id;
     } else {
-      // If company doesn't exist, insert a new company and get its company_id
       const insertCompanysSql = `INSERT INTO Companys (company_name) VALUES (?)`;
       const result = await query(insertCompanysSql, [company_name]);
-      company_id = result.insertId; // Get the newly created company_id
+      company_id = result.insertId;
     }
 
     // Step 2: Check if the branch already exists
     const checkBranchSql = `SELECT branch_id FROM Branchs WHERE branch_name = ? AND company_id = ?`;
-    const existingBranch = await query(checkBranchSql, [
-      branch_name,
-      company_id,
-    ]);
+    const existingBranch = await query(checkBranchSql, [branch_name, company_id]);
 
     if (existingBranch.length > 0) {
-      // If the branch already exists, return a message
       return {
         message: `Branch name "${branch_name}" already exists for this company.`,
         company_id,
       };
     } else {
-      // If the branch doesn't exist, insert the new branch
       const insertBranchSql = `INSERT INTO Branchs (company_id, branch_name) VALUES (?, ?)`;
-      const branchResult = await query(insertBranchSql, [
-        company_id,
-        branch_name,
-      ]);
-      const branch_id = branchResult.insertId; // Get the newly created branch_id
+      const branchResult = await query(insertBranchSql, [company_id, branch_name]);
+      const branch_id = branchResult.insertId;
 
-      // Step 3: Insert 5 fire extinguishers with auto-generated serial numbers
+      // Step 3: Generate serial numbers
+      const getLastSerialSql = `
+      SELECT serial_number FROM Fires 
+      WHERE serial_number LIKE 'NFPA 10-%' 
+      ORDER BY fire_id DESC 
+      LIMIT 1
+    `;
+      const lastSerialResult = await query(getLastSerialSql);
+      let lastNumber = 0;
+
+      if (lastSerialResult.length > 0) {
+        const lastSerial = lastSerialResult[0].serial_number;
+        const match = lastSerial.match(/NFPA 10-(\d+)/);
+        if (match) {
+          lastNumber = parseInt(match[1], 10);
+        }
+      }
+
       const fireInsertPromises = [];
-      const insertDate = new Date().toISOString().split("T")[0]; // วันที่ปัจจุบัน (YYYY-MM-DD)
+      const insertDate = new Date().toISOString().split("T")[0];
 
-      // คำนวณวันหมดอายุ (fire_exp) = fire_mfd + 10 ปี
       const expireDate = new Date();
       expireDate.setFullYear(expireDate.getFullYear() + 10);
-      const fire_exp = expireDate.toISOString().split("T")[0]; // แปลงเป็น YYYY-MM-DD
+      const fire_exp = expireDate.toISOString().split("T")[0];
 
-      // คำนวณ latest_check = fire_mfd และ next_check = latest_check + 3 เดือน
       const latestCheck = insertDate;
       const nextCheckDate = new Date();
       nextCheckDate.setMonth(nextCheckDate.getMonth() + 3);
       const nextCheck = nextCheckDate.toISOString().split("T")[0];
 
-      for (let i = 0; i < 5; i++) {
-        const serial_number = uuidv4();
+      for (let i = 1; i <= 5; i++) {
+        const newNumber = (lastNumber + i).toString().padStart(4, "0");
+        const serial_number = `NFPA 10-${newNumber}`;
+
         const insertFireSql = `
           INSERT INTO Fires (serial_number, fire_mfd, fire_exp, latest_check, next_check, company_id, branch_id) 
           VALUES (?, ?, ?, ?, ?, ?, ?)`;
+
         fireInsertPromises.push(
           query(insertFireSql, [
             serial_number,
@@ -309,11 +315,10 @@ export const addCompany = async (userData) => {
       await Promise.all(fireInsertPromises);
 
       return {
-        message:
-          "Company and branch added successfully, along with 5 fire extinguishers.",
+        message: "Company and branch added successfully, along with 5 fire extinguishers.",
         company_id,
         branch_id,
-        fire_count: 5, // Return the number of fire extinguishers added
+        fire_count: 5,
       };
     }
   } catch (error) {
@@ -321,6 +326,7 @@ export const addCompany = async (userData) => {
     throw new Error("Failed to insert company or branch. " + error.message);
   }
 };
+
 
 // Edit company and branch
 export const editCompany = async (company_id, branch_id, newCompanyData) => {
