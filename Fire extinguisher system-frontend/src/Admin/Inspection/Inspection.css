@@ -7,16 +7,16 @@
   display: flex;
   align-items: center;
   margin: 10px 0;
-  margin-top: -1px;
   border: 1px solid #f97316;
   padding: 5px;
   border-radius: 10px;
   background-color: white;
+  height: 30px;
 }
 
 .admin-search-bar-icon {
   color: #f97316;
-  margin-right: 5px;
+  margin-right: 10px;
   margin-left: 10px;
 }
 
@@ -26,6 +26,129 @@
   outline: none;
 }
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #f97316;
+}
+
+th {
+  background-color: #fde4cf;
+}
+
+.admin-unit-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.admin-unit-pagination button {
+  background-color: #f97316;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+.admin-unit-pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.admin-checkwork-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* dark overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.admin-checkwork-container > div {
+  background-color: white;
+  border-radius: 20px;
+  padding: 30px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  position: relative;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.admin-checkwork-container h2 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.admin-checkwork-container p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.admin-assign-input-user {
+  margin-top: 15px;
+  width: calc(100% - 10px);
+  padding: 10px;
+  border: 1px solid #f97316;
+  border-radius: 10px;
+  outline: none;
+}
+
+.admin-assign-button {
+  background-color: #16a34a;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+  margin-right: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.admin-assign-button:hover {
+  background-color: #15803d;
+}
+
+.admin-close-button {
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.admin-close-button:hover {
+  background-color: #b91c1c;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* .admin-table-container {
+  width: 100%;
+  margin: 5px auto;
+} */
 
 /* .inspection-Container{
     width: 100%;

@@ -1,63 +1,69 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
-import './Inspection.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { FaSearch } from "react-icons/fa";
+import { GoChecklist } from "react-icons/go";
+import "./Inspection.css";
 
 function Inspection() {
   const [inspectionData, setInspectionData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredReport, setFilteredReport] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [selectedReport, setSelectedReport] = useState(null); // For storing the selected report data
-  const [assignUser, setAssignUser] = useState(""); // For handling the user input in the popup
+  const [selectedReport, setSelectedReport] = useState(null);
+  const [assignUser, setAssignUser] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredReport.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredReport.length / itemsPerPage);
 
   useEffect(() => {
-    // Fetch inspection data on component mount
     const fetchInspectionData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/fire/fire');
+        const response = await axios.get("http://localhost:3000/fire/fire");
         if (Array.isArray(response.data.result)) {
-          // Filter data to only include reports with status "complete"
-          const completeReports = response.data.result.filter(item => item.status === 'complete');
-          setInspectionData(completeReports);  // Set filtered data
-          setFilteredReport(completeReports);  // Initialize filtered report with complete data
+          const completeReports = response.data.result.filter(
+            (item) => item.status === "complete"
+          );
+          setInspectionData(completeReports);
+          setFilteredReport(completeReports);
         } else {
-          console.error('Response data is not an array', response.data);
+          console.error("Response data is not an array", response.data);
         }
       } catch (error) {
-        console.error('Error fetching inspection data:', error);
+        console.error("Error fetching inspection data:", error);
       }
     };
 
     fetchInspectionData();
-  }, []);  // Empty dependency array ensures it runs only once when the component mounts
+  }, []);
 
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
 
-    if (!term) {
-      setFilteredReport(inspectionData);
-    } else {
-      setFilteredReport(
-        inspectionData.filter((item) => {
-          const serial = item.serial_number ? String(item.serial_number).toLowerCase() : "";
-          const user = item.user_id ? String(item.user_id).toLowerCase() : "";
-          return serial.includes(term) || user.includes(term);
-        })
-      );
-    }
+    const filtered = inspectionData.filter((item) => {
+      const serial = item.serial_number
+        ? String(item.serial_number).toLowerCase()
+        : "";
+      const user = item.user_id ? String(item.user_id).toLowerCase() : "";
+      return serial.includes(term) || user.includes(term);
+    });
+
+    setFilteredReport(term ? filtered : inspectionData);
+    setCurrentPage(1); // Reset page when searching
   };
 
   const handlePopupOpen = (item) => {
-    console.log("Selected Fire Extinguisher: ", item);  // ดูข้อมูลถังดับเพลิงที่เลือก
-    setSelectedReport(item);  // เก็บข้อมูลถังดับเพลิงที่เลือก
-    setIsPopupOpen(true);  // เปิดป๊อปอัพ
+    setSelectedReport(item);
+    setIsPopupOpen(true);
   };
 
   const handlePopupClose = () => {
-    setIsPopupOpen(false); // Close the popup
-    setSelectedReport(null); // Reset the selected report
+    setIsPopupOpen(false);
+    setSelectedReport(null);
   };
 
   const handleAssign = async () => {
@@ -79,30 +85,30 @@ function Inspection() {
     const formattedTime = now.toLocaleTimeString("en-GB");
 
     try {
-      // Step 1: Create Report
-      const reportResponse = await axios.post("http://localhost:3000/fire/sendReports", {
-        description: "ถึงรอบตรวจถังดับเพลิง",
-        date: formattedDate,
-        time: formattedTime,
-        fire_id: selectedReport.fire_id,
-        user_id: assignBy
-      });
+      const reportResponse = await axios.post(
+        "http://localhost:3000/fire/sendReports",
+        {
+          description: "ถึงรอบตรวจถังดับเพลิง",
+          date: formattedDate,
+          time: formattedTime,
+          fire_id: selectedReport.fire_id,
+          user_id: assignBy,
+        }
+      );
 
-      console.log("Response from server:", reportResponse);  // ดูข้อมูล response ทั้งหมด
       const report_id = reportResponse.data.data.data.insertId;
-      console.log("Newly Created Report ID: ", report_id);  // ตรวจสอบค่าที่ได้จากการสร้างรายงาน
 
       if (reportResponse.status === 201) {
-        // Step 2: Assign Inspector
-        const assignResponse = await axios.post("http://localhost:3000/fire/assign", {
+        const assignResponse = await axios.post(
+          "http://localhost:3000/fire/assign",
+          {
             date: formattedDate,
             time: formattedTime,
             assign_by: assignBy,
-            report_id: report_id,  // ส่งค่า report_id ที่ได้จากการสร้างรายงาน
-            insp_id: inspectorID
-        });
-
-        console.log("Assign Response:", assignResponse.data); // ดูข้อมูลที่ได้จากการ assign
+            report_id: report_id,
+            insp_id: inspectorID,
+          }
+        );
 
         if (assignResponse.status === 201) {
           alert("Assignment successful!");
@@ -117,10 +123,18 @@ function Inspection() {
       console.error("Error assigning report:", error);
       alert("An error occurred while assigning.");
     }
-};
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  };
 
   return (
-    <div className='inspection-Container'>
+    <div className="inspection-Container">
       <div className="admin-header">
         <div className="admin-search-bar">
           <FaSearch className="admin-search-bar-icon" />
@@ -129,12 +143,20 @@ function Inspection() {
             placeholder="Search by ID or S/N"
             value={searchTerm}
             onChange={handleSearch}
-            style={{ border: "none" }}
+            style={{ border: "none", outline: "none", width: "100%" }}
           />
         </div>
       </div>
-      <div className="table-container">
-        <table className="data-table">
+      <div className="admin-table-container">
+        <table
+          className="admin-data-table"
+          style={{
+            width: "100%",
+            marginTop: "20px",
+            border: "1px solid #f97316",
+            borderRadius: "10px",
+          }}
+        >
           <thead>
             <tr>
               <th>S/N</th>
@@ -146,8 +168,8 @@ function Inspection() {
             </tr>
           </thead>
           <tbody>
-            {filteredReport.length > 0 ? (
-              filteredReport.map((item, index) => (
+            {currentItems.length > 0 ? (
+              currentItems.map((item, index) => (
                 <tr key={index}>
                   <td>{item.serial_number}</td>
                   <td>{item.fire_mfd.split("T")[0]}</td>
@@ -155,7 +177,23 @@ function Inspection() {
                   <td>{item.latest_check.split("T")[0]}</td>
                   <td>{item.next_check.split("T")[0]}</td>
                   <td>
-                    <button onClick={() => handlePopupOpen(item)}>📋</button>
+                    <button
+                      onClick={() => handlePopupOpen(item)}
+                      className="checkwork-button"
+                      style={{
+                        color: "black",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: "20px",
+                        backgroundColor: "white",
+                        borderRadius: "100%",
+                        padding: "5px",
+                        width: "40px",
+                        height: "40px",
+                      }}
+                    >
+                      <GoChecklist />
+                    </button>
                   </td>
                 </tr>
               ))
@@ -167,35 +205,69 @@ function Inspection() {
           </tbody>
         </table>
 
-        <div className="pagination">
-          <button>{"<"}</button>
-          <div>1 out of 10</div>
-          <button>{">"}</button>
+        <div className="admin-unit-pagination">
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1 || totalPages === 0}
+          >
+            &lt;
+          </button>
+          <span>
+            {currentPage} out of {totalPages > 0 ? totalPages : 1}
+          </span>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages || totalPages === 0}
+          >
+            &gt;
+          </button>
         </div>
 
         {isPopupOpen && selectedReport && (
-          <div className="checkwork-container" onClick={handlePopupClose}>
-            <h2>Inspection</h2>
-            <div className="image-placeholder" onClick={(e) => e.stopPropagation()}></div>
-            <div>
-              <p><strong>S/N :</strong> {selectedReport.serial_number}</p>
-              <p><strong>Manufactured Date :</strong> {selectedReport.fire_mfd.split("T")[0]}</p>
-              <p><strong>Expiration Date :</strong> {selectedReport.fire_exp.split("T")[0]}</p>
-              <p><strong>Last Check :</strong> {selectedReport.latest_check.split("T")[0]}</p>
-              <p><strong>Next Check :</strong> {selectedReport.next_check.split("T")[0]}</p>
-              <p><strong>Remarks :</strong> {selectedReport.remarks}</p>
+          <div className="admin-checkwork-container" onClick={handlePopupClose}>
+            <div onClick={(e) => e.stopPropagation()}>
+              <h2 style={{ color: "#000000" }}>Inspection</h2>
+              <p>
+                <strong>S/N :</strong> {selectedReport.serial_number}
+              </p>
+              <p>
+                <strong>Manufactured Date :</strong>{" "}
+                {selectedReport.fire_mfd.split("T")[0]}
+              </p>
+              <p>
+                <strong>Expiration Date :</strong>{" "}
+                {selectedReport.fire_exp.split("T")[0]}
+              </p>
+              <p>
+                <strong>Last Check :</strong>{" "}
+                {selectedReport.latest_check.split("T")[0]}
+              </p>
+              <p>
+                <strong>Next Check :</strong>{" "}
+                {selectedReport.next_check.split("T")[0]}
+              </p>
+              <p>
+                <strong>Remarks :</strong> {selectedReport.remarks}
+              </p>
+              <input
+                type="text"
+                placeholder="User ID"
+                className="admin-assign-input-user"
+                value={assignUser}
+                onChange={(e) => setAssignUser(e.target.value)}
+              />
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <button className="admin-assign-button" onClick={handleAssign}>
+                  Assign
+                </button>
+                <button
+                  className="admin-close-button"
+                  onClick={handlePopupClose}
+                >
+                  Close
+                </button>
+              </div>
             </div>
-            <input
-              type="text"
-              placeholder="User ID"
-              className="input"
-              value={assignUser}
-              onChange={(e) => setAssignUser(e.target.value)}
-              onClick={(e) => e.stopPropagation()}
-            />
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <button className="assign-button" onClick={handleAssign}>Assign</button>
-            <button onClick={handlePopupClose} className="close-button">Close</button>
           </div>
         )}
       </div>
@@ -204,4 +276,3 @@ function Inspection() {
 }
 
 export default Inspection;
- 
