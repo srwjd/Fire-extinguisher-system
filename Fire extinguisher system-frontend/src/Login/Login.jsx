@@ -53,7 +53,7 @@ function Login() {
                 <img src="/bg.jpg" alt="" />
             </div>
             <div className='loginForm'>
-                <h1>Login</h1>
+                <div className='titleLogin'>Welcome to Firecheck</div>
                 <input
                     className='inputLogin'
                     type="text"
@@ -69,7 +69,7 @@ function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <button onClick={loginClick}>
-                    Submit
+                    Login
                 </button>
             </div>
 
