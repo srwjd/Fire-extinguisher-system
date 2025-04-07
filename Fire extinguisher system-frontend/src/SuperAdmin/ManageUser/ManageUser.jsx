@@ -157,7 +157,10 @@ const AddUserForm = ({ isOpen, toggleForm, addUser, setUserList }) => {
                 >
                   <option value="">--- Select Company ---</option>
                   {companys.map((companys) => (
-                    <option key={companys.company_id} value={companys.company_id}>
+                    <option
+                      key={companys.company_id}
+                      value={companys.company_id}
+                    >
                       {companys.company_name}
                     </option>
                   ))}
@@ -206,7 +209,7 @@ const ManageUser = () => {
   useEffect(() => {
     const fetchCompanys = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/companys");
+        const response = await axios.get("http://localhost:3000/fire/companys");
         setCompanys(response.data);
       } catch (error) {
         console.error("Error fetching companies:", error);
@@ -215,7 +218,7 @@ const ManageUser = () => {
 
     const fetchBranches = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/branches");
+        const response = await axios.get("http://localhost:3000/fire/branches");
         setBranches(response.data);
       } catch (error) {
         console.error("Error fetching branches:", error);
@@ -275,12 +278,14 @@ const ManageUser = () => {
 
   const handleEdit = (user) => {
     setEditUser({
-      id: user.user_id, // Ensure it matches your database ID field
+      id: user.user_id,
       username: user.username,
       email: user.email,
-      firstName: user.firstname || "", // Use correct field names
+      firstName: user.firstname || "",
       surname: user.surname || "",
-      role: user.role_name, // Ensure the correct role field
+      role: user.role_name,
+      company_id: user.company_id || "",
+      branch_id: user.branch_id || "",
     });
   };
 
@@ -290,14 +295,16 @@ const ManageUser = () => {
       alert("Please select a role before saving.");
       return;
     }
-
+  
+    console.log(editUser); // ตรวจสอบค่าของ editUser ก่อนส่ง
+  
     try {
       await axios.put(
         `http://localhost:3000/fire/updateUser/${editUser.id}`,
         editUser
       );
       alert("User updated successfully!");
-
+      
       setUserList((prevUsers) =>
         prevUsers.map((user) =>
           user.id === editUser.id ? { ...user, ...editUser } : user
@@ -308,7 +315,7 @@ const ManageUser = () => {
       console.error("Error updating user:", error);
       alert("Failed to update user.");
     }
-  };
+  };  
 
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm("Are you sure you want to delete?");
@@ -488,29 +495,35 @@ const ManageUser = () => {
                   <option value="Super Admin">Super Admin</option>
                   <option value="Admin">Admin</option>
                   <option value="User">User</option>
-                  <option value="Main Branch">Main Branch</option>
-                  <option value="Sub Branch">Sub Branch</option>
-                </select>
-              </div>
-              <div className="manage-user-form-group">
-                <label>Company :</label>
-                <select
-                  value={editUser.company_id || ""}
-                  onChange={(e) =>
-                    setEditUser({ ...editUser, company_id: e.target.value })
-                  }
-                  required
-                >
-                  <option value="">--- Select Company ---</option>
-                  {companys.map((comp) => (
-                    <option key={comp.company_id} value={comp.company_id}>
-                      {comp.company_name}
-                    </option>
-                  ))}
+                  <option value="MainBranch">Main Branch</option>
+                  <option value="SubBranch">Sub Branch</option>
                 </select>
               </div>
 
-              {editUser.role === "Sub Branch" && (
+              {editUser.role === "MainBranch" && (
+                <div className="manage-user-form-group">
+                  <label>Company :</label>
+                  <select
+                    value={editUser.company_id || ""}
+                    onChange={(e) =>
+                      setEditUser({ ...editUser, company_id: e.target.value })
+                    }
+                    required
+                  >
+                    <option value="">--- Select Company ---</option>
+                    {companys.map((company) => (
+                      <option
+                        key={company.company_id}
+                        value={company.company_id}
+                      >
+                        {company.company_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {editUser.role === "SubBranch" && (
                 <div className="manage-user-form-group">
                   <label>Branch :</label>
                   <select

@@ -136,12 +136,26 @@ export const addUser = async (userData) => {
 
 // อัปเดตข้อมูล user
 export const updateUser = async (userId, userData) => {
-  const { username, email, firstName, surname, role } = userData;
-  const sql = `UPDATE Users 
-                 SET username = ?, email = ?, firstname = ?, surname = ?, 
-                     role_id = (SELECT role_id FROM Roles WHERE role_name = ?)
-                 WHERE user_id = ?`;
-  const params = [username, email, firstName, surname, role, userId];
+  const { username, email, firstName, surname, role, company_id, branch_id } = userData;
+
+  let sql = `UPDATE Users 
+             SET username = ?, email = ?, firstname = ?, surname = ?, 
+                 role_id = (SELECT role_id FROM Roles WHERE role_name = ?),`;
+
+  // เพิ่มการอัพเดต company_id หรือ branch_id ถ้าเป็น MainBranch หรือ SubBranch
+  if (role === "MainBranch") {
+    sql += ` company_id = ? `;
+  } else if (role === "SubBranch") {
+    sql += ` branch_id = ? `;
+  }
+
+  sql += `WHERE user_id = ?`;
+
+  const params = role === "MainBranch" 
+    ? [username, email, firstName, surname, role, company_id, userId]
+    : role === "SubBranch"
+    ? [username, email, firstName, surname, role, branch_id, userId]
+    : [username, email, firstName, surname, role, userId];
 
   try {
     const result = await query(sql, params);
@@ -151,6 +165,7 @@ export const updateUser = async (userId, userData) => {
     throw error;
   }
 };
+
 
 // ลบ user
 export const deleteUser = async (userId) => {

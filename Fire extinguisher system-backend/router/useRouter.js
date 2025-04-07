@@ -147,21 +147,29 @@ router.post("/addUser", async (req, res) => {
 // อัปเดตข้อมูลผู้ใช้
 router.put("/updateUser/:id", async (req, res) => {
   const userId = req.params.id;
+  const userData = req.body;
+
+  // ตรวจสอบว่า role ถูกเลือกเป็น Main Branch หรือ Sub Branch หรือไม่
+  if (userData.role === "MainBranch" && !userData.company_id) {
+    return res.status(400).json({ message: "Company is required for Main Branch role" });
+  }
+
+  if (userData.role === "SubBranch" && !userData.branch_id) {
+    return res.status(400).json({ message: "Branch is required for Sub Branch role" });
+  }
+
   try {
-    const result = await updateUser(userId, req.body);
+    const result = await updateUser(userId, userData);
     if (result.affectedRows === 0) {
-      return res
-        .status(404)
-        .json({ message: "User not found or no changes made" });
+      return res.status(404).json({ message: "User not found or no changes made" });
     }
     res.status(200).json({ message: "User updated successfully", result });
   } catch (error) {
     console.error("Error updating user:", error.message);
-    res
-      .status(500)
-      .json({ message: "Internal Server Error", error: error.message });
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });
+
 
 // ลบผู้ใช้
 router.delete("/deleteUser/:id", async (req, res) => {
