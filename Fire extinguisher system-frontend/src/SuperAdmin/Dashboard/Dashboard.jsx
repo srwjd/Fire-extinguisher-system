@@ -58,16 +58,23 @@ function Dashboard() {
         if (!response.data || !Array.isArray(response.data)) {
           throw new Error("Invalid data format");
         }
+
+        const statuses = ["complete", "process", "report"];
+
         // แปลงข้อมูลให้อยู่ในรูปแบบที่ BarChart ต้องการ
         const transformedData = response.data.reduce((acc, item) => {
-          const existingMonth = acc.find((entry) => entry.month === item.month);
-          if (existingMonth) {
-            existingMonth[item.status] = item.count;
-          } else {
-            acc.push({ month: item.month, [item.status]: item.count });
+          let monthEntry = acc.find((entry) => entry.month === item.month);
+          if (!monthEntry) {
+            monthEntry = { month: item.month };
+            statuses.forEach((status) => {
+              monthEntry[status] = 0;
+            });
+            acc.push(monthEntry);
           }
+          monthEntry[item.status] = item.count;
           return acc;
         }, []);
+
         setFireExtinguishers(transformedData);
       } catch (error) {
         console.error("Error fetching fire extinguisher data:", error);
@@ -140,7 +147,29 @@ function Dashboard() {
               <BarChart data={fireExtinguishers}>
                 <XAxis dataKey="month" />
                 <YAxis />
-                <Tooltip />
+                <Tooltip
+                  content={({ active, payload, label }) => {
+                    if (active && payload && payload.length) {
+                      const data = payload[0].payload;
+                      return (
+                        <div
+                          style={{
+                            backgroundColor: "white",
+                            border: "1px solid #000",
+                            padding: "10px",
+                            borderRadius: "5px",
+                          }}
+                        >
+                          <p><strong>{label}</strong></p>
+                          <p>Complete : {data.complete || 0}</p>
+                          <p>Process : {data.process || 0}</p>
+                          <p>Report : {data.report || 0}</p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
                 <Legend />
                 <Bar dataKey="complete" fill="#4CB760" name="Complete" />
                 <Bar dataKey="process" fill="#F7CE36" name="Process" />

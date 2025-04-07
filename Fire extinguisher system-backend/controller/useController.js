@@ -24,7 +24,7 @@ export const getUserByUsername = async (username) => {
   WHERE Users.username = ?`;
   const params = [username];
   return await query(sql, params);
-}
+};
 
 // ดึงจำนวน User ใน Role
 export const getUserCountByRole = async () => {
@@ -54,18 +54,26 @@ export const getAllCompaniesWithBranches = async () => {
 export const getFireExtinguishersByMonth = async () => {
   const sql = `
     SELECT 
-      DATE_FORMAT(fire_mfd, '%Y-%m') AS month, 
+      month,
       status,
       COUNT(*) AS count
-    FROM Fires
+    FROM (
+      SELECT 
+        DATE_FORMAT(fire_mfd, '%Y-%b') AS month,
+        status
+      FROM Fires
+      WHERE fire_mfd IS NOT NULL
+    ) AS sub
     GROUP BY month, status
-    ORDER BY month DESC;
+    ORDER BY STR_TO_DATE(month, '%Y-%b') ASC;
   `;
+
+  console.log("Running SQL:", sql);
 
   try {
     return await query(sql);
   } catch (error) {
-    console.error("Error fetching fire extinguishers data:", error.message);
+    console.error("🔥 Error executing query:", error.message);
     throw error;
   }
 };
@@ -91,7 +99,7 @@ export const getCompanyIdByBranch = async (branchId) => {
 
   try {
     const result = await query(sql, params);
-    return result.length > 0 ? result[0].company_id : null;  // คืนค่า company_id ที่สังกัด
+    return result.length > 0 ? result[0].company_id : null; // คืนค่า company_id ที่สังกัด
   } catch (error) {
     console.error("Error fetching company_id by branch_id:", error.message);
     throw error;
@@ -99,7 +107,16 @@ export const getCompanyIdByBranch = async (branchId) => {
 };
 
 export const addUser = async (userData) => {
-  const { username, password, email, firstName, surname, role, company_id, branch_id } = userData;
+  const {
+    username,
+    password,
+    email,
+    firstName,
+    surname,
+    role,
+    company_id,
+    branch_id,
+  } = userData;
 
   let sql;
   let params;
@@ -121,7 +138,16 @@ export const addUser = async (userData) => {
     // สำหรับ Sub Branch เก็บแค่ branch_id และ company_id ที่ดึงมา
     sql = `INSERT INTO Users (username, password, email, firstname, surname, role_id, company_id, branch_id, create_at)
            VALUES (?, ?, ?, ?, ?, (SELECT role_id FROM Roles WHERE role_name = ?), ?, ?, NOW())`;
-    params = [username, password, email, firstName, surname, role, companyId, branch_id];
+    params = [
+      username,
+      password,
+      email,
+      firstName,
+      surname,
+      role,
+      companyId,
+      branch_id,
+    ];
   }
 
   try {
@@ -133,10 +159,10 @@ export const addUser = async (userData) => {
   }
 };
 
-
 // อัปเดตข้อมูล user
 export const updateUser = async (userId, userData) => {
-  const { username, email, firstName, surname, role, company_id, branch_id } = userData;
+  const { username, email, firstName, surname, role, company_id, branch_id } =
+    userData;
 
   let sql = `UPDATE Users 
              SET username = ?, email = ?, firstname = ?, surname = ?, 
@@ -151,11 +177,12 @@ export const updateUser = async (userId, userData) => {
 
   sql += `WHERE user_id = ?`;
 
-  const params = role === "MainBranch" 
-    ? [username, email, firstName, surname, role, company_id, userId]
-    : role === "SubBranch"
-    ? [username, email, firstName, surname, role, branch_id, userId]
-    : [username, email, firstName, surname, role, userId];
+  const params =
+    role === "MainBranch"
+      ? [username, email, firstName, surname, role, company_id, userId]
+      : role === "SubBranch"
+      ? [username, email, firstName, surname, role, branch_id, userId]
+      : [username, email, firstName, surname, role, userId];
 
   try {
     const result = await query(sql, params);
@@ -165,7 +192,6 @@ export const updateUser = async (userId, userData) => {
     throw error;
   }
 };
-
 
 // ลบ user
 export const deleteUser = async (userId) => {
@@ -308,7 +334,11 @@ export const editCompany = async (company_id, branch_id, newCompanyData) => {
 
   try {
     const updateBranchSql = `UPDATE Branchs SET branch_name = ? WHERE company_id = ? AND branch_id = ?`;
-    const result = await query(updateBranchSql, [branch_name, company_id, branch_id]);
+    const result = await query(updateBranchSql, [
+      branch_name,
+      company_id,
+      branch_id,
+    ]);
 
     if (result.affectedRows === 0) {
       throw new Error("No rows affected. Possibly, the branch doesn't exist.");
@@ -346,80 +376,85 @@ export const deleteBranchAndFires = async (branch_id) => {
       branch_id,
     };
   } catch (error) {
-    console.error("Error deleting branch and fire extinguishers:", error.message);
-    throw new Error("Failed to delete branch and extinguishers. " + error.message);
+    console.error(
+      "Error deleting branch and fire extinguishers:",
+      error.message
+    );
+    throw new Error(
+      "Failed to delete branch and extinguishers. " + error.message
+    );
   }
 };
 
 //ดูสาขาทั้งหมด
 export const getAllBranchs = async () => {
   try {
-    const sql = `SELECT * FROM Branchs`
-    return await query(sql)
+    const sql = `SELECT * FROM Branchs`;
+    return await query(sql);
   } catch (error) {
     console.error("Error fetching all branches:", error);
     throw error;
   }
-}
+};
 
 //ดูสาขาตาม branch_id
 export const getBranchById = async (branch_id) => {
   try {
     const sql = `SELECT * FROM Branchs
-        WHERE branch_id = ?`
-    const params = [branch_id]
-    return await query(sql, params)
+        WHERE branch_id = ?`;
+    const params = [branch_id];
+    return await query(sql, params);
   } catch (error) {
     console.error("Error fetching branch by ID:", error);
     throw error;
   }
-}
+};
 
 export const getAllCompanys = async () => {
   const sql = "SELECT * FROM Companys";
   return await query(sql);
-}
+};
 
 export const getAllBranches = async () => {
   const sql = "SELECT * FROM Branchs";
   return await query(sql);
-}
+};
 
 //ดูสาขาย่อยตาม company_id
 export const getBranchesByCompanyId = async (company_id) => {
   try {
-    const sql = `SELECT * FROM Branchs WHERE company_id = ?`
-    const params = [company_id]
-    return await query(sql, params)
+    const sql = `SELECT * FROM Branchs WHERE company_id = ?`;
+    const params = [company_id];
+    return await query(sql, params);
   } catch (error) {
     console.error("Error fetching Branchs by company ID:", error);
     throw error;
   }
-}
+};
 
 //ดึงข้อมูลใน Fires ตาม branch_id
 export const getFiresByBranchId = async (branch_id) => {
   try {
-    const sql = `SELECT * FROM Fires WHERE branch_id =?`
+    const sql = `SELECT * FROM Fires WHERE branch_id =?`;
     const params = [branch_id];
-    return await query(sql, params)
+    return await query(sql, params);
   } catch (error) {
     console.error("Error fetching fires by branch ID:", error);
     throw error;
   }
-}
+};
 
 //ดึงข้อมูลใน Fires ตาม company_id
 export const getFiresByCompanyId = async (company_id) => {
   try {
-    const sql = `SELECT * FROM Fires WHERE company_id =?`
+    const sql = `SELECT * FROM Fires WHERE company_id =?`;
     const params = [company_id];
-    return await query(sql, params)
+    return await query(sql, params);
   } catch (error) {
     console.error("Error fetching fires by company ID:", error);
     throw error;
   }
-}
+};
 
 //เพิ่มข้อมูลใน Report
 export const addReport = async (report) => {
@@ -429,43 +464,52 @@ export const addReport = async (report) => {
             INSERT INTO Reports (filename, description, date, time, fire_id, user_id) 
             VALUES (?, ?, ?, ?, ?, ?)
         `;
-    const paramsInsert = [report.filename, report.description, report.date, report.time, report.fire_id, report.user_id];
+    const paramsInsert = [
+      report.filename,
+      report.description,
+      report.date,
+      report.time,
+      report.fire_id,
+      report.user_id,
+    ];
     await query(sqlInsert, paramsInsert);
 
     // 🔹 อัปเดตสถานะของ Fire เป็น "report"
     const sqlUpdate = `UPDATE Fires SET status = 'report' WHERE fire_id = ?`;
     await query(sqlUpdate, [report.fire_id]);
 
-    return { success: true, message: "Report added and fire status updated successfully" };
+    return {
+      success: true,
+      message: "Report added and fire status updated successfully",
+    };
   } catch (error) {
     console.error("Error adding report:", error);
     throw error;
   }
 };
 
-
 // ดึง Report ตาม report_id
 export const getReportById = async (report_id) => {
   try {
-    const sql = `SELECT * FROM Reports WHERE report_id =?`
+    const sql = `SELECT * FROM Reports WHERE report_id =?`;
     const params = [report_id];
-    return await query(sql, params)
+    return await query(sql, params);
   } catch (error) {
     console.error("Error get report by report_id:", error);
     throw error;
   }
-}
+};
 // ดึงข้อมูลใน Fires ตาม fire_id
 export const getFiresById = async (fire_id) => {
   try {
-    const sql = `SELECT * FROM Fires WHERE fire_id =?`
+    const sql = `SELECT * FROM Fires WHERE fire_id =?`;
     const params = [fire_id];
-    return await query(sql, params)
+    return await query(sql, params);
   } catch (error) {
     console.error("Error get fire by fire_id:", error);
     throw error;
   }
-}
+};
 // sirawan
 export const getReport = async (insp_id) => {
   const sql = `
@@ -475,12 +519,11 @@ export const getReport = async (insp_id) => {
               `;
   const params = [insp_id];
   return await query(sql, params);
-}
-
+};
 
 export const getFiresByIds = async (fire_ids) => {
   if (!Array.isArray(fire_ids) || fire_ids.length === 0) {
-      throw new Error("fire_ids ต้องเป็นอาเรย์และมีค่าอย่างน้อย 1 ค่า");
+    throw new Error("fire_ids ต้องเป็นอาเรย์และมีค่าอย่างน้อย 1 ค่า");
   }
 
   // 🔥 ใช้ Dynamic Query แทน `IN (?)` เพื่อรองรับอาร์เรย์หลายค่า
@@ -497,165 +540,180 @@ export const getFiresByIds = async (fire_ids) => {
 
 export const insertInspection = async (data) => {
   try {
-      // ไม่ต้องรวม inspection_id ในคำสั่ง SQL
-      const sql = `INSERT INTO Inspections 
+    // ไม่ต้องรวม inspection_id ในคำสั่ง SQL
+    const sql = `INSERT INTO Inspections 
       (filename, description, date, time, fire_id, user_id, assign_id, condition_ok, pressure_ok, nozzle_clear, pin_sealed, placement_correct) 
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-      const params = [data.filename, data.description, data.date, data.time, data.fire_id, data.user_id, data.assign_id, data.condition_ok, data.pressure_ok, data.nozzle_clear, data.pin_sealed, data.placement_correct];
-      return await query(sql, params);
+    const params = [
+      data.filename,
+      data.description,
+      data.date,
+      data.time,
+      data.fire_id,
+      data.user_id,
+      data.assign_id,
+      data.condition_ok,
+      data.pressure_ok,
+      data.nozzle_clear,
+      data.pin_sealed,
+      data.placement_correct,
+    ];
+    return await query(sql, params);
   } catch (error) {
-      console.error("Error occurred while inserting inspection:", error);
+    console.error("Error occurred while inserting inspection:", error);
   }
-}
+};
 
 export const updateStatus = async (data) => {
   try {
-      const sql = `UPDATE Fires SET status = 'process' WHERE fire_id = ?`;
-      const params = [data.fire_id];
-      return await query(sql, params);
+    const sql = `UPDATE Fires SET status = 'process' WHERE fire_id = ?`;
+    const params = [data.fire_id];
+    return await query(sql, params);
   } catch (error) {
-      console.error("Error occurred while updating status:", error);
+    console.error("Error occurred while updating status:", error);
   }
-}
-
-
-
-
-
-
-
-
-
+};
 
 export const getReportAdmin = async () => {
-    const sql = `SELECT * FROM Reports
+  const sql = `SELECT * FROM Reports
     LEFT JOIN Fires ON Reports.fire_id = Fires.fire_id
-    ORDER BY Reports.report_id;`
+    ORDER BY Reports.report_id;`;
 
-    return await query(sql);
-}
+  return await query(sql);
+};
 
 export const getInspection = async () => {
-    const sql =`SELECT * FROM Inspections
+  const sql = `SELECT * FROM Inspections
     LEFT JOIN Fires ON Inspections.fire_id = Fires.fire_id
     LEFT JOIN Users ON Inspections.user_id = Users.user_id
-    ORDER BY Inspections.inspection_id`
-    return await query(sql)
-}
-
+    ORDER BY Inspections.inspection_id`;
+  return await query(sql);
+};
 
 export const getAssign = async () => {
-    const sql = 
-                `SELECT * , Assigns.time
+  const sql = `SELECT * , Assigns.time
                 FROM Assigns
                 LEFT JOIN Reports ON Assigns.report_id = Reports.report_id
                 LEFT JOIN Fires ON Reports.fire_id = Fires.fire_id
                 LEFT JOIN Users ON Assigns.insp_id = Users.user_id
                 ORDER BY Assigns.assign_id
-                `
-    return await query(sql);
-}
+                `;
+  return await query(sql);
+};
 
 export const sendAssign = async (assign) => {
-    try {
-        const sql = `
+  try {
+    const sql = `
         INSERT INTO Assigns (date, time, assign_by, report_id, insp_id)
         VALUES (?, ?, ?, ?, ?)
     `;
-    const params = [assign.date, assign.time, assign.assign_by, assign.report_id, assign.insp_id];
+    const params = [
+      assign.date,
+      assign.time,
+      assign.assign_by,
+      assign.report_id,
+      assign.insp_id,
+    ];
     return await query(sql, params);
-    }catch (error) {
-        console.error("Error adding report:", error);
-        throw error;
-    }
-}
+  } catch (error) {
+    console.error("Error adding report:", error);
+    throw error;
+  }
+};
 
+export const getFire = async () => {
+  const sql = `SELECT * FROM Fires
+    ORDER BY Fires.fire_id;`;
+  return await query(sql);
+};
 
- export const getFire = async () => {
-    const sql = `SELECT * FROM Fires
-    ORDER BY Fires.fire_id;`
-    return await query(sql);
- }
+export const fireUpdateStatus = async (data) => {
+  try {
+    const sql = `UPDATE Fires SET status = ? WHERE fire_id = ?`;
+    const params = [data.status, data.fire_id];
+    console.log("Executing SQL:", sql);
+    return await query(sql, params);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 
- export const fireUpdateStatus = async (data) => {
-    try {
-       const sql = `UPDATE Fires SET status = ? WHERE fire_id = ?`;
-       const params = [data.status, data.fire_id];
-       console.log("Executing SQL:", sql);
-       return await query(sql, params);
-    } catch (error) {
-       console.error(error);
-       throw error;
-    }
- };
-
- export const sendReports = async (report) => {
-    try {
-      const sqlInsert = `
+export const sendReports = async (report) => {
+  try {
+    const sqlInsert = `
         INSERT INTO Reports (filename, description, date, time, fire_id, user_id) 
         VALUES (?, ?, ?, ?, ?, ?)
       `;
-      const paramsInsert = [report.filename, report.description, report.date, report.time, report.fire_id, report.user_id];
-      
-      // ใช้ query และรับผลลัพธ์
-      const result = await query(sqlInsert, paramsInsert);
-  
-      // ตรวจสอบว่าผลลัพธ์ที่ได้มี insertId หรือไม่
-      console.log("Insert result: ", result);
-  
-      // ตรวจสอบว่า result มี insertId หรือไม่
-      if (result && result.insertId) {
-        console.log("Inserted Report ID: ", result.insertId);
-      } else {
-        console.error("No insertId returned from MySQL query.");
-      }
-  
-      // อัปเดตสถานะของ Fire เป็น "report"
-      const sqlUpdate = `UPDATE Fires SET status = 'report' WHERE fire_id = ?`;
-      await query(sqlUpdate, [report.fire_id]);
-  
-      return { success: true, message: "Report added and fire status updated successfully", data: result };
-    } catch (error) {
-      console.error("Error adding report:", error);
-      throw error;
+    const paramsInsert = [
+      report.filename,
+      report.description,
+      report.date,
+      report.time,
+      report.fire_id,
+      report.user_id,
+    ];
+
+    // ใช้ query และรับผลลัพธ์
+    const result = await query(sqlInsert, paramsInsert);
+
+    // ตรวจสอบว่าผลลัพธ์ที่ได้มี insertId หรือไม่
+    console.log("Insert result: ", result);
+
+    // ตรวจสอบว่า result มี insertId หรือไม่
+    if (result && result.insertId) {
+      console.log("Inserted Report ID: ", result.insertId);
+    } else {
+      console.error("No insertId returned from MySQL query.");
     }
-  };
 
+    // อัปเดตสถานะของ Fire เป็น "report"
+    const sqlUpdate = `UPDATE Fires SET status = 'report' WHERE fire_id = ?`;
+    await query(sqlUpdate, [report.fire_id]);
 
- export const deleteProcess = async (inspection_id) => {
-    try {
-      const sql = `DELETE FROM Inspections WHERE Inspection_id = ?`;
-      const params = [inspection_id];
-      await query(sql, params);
-      return { success: true, message: "Report deleted successfully" };
-    } catch (error) {
-      console.error("Error deleting report:", error);
-      throw error;
-    }
-  };
-
-
-  export const updatedStatus = async (fire_id) => {
-    try {
-      const sql = `UPDATE Fires SET status = 'report' WHERE fire_id = ?`;
-      const params = [fire_id];
-      await query(sql, params);
-      return { success: true, message: "Status updated successfully" };
-    } catch (error) {
-      console.error("Error updating status:", error);
-      throw error;
-    }
+    return {
+      success: true,
+      message: "Report added and fire status updated successfully",
+      data: result,
+    };
+  } catch (error) {
+    console.error("Error adding report:", error);
+    throw error;
   }
+};
 
-
-  export const updatedStatusComplete = async (fire_id) => {
-    try {
-      const sql = `UPDATE Fires SET status = 'complete' WHERE fire_id = ?`;
-      const params = [fire_id];
-      await query(sql, params);
-      return { success: true, message: "Status updated successfully" };
-    } catch (error) {
-      console.error("Error updating status:", error);
-      throw error;
-    }
+export const deleteProcess = async (inspection_id) => {
+  try {
+    const sql = `DELETE FROM Inspections WHERE Inspection_id = ?`;
+    const params = [inspection_id];
+    await query(sql, params);
+    return { success: true, message: "Report deleted successfully" };
+  } catch (error) {
+    console.error("Error deleting report:", error);
+    throw error;
   }
+};
+
+export const updatedStatus = async (fire_id) => {
+  try {
+    const sql = `UPDATE Fires SET status = 'report' WHERE fire_id = ?`;
+    const params = [fire_id];
+    await query(sql, params);
+    return { success: true, message: "Status updated successfully" };
+  } catch (error) {
+    console.error("Error updating status:", error);
+    throw error;
+  }
+};
+
+export const updatedStatusComplete = async (fire_id) => {
+  try {
+    const sql = `UPDATE Fires SET status = 'complete' WHERE fire_id = ?`;
+    const params = [fire_id];
+    await query(sql, params);
+    return { success: true, message: "Status updated successfully" };
+  } catch (error) {
+    console.error("Error updating status:", error);
+    throw error;
+  }
+};
