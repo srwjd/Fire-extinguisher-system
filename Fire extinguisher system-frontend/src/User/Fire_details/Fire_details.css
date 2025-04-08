@@ -50,13 +50,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    /* padding: 10px 0; */
+    margin: auto;
+    margin-bottom: 10px;
 }
 
 .fireImageContainer {
-    width: 100px;
-    height: 100px;
-    /* background-image: url(''); */
+    width: 200px;
+    height: 200px;
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -98,12 +99,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 0 0 20px;
+    padding: 20px 0 0 ;
+    margin: auto;
 }
 
 .fireInspectionImg {
-    width: 100px;
-    height: 100px;
+    width: 200px;
+    height: 200px;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
