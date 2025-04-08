@@ -262,7 +262,7 @@ export const getAllUnit = async () => {
 
 // Add company and branch
 export const addCompany = async (userData) => {
-  const { company_name, branch_name } = userData;
+  const { company_name, branch_name, quantity } = userData;
 
   try {
     // Step 1: Check if the company already exists
@@ -323,7 +323,7 @@ export const addCompany = async (userData) => {
       nextCheckDate.setMonth(nextCheckDate.getMonth() + 3);
       const nextCheck = nextCheckDate.toISOString().split("T")[0];
 
-      for (let i = 1; i <= 5; i++) {
+      for (let i = 1; i <= quantity; i++) {
         const newNumber = (lastNumber + i).toString().padStart(4, "0");
         const serial_number = `NFPA 10-${newNumber}`;
 
@@ -350,7 +350,7 @@ export const addCompany = async (userData) => {
         message: "Company and branch added successfully, along with 5 fire extinguishers.",
         company_id,
         branch_id,
-        fire_count: 5,
+        fire_count: quantity,
       };
     }
   } catch (error) {

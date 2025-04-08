@@ -209,7 +209,7 @@ router.get("/getAllUnit", async (req, res) => {
 // Add Company
 router.post("/addCompany", async (req, res) => {
   try {
-    const { company_name, branch_name } = req.body;
+    const { company_name, branch_name, quantity } = req.body;
 
     // ตรวจสอบว่ามีข้อมูลที่จำเป็นครบถ้วน
     if (!company_name || !branch_name) {
@@ -217,7 +217,7 @@ router.post("/addCompany", async (req, res) => {
     }
 
     // เรียกใช้ฟังก์ชัน addCompany
-    const result = await addCompany({ company_name, branch_name });
+    const result = await addCompany({ company_name, branch_name, quantity });
 
     // ถ้ามี branch_name ซ้ำ ให้ตอบกลับข้อความที่เตือนว่า branch_name ซ้ำ
     if (result.message.includes("already exists")) {

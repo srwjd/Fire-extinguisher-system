@@ -11,6 +11,7 @@ const ManageUnit = () => {
   const [newCompany, setNewCompany] = useState({
     company_name: "",
     branch_name: "",
+    quantity: "",
   });
 
   const unitsPerPage = 5;
@@ -93,6 +94,7 @@ const ManageUnit = () => {
         setNewCompany({
           company_name: "",
           branch_name: "",
+          quantity: 0,
         });
       } else {
         alert("Error: No valid response from server.");
@@ -221,6 +223,17 @@ const ManageUnit = () => {
               value={newCompany.branch_name}
               onChange={(e) =>
                 setNewCompany({ ...newCompany, branch_name: e.target.value })
+              }
+            />
+          </div>
+          <div  className="manage-unit-form-group">
+            <label>Quantity :</label>
+            <input
+              type="number"
+              name="quantity"
+              value={newCompany.quantity}
+              onChange={(e) =>
+                setNewCompany({ ...newCompany, quantity: e.target.value })
               }
             />
           </div>
