@@ -1,42 +1,109 @@
+/* ใช้เต็มความกว้างของหน้าจอ */
+.assign-history-container {
+  width: 100%;
+  max-width: 1200px; /* กำหนดความกว้างสูงสุดเพื่อไม่ให้เกินขนาดที่ต้องการ */
+  margin: auto;
+}
+
+/* สำหรับกล่องที่เก็บตาราง */
 .inspection-container {
-    width: 100%;
-
-
+  width: 100%;
 }
 
-.search-icon{
-    color : black
-  }
-
-  .table-container {
-    width: 100%;
-    max-width: 800px;
-    margin: auto;
-    text-align: center;
+/* ปรับขนาดให้ตารางเต็มความกว้าง */
+.table-container {
+  width: 100%;
+  overflow-x: auto; /* เพิ่มการเลื่อนขวางหากตารางใหญ่เกิน */
+  box-sizing: border-box; /* ให้ padding และ border นับเป็นส่วนหนึ่งของขนาด */
 }
 
+/* รูปแบบของตาราง */
 table {
-    width: 100%;
-    border-collapse: collapse;
-    border-radius: 10px;
-    overflow: hidden;
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
 }
 
-th, td {
-    border: 1px solid #ffab91;
-    padding: 10px;
-    text-align: center;
+th,
+td {
+  padding: 12px; /* เพิ่ม padding ให้อ่านง่าย */
+  text-align: left;
+  border-bottom: 1px solid #f97316;
 }
 
 th {
-    background-color: #ff7043;
-    color: white;
+  background-color: #fde4cf;
+  font-weight: bold;
+}
+
+td {
+  font-size: 14px; /* ขนาดตัวอักษรปกติ */
+}
+
+/* ปรับให้ input search bar มีขนาดเต็ม */
+.admin-search-bar input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: none;
+  outline: none;
+}
+
+/* จัดตำแหน่งให้ search bar ในที่เหมาะสม */
+.admin-header {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.admin-search-bar {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border: 1px solid #f97316;
+  border-radius: 10px;
+  background-color: white;
+  height: 40px;
+}
+
+.admin-search-bar-icon {
+  color: #f97316;
+  margin-right: 10px;
+}
+
+/* .inspection-container {
+  width: 100%;
+}
+
+.table-container {
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+  text-align: center;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th,
+td {
+  border: 1px solid #ffab91;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #ff7043;
+  color: white;
 }
 
 tbody tr:nth-child(even) {
-    background-color: #ffe0d4;
+  background-color: #ffe0d4;
 }
 
 tbody tr:nth-child(odd) {
-    background-color: white;
-}
+  background-color: white;
+} */
