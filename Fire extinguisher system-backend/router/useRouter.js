@@ -4,7 +4,7 @@ import {
   getUserByUsername, getAllBranchs, getAllBranches, getAllCompanys, getBranchById, getBranchesByCompanyId, getFiresByBranchId, getFiresByCompanyId, addReport, getFiresById,
   getUserCountByRole, getAllCompaniesWithBranches, getFireExtinguishersByMonth, getAllUser, addUser, updateUser, deleteUser, getAllUnit,
   addCompany, editCompany, deleteBranchAndFires, getReport, getFiresByIds, insertInspection, updateStatus, getReportAdmin, getInspection, 
-  getAssign, sendAssign , getFire ,  fireUpdateStatus, sendReports, deleteProcess, updatedStatus, updatedStatusComplete
+  getAssign, sendAssign , getFire ,  fireUpdateStatus, sendReports, deleteProcess, updatedStatus, updatedStatusComplete,getAllUserUser
 } from "../controller/useController.js";
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -647,6 +647,20 @@ router.post("/updatedStatusComplete", async (req, res) => {
         console.error("Error updating status:", error);
         res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
+});
+
+// เอาไว้ดึง user ให้เลือกตอน assign ที่หน้า inspection ของ admin
+router.get('/getAllUserUser', async (req, res) => {
+  try {
+      const result = await getAllUserUser();
+      if (result.length === 0) {
+          return res.status(404).json({ message: 'No users with role User found' });
+      }
+      return res.status(200).json({ message: 'OK success', result });
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal Server Error' });
+  }
 });
 
 export default router

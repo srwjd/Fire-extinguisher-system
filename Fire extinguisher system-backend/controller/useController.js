@@ -723,3 +723,18 @@ export const updatedStatusComplete = async (fire_id) => {
     throw error;
   }
 };
+
+// เอาไว้ดึง user ให้เลือกตอน assign ที่หน้า inspection ของ admin
+export const getAllUserUser = async () => {
+  try {
+    const sql = `SELECT u.user_id, u.username
+                FROM Users u
+                JOIN Roles r ON u.role_id = r.role_id
+                WHERE r.role_name = 'User'
+                ORDER BY u.username`;
+    return await query(sql);
+  } catch (error) {
+    console.error("Error executing SQL query:", error.message);
+    throw error;
+  }
+};

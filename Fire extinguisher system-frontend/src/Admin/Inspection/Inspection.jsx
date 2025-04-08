@@ -11,6 +11,7 @@ function Inspection() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedReport, setSelectedReport] = useState(null);
   const [assignUser, setAssignUser] = useState("");
+  const [users, setUsers] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -20,6 +21,22 @@ function Inspection() {
   const totalPages = Math.ceil(filteredReport.length / itemsPerPage);
 
   useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/fire/getAllUserUser"
+        );
+        console.log(response.data.result); // ตรวจสอบข้อมูลที่ได้รับ
+
+        // กรองตาม username หรือข้อมูลอื่นที่มี
+        const userList = response.data.result.filter((user) => user.username); // ตรวจสอบว่า user.username มีอยู่จริง
+        console.log(userList); // ดูผลลัพธ์ที่กรองแล้ว
+        setUsers(userList);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
     const fetchInspectionData = async () => {
       try {
         const response = await axios.get("http://localhost:3000/fire/fire");
@@ -37,6 +54,7 @@ function Inspection() {
       }
     };
 
+    fetchUsers();
     fetchInspectionData();
   }, []);
 
@@ -53,7 +71,7 @@ function Inspection() {
     });
 
     setFilteredReport(term ? filtered : inspectionData);
-    setCurrentPage(1); // Reset page when searching
+    setCurrentPage(1);
   };
 
   const handlePopupOpen = (item) => {
@@ -67,12 +85,12 @@ function Inspection() {
   };
 
   const handleAssign = async () => {
-    if (!selectedReport || !assignUser.trim()) {
-      alert("Please select a report and enter an inspector ID.");
+    if (!selectedReport || !assignUser) {
+      alert("Please select a report and assign a user.");
       return;
     }
 
-    const inspectorID = assignUser.trim();
+    const inspectorID = assignUser; // ใช้ assignUser เป็น user_id จาก dropdown
     const assignBy = localStorage.getItem("userID");
 
     if (!assignBy) {
@@ -106,7 +124,7 @@ function Inspection() {
             time: formattedTime,
             assign_by: assignBy,
             report_id: report_id,
-            insp_id: inspectorID,
+            insp_id: inspectorID, // ส่ง user_id ไปที่ API
           }
         );
 
@@ -249,13 +267,19 @@ function Inspection() {
               <p>
                 <strong>Remarks :</strong> {selectedReport.remarks}
               </p>
-              <input
-                type="text"
-                placeholder="User ID"
+              <select
                 className="admin-assign-input-user"
                 value={assignUser}
                 onChange={(e) => setAssignUser(e.target.value)}
-              />
+              >
+                <option value="">-- Select User --</option>
+                {users.map((user) => (
+                  <option key={user.user_id} value={user.user_id}>
+                    {user.username} {/* แสดง username แทน user_id */}
+                  </option>
+                ))}
+              </select>
+
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <button className="admin-assign-button" onClick={handleAssign}>
                   Assign
