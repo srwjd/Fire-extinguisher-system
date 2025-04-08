@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Select from "react-select";
 import axios from "axios";
 import { FaSearch } from "react-icons/fa";
 import { GoChecklist } from "react-icons/go";
@@ -104,39 +105,18 @@ function Inspection() {
 
     try {
       const reportResponse = await axios.post(
-        "http://localhost:3000/fire/sendReports",
+        "http://localhost:3000/fire/sendAssign",
         {
-          description: "ถึงรอบตรวจถังดับเพลิง",
           date: formattedDate,
           time: formattedTime,
+          assign_by: assignBy,
+          report_id: null,
+          insp_id: inspectorID,
           fire_id: selectedReport.fire_id,
-          user_id: assignBy,
+          description: "ถึงรอบตรวจถังดับเพลิง",
         }
       );
-
-      const report_id = reportResponse.data.data.data.insertId;
-
-      if (reportResponse.status === 201) {
-        const assignResponse = await axios.post(
-          "http://localhost:3000/fire/assign",
-          {
-            date: formattedDate,
-            time: formattedTime,
-            assign_by: assignBy,
-            report_id: report_id,
-            insp_id: inspectorID, // ส่ง user_id ไปที่ API
-          }
-        );
-
-        if (assignResponse.status === 201) {
-          alert("Assignment successful!");
-          handlePopupClose();
-        } else {
-          alert("Failed to assign inspector.");
-        }
-      } else {
-        alert("Failed to create report.");
-      }
+      console.log(reportResponse);
     } catch (error) {
       console.error("Error assigning report:", error);
       alert("An error occurred while assigning.");
@@ -150,6 +130,11 @@ function Inspection() {
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
   };
+
+  const userOptions = users.map((user) => ({
+    value: user.user_id,
+    label: user.username,
+  }));
 
   return (
     <div className="inspection-Container">
@@ -267,19 +252,25 @@ function Inspection() {
               <p>
                 <strong>Remarks :</strong> {selectedReport.remarks}
               </p>
-              <select
-                className="admin-assign-input-user"
-                style={{ fontSize: "16px"}}
-                value={assignUser}
-                onChange={(e) => setAssignUser(e.target.value)}
-              >
-                <option value="">-- Select User --</option>
-                {users.map((user) => (
-                  <option key={user.user_id} value={user.user_id}>
-                    {user.username} {/* แสดง username แทน user_id */}
-                  </option>
-                ))}
-              </select>
+              <Select
+                options={userOptions}
+                value={userOptions.find((option) => option.value === assignUser)}
+                onChange={(selectedOption) => setAssignUser(selectedOption?.value || '')}
+                placeholder="-- Select User --"
+                isClearable
+                isSearchable
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    fontSize: "16px",
+                    minHeight: "38px",
+                  }),
+                  menu: (base) => ({
+                    ...base,
+                    zIndex: 9999,
+                  }),
+                }}
+              />
 
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <button className="admin-assign-button" onClick={handleAssign}>

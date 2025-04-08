@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Select from "react-select";
 import axios from "axios";
 import "./Report.css";
 import { FaSearch } from "react-icons/fa";
@@ -147,6 +148,11 @@ function Report() {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
   };
 
+  const userOptions = users.map((user) => ({
+    value: user.user_id,
+    label: user.username,
+  }));
+
   return (
     <div>
       <div className="admin-header">
@@ -259,18 +265,25 @@ function Report() {
               )}
 
               {/* Dropdown สำหรับเลือกผู้ใช้ */}
-              <select
-                className="assign-user-dropdown"
-                value={assignUser}
-                onChange={(e) => setAssignUser(e.target.value)}
-              >
-                <option value="" >-- Select User --</option>
-                {users.map((user) => (
-                  <option key={user.user_id} value={user.user_id}>
-                    {user.username}
-                  </option>
-                ))}
-              </select>
+              <Select
+                options={userOptions}
+                value={userOptions.find((option) => option.value === assignUser)}
+                onChange={(selectedOption) => setAssignUser(selectedOption?.value || '')}
+                placeholder="-- Select User --"
+                isClearable
+                isSearchable
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    fontSize: "16px",
+                    minHeight: "38px",
+                  }),
+                  menu: (base) => ({
+                    ...base,
+                    zIndex: 9999,
+                  }),
+                }}
+              />
 
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <button className="assign-button" onClick={handleAssign}>
