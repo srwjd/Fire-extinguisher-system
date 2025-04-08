@@ -203,7 +203,7 @@ function Inspection() {
                         border: "none",
                         cursor: "pointer",
                         fontSize: "20px",
-                        backgroundColor: "white",
+                        backgroundColor: "transparent",
                         borderRadius: "100%",
                         padding: "5px",
                         width: "40px",
