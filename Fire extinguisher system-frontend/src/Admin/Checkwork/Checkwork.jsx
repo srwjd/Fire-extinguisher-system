@@ -176,7 +176,7 @@ function checkWork() {
 
                 {isPopupOpen && (
                     <div className="checkwork-container" onClick={handlePopupClose}>
-                        <h2>Report Details</h2>
+                        <h2 className="checkwork-title">Report Details</h2>
                         <div className="image-placeholder" onClick={(e) => e.stopPropagation()}></div>
                         {selectedReport && (
                             <>

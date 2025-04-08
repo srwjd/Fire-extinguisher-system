@@ -1,4 +1,4 @@
-.admin-header{
+.admin-header {
   width: 80%;
   margin: auto;
 }
@@ -12,6 +12,99 @@
   border-radius: 10px;
   background-color: white;
   height: 30px;
+}
+
+.admin-table-container {
+  width: 100%;
+  /* กำหนดให้แต่ละฝั่งมีขนาดเท่ากัน */
+  border-radius: 10px;
+  align-self: start;
+
+}
+
+
+.checkwork-title {
+  color: #ff7043;
+}
+
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  border: 2px solid #ff7043;
+  padding: 5px;
+  border-radius: 20px;
+  width: 800px;
+  background-color: white;
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  padding: 5px;
+
+}
+
+.search-bar span {
+  color: #ff7043;
+  font-size: 1.2em;
+  margin-left: 5px;
+}
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #f97316;
+}
+
+th {
+  background-color: #fde4cf;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  margin-right: 200px;
+}
+
+button {
+  background-color: #ff7043;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #e05530;
+}
+
+.search-icon {
+  color: black
+}
+
+
+
+.checkwork-container {
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px solid #ddd;
+  background: #FFD3BE;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  align-self: start;
+  /* จัดให้อยู่ด้านบนสุดของ container */
 }
 
 .admin-search-bar-icon {
@@ -32,7 +125,8 @@ table {
   background-color: white;
 }
 
-th, td {
+th,
+td {
   padding: 10px;
   text-align: left;
   border-bottom: 1px solid #f97316;

@@ -3,8 +3,8 @@ import jwt from "jsonwebtoken";
 import {
   getUserByUsername, getAllBranchs, getAllBranches, getAllCompanys, getBranchById, getBranchesByCompanyId, getFiresByBranchId, getFiresByCompanyId, addReport, getFiresById,
   getUserCountByRole, getAllCompaniesWithBranches, getFireExtinguishersByMonth, getAllUser, addUser, updateUser, deleteUser, getAllUnit,
-  addCompany, editCompany, deleteBranchAndFires, getReport, getFiresByIds, insertInspection, updateStatus, getReportAdmin, getInspection, 
-  getAssign, sendAssign , getFire ,  fireUpdateStatus, sendReports, deleteProcess, updatedStatus, updatedStatusComplete,getAllUserUser
+  addCompany, editCompany, deleteBranchAndFires, getReport, getFiresByIds, insertInspection, updateStatus, getReportAdmin, getInspection,
+  getAssign, sendAssign, getFire, fireUpdateStatus, sendReports, deleteProcess, updatedStatus, updatedStatusComplete, getAllUserUser
 } from "../controller/useController.js";
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -506,160 +506,159 @@ router.post('/updatestatus', async (req, res) => {
   }
 });
 
-router.get('/report', async (req, res) =>{
-    try{
-        const result = await getReportAdmin()
-        if(result.length === 0){
-            return res.status(404).json({ message: "No reports found" });
-        }
-        res.json(result)
-    }catch(error){
-        console.error("Error fetching reports:", error.message);
-        res.status(500).json({ message: "Internal server error" });
+router.get('/report', async (req, res) => {
+  try {
+    const result = await getReportAdmin()
+    if (result.length === 0) {
+      return res.status(404).json({ message: "No reports found" });
     }
+    res.json(result)
+  } catch (error) {
+    console.error("Error fetching reports:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
 })
 
 
 
-router.get('/inspec', async (req, res) =>{
-    try{
-        const result = await getInspection()
-        if(result.length === 0){
-            return res.status(404).json({message: "No Inspection found"})
-        }
-        res.json(result)
-    }catch(error){
-        console.error("Error fetching Inspection:", error.message)
-        res.status(500).json({ message: "Internal server error" });
+router.get('/inspec', async (req, res) => {
+  try {
+    const result = await getInspection()
+    if (result.length === 0) {
+      return res.status(404).json({ message: "No Inspection found" })
     }
+    res.json(result)
+  } catch (error) {
+    console.error("Error fetching Inspection:", error.message)
+    res.status(500).json({ message: "Internal server error" });
+  }
 })
 
 
 router.get('/assign', async (req, res) => {
-    try {
-        const result = await getAssign();
-        if (result.length === 0) {
-            return res.status(404).json({ message: 'No fire extinguishers found' });
-        }
-        return res.status(200).json({ message: 'OK success', result });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Internal Server Error' });
+  try {
+    const result = await getAssign();
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'No fire extinguishers found' });
     }
+    return res.status(200).json({ message: 'OK success', result });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
 });
 
 
 router.post('/sendAssign', async (req, res) => {
-   try{
+  try {
     const { date, time, assign_by, report_id, insp_id, fire_id, description } = req.body;
-    const result = await sendAssign({date, time, assign_by, report_id, insp_id, fire_id, description});
+    const result = await sendAssign({ date, time, assign_by, report_id, insp_id, fire_id, description });
     if (result.length === 0) {
-        return res.status(404).json({ message: 'No fire extinguishers found' });
+      return res.status(404).json({ message: 'No fire extinguishers found' });
     }
     return res.status(200).json({ message: 'OK success', result });
-   }catch(error){
+  } catch (error) {
     console.error(error)
     return res.status(500).json({ message: 'Internal Server Error' });
-   }
+  }
 })
 
 router.get('/fire', async (req, res) => {
-    try {
-        const result = await getFire();
-        if (result.length === 0) {
-            return res.status(404).json({ message: 'No fire extinguishers found' });
-        }
-        return res.status(200).json({ message: 'OK success', result });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Internal Server Error' });
+  try {
+    const result = await getFire();
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'No fire extinguishers found' });
     }
+    return res.status(200).json({ message: 'OK success', result });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
 });
 
 
 router.put('/fireUpdateStatus', async (req, res) => {
-    const { report_id, status } = req.body;
-    
-    try {
-        const result = await fireUpdateStatus({ report_id, status });
-        if (result.length === 0) {
-            return res.status(404).json({ message: 'No fire extinguishers found' });
-        }
-        return res.status(200).json({ message: 'OK success', result });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Internal Server Error' });
+  const { report_id, status } = req.body;
+
+  try {
+    const result = await fireUpdateStatus({ report_id, status });
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'No fire extinguishers found' });
     }
-  });
+    return res.status(200).json({ message: 'OK success', result });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
 
-  router.post("/sendReports", async (req, res) => {
-    try {
-        const { description, date, time, fire_id, user_id } = req.body;
-        const filename = null;
+router.post("/sendReports", async (req, res) => {
+  try {
+    const { description, date, time, fire_id, user_id } = req.body;
+    const filename = null;
 
-        // Check for required fields
-        if (!description || !date || !time || !fire_id || !user_id) {
-            return res.status(400).json({ message: "Missing required fields" });
-        }
-
-        const report = { filename, description, date, time, fire_id, user_id };
-
-        // Add report and assign simultaneously
-        const result = await sendReports(report);
-        console.log("sendReports body", req.body);
-        res.status(201).json({ message: "Report added successfully", data: result });
-    } catch (error) {
-        console.error("Error adding report:", error);
-        res.status(500).json({ message: "Internal Server Error", error: error.message });
+    // Check for required fields
+    if (!description || !date || !time || !fire_id || !user_id) {
+      return res.status(400).json({ message: "Missing required fields" });
     }
+
+    const report = { filename, description, date, time, fire_id, user_id };
+
+    // Add report and assign simultaneously
+    const result = await sendReports(report);
+    console.log("sendReports body", req.body);
+    res.status(201).json({ message: "Report added successfully", data: result });
+  } catch (error) {
+    console.error("Error adding report:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
 });
 
 
 router.delete("/deleteProcess", async (req, res) => {
-    try {
-        const { inspection_id} = req.body;
-        const result = await deleteProcess(inspection_id);
-        res.status(200).json({ message: "Report deleted successfully", data: result });
-    } catch (error) {
-        console.error("Error deleting report:", error);
-        res.status(500).json({ message: "Internal Server Error", error: error.message });
-    }
+  try {
+    const { inspection_id } = req.body;
+    const result = await deleteProcess(inspection_id);
+    res.status(200).json({ message: "Report deleted successfully", data: result });
+  } catch (error) {
+    console.error("Error deleting report:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
 });
 
 router.post("/updatedStatus", async (req, res) => {
-    try {
-        const { fire_id } = req.body;
-        const result = await updatedStatus (fire_id);
-        res.status(200).json({ message: "Status updated successfully", data: result });
-    } catch (error) {
-        console.error("Error updating status:", error);
-        res.status(500).json({ message: "Internal Server Error", error: error.message });
-    }
+  try {
+    const { fire_id } = req.body;
+    const result = await updatedStatus(fire_id);
+    res.status(200).json({ message: "Status updated successfully", data: result });
+  } catch (error) {
+    console.error("Error updating status:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
 });
 
-
 router.post("/updatedStatusComplete", async (req, res) => {
-    try {
-        const { fire_id } = req.body;
-        const result = await updatedStatusComplete (fire_id);
-        res.status(200).json({ message: "Status updated successfully", data: result });
-    } catch (error) {
-        console.error("Error updating status:", error);
-        res.status(500).json({ message: "Internal Server Error", error: error.message });
-    }
+  try {
+    const { fire_id } = req.body;
+    const result = await updatedStatusComplete(fire_id);
+    res.status(200).json({ message: "Status updated successfully", data: result });
+  } catch (error) {
+    console.error("Error updating status:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
 });
 
 // เอาไว้ดึง user ให้เลือกตอน assign ที่หน้า inspection ของ admin
 router.get('/getAllUserUser', async (req, res) => {
   try {
-      const result = await getAllUserUser();
-      if (result.length === 0) {
-          return res.status(404).json({ message: 'No users with role User found' });
-      }
-      return res.status(200).json({ message: 'OK success', result });
+    const result = await getAllUserUser();
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'No users with role User found' });
+    }
+    return res.status(200).json({ message: 'OK success', result });
   } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: 'Internal Server Error' });
+    console.error(error);
+    return res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 
