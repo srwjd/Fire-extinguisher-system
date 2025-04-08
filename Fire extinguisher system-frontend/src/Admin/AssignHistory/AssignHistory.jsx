@@ -47,7 +47,7 @@ function AssignHistory() {
                         placeholder="Search : S/N" 
                         value={searchTerm} 
                         onChange={handleSearchChange} 
-                        style={{ border: "none" }}
+                        style={{ border: "none", outline: "none", width: "100%" }}
                     />
                 </div>
             </div>

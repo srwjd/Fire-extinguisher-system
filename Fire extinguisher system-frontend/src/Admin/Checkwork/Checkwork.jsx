@@ -123,10 +123,10 @@ function checkWork() {
                      <FaSearch className="admin-search-bar-icon" />
                     <input
                         type="text"
-                        placeholder="Search by ID or S/N"
+                        placeholder="Search : ID or S/N"
                         value={searchTerm}
                         onChange={handleSearch}
-                        style={{ border: "none" }}
+                        style={{ border: "none", outline: "none", width: "100%" }}
                     />
                 </div>
             </div>

@@ -158,7 +158,7 @@ function Inspection() {
           <FaSearch className="admin-search-bar-icon" />
           <input
             type="text"
-            placeholder="Search by ID or S/N"
+            placeholder="Search : S/N"
             value={searchTerm}
             onChange={handleSearch}
             style={{ border: "none", outline: "none", width: "100%" }}
@@ -269,6 +269,7 @@ function Inspection() {
               </p>
               <select
                 className="admin-assign-input-user"
+                style={{ fontSize: "16px"}}
                 value={assignUser}
                 onChange={(e) => setAssignUser(e.target.value)}
               >
