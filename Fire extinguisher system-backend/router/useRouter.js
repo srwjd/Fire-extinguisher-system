@@ -64,8 +64,8 @@ router.post('/login', async (req, res) => {
     // const token = await jwt.sign({ id: result[0].id }, jwt_secret, { expiresIn: '1h' });
     const token = jwt.sign({ id: result[0].id }, 'secret', { expiresIn: '1h' });
     const role = result[0].role_name
-    const companyId = result[0].company_id;
-    const branchId = result[0].branch_id
+    const companyId = result[0].company_id || null
+    const branchId = result[0].branch_id || null
     const userID = result[0].user_id
 
     console.log("User ID:", result[0].user_id);
@@ -209,7 +209,7 @@ router.get("/getAllUnit", async (req, res) => {
 // Add Company
 router.post("/addCompany", async (req, res) => {
   try {
-    const { company_name, branch_name } = req.body;
+    const { company_name, branch_name, quantity } = req.body;
 
     // ตรวจสอบว่ามีข้อมูลที่จำเป็นครบถ้วน
     if (!company_name || !branch_name) {
@@ -217,7 +217,7 @@ router.post("/addCompany", async (req, res) => {
     }
 
     // เรียกใช้ฟังก์ชัน addCompany
-    const result = await addCompany({ company_name, branch_name });
+    const result = await addCompany({ company_name, branch_name, quantity });
 
     // ถ้ามี branch_name ซ้ำ ให้ตอบกลับข้อความที่เตือนว่า branch_name ซ้ำ
     if (result.message.includes("already exists")) {
@@ -549,10 +549,10 @@ router.get('/assign', async (req, res) => {
 });
 
 
-router.put('/sendAssign', async (req, res) => {
+router.post('/sendAssign', async (req, res) => {
    try{
-    const { date, time, assign_by, report_id, insp_id } = req.body;
-    const result = await sendAssign({date, time, assign_by, report_id, insp_id});
+    const { date, time, assign_by, report_id, insp_id, fire_id, description } = req.body;
+    const result = await sendAssign({date, time, assign_by, report_id, insp_id, fire_id, description});
     if (result.length === 0) {
         return res.status(404).json({ message: 'No fire extinguishers found' });
     }

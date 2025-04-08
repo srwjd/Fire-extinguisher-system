@@ -17,7 +17,7 @@ export const query = async (sql, params) => {
 
 // ดึงข้อมูลผู้ใช้ตาม username
 export const getUserByUsername = async (username) => {
-  const sql = `SELECT Users.*, Roles.role_name, Branchs.company_id
+  const sql = `SELECT Users.*, Roles.role_name
   FROM Users 
   LEFT JOIN Roles ON Users.role_id = Roles.role_id
   LEFT JOIN Branchs ON Users.branch_id = Branchs.branch_id
@@ -118,46 +118,78 @@ export const addUser = async (userData) => {
     branch_id,
   } = userData;
 
-  let sql;
-  let params;
-
-  // เช็คว่าเลือก role เป็น Main Branch หรือ Sub Branch
-  if (role === "MainBranch") {
-    // สำหรับ Main Branch เก็บแค่ company_id
-    sql = `INSERT INTO Users (username, password, email, firstname, surname, role_id, company_id, create_at)
-           VALUES (?, ?, ?, ?, ?, (SELECT role_id FROM Roles WHERE role_name = ?), ?, NOW())`;
-    params = [username, password, email, firstName, surname, role, company_id];
-  } else if (role === "SubBranch") {
-    // สำหรับ Sub Branch ให้ดึง company_id ที่สังกัดอยู่กับ branch_id
-    const companyId = await getCompanyIdByBranch(branch_id); // ดึง company_id จาก branch_id
-
-    if (!companyId) {
-      throw new Error("Branch does not belong to any company.");
-    }
-
-    // สำหรับ Sub Branch เก็บแค่ branch_id และ company_id ที่ดึงมา
-    sql = `INSERT INTO Users (username, password, email, firstname, surname, role_id, company_id, branch_id, create_at)
-           VALUES (?, ?, ?, ?, ?, (SELECT role_id FROM Roles WHERE role_name = ?), ?, ?, NOW())`;
-    params = [
-      username,
-      password,
-      email,
-      firstName,
-      surname,
-      role,
-      companyId,
-      branch_id,
-    ];
-  }
+  const sql = `INSERT INTO Users (username, password, email, firstname, surname, role_id, company_id, branch_id, create_at)
+             VALUES (?, ?, ?, ?, ?, (SELECT role_id FROM Roles WHERE role_name = ?), ?, ?, NOW())`;
+  const params = [
+    username,
+    password,
+    email,
+    firstName,
+    surname,
+    role,
+    company_id || null,
+    branch_id || null,
+  ];
 
   try {
-    const result = await query(sql, params);
-    return result;
+    return await query(sql, params);
   } catch (error) {
-    console.error("Error inserting user:", error.message);
-    throw error;
+    console.error("Error executing SQL query:", error.message);
   }
 };
+
+// export const addUser = async (userData) => {
+//   const {
+//     username,
+//     password,
+//     email,
+//     firstName,
+//     surname,
+//     role,
+//     company_id,
+//     branch_id,
+//   } = userData;
+
+//   let sql;
+//   let params;
+
+//   // เช็คว่าเลือก role เป็น Main Branch หรือ Sub Branch
+//   if (role === "MainBranch") {
+//     // สำหรับ Main Branch เก็บแค่ company_id
+//     sql = `INSERT INTO Users (username, password, email, firstname, surname, role_id, company_id, create_at)
+//            VALUES (?, ?, ?, ?, ?, (SELECT role_id FROM Roles WHERE role_name = ?), ?, NOW())`;
+//     params = [username, password, email, firstName, surname, role, company_id];
+//   } else if (role === "SubBranch") {
+//     // สำหรับ Sub Branch ให้ดึง company_id ที่สังกัดอยู่กับ branch_id
+//     const companyId = await getCompanyIdByBranch(branch_id); // ดึง company_id จาก branch_id
+
+//     if (!companyId) {
+//       throw new Error("Branch does not belong to any company.");
+//     }
+
+//     // สำหรับ Sub Branch เก็บแค่ branch_id และ company_id ที่ดึงมา
+//     sql = `INSERT INTO Users (username, password, email, firstname, surname, role_id, company_id, branch_id, create_at)
+//            VALUES (?, ?, ?, ?, ?, (SELECT role_id FROM Roles WHERE role_name = ?), ?, ?, NOW())`;
+//     params = [
+//       username,
+//       password,
+//       email,
+//       firstName,
+//       surname,
+//       role,
+//       companyId,
+//       branch_id,
+//     ];
+//   }
+
+//   try {
+//     const result = await query(sql, params);
+//     return result;
+//   } catch (error) {
+//     console.error("Error inserting user:", error.message);
+//     throw error;
+//   }
+// };
 
 // อัปเดตข้อมูล user
 export const updateUser = async (userId, userData) => {
@@ -230,7 +262,7 @@ export const getAllUnit = async () => {
 
 // Add company and branch
 export const addCompany = async (userData) => {
-  const { company_name, branch_name } = userData;
+  const { company_name, branch_name, quantity } = userData;
 
   try {
     // Step 1: Check if the company already exists
@@ -291,7 +323,7 @@ export const addCompany = async (userData) => {
       nextCheckDate.setMonth(nextCheckDate.getMonth() + 3);
       const nextCheck = nextCheckDate.toISOString().split("T")[0];
 
-      for (let i = 1; i <= 5; i++) {
+      for (let i = 1; i <= quantity; i++) {
         const newNumber = (lastNumber + i).toString().padStart(4, "0");
         const serial_number = `NFPA 10-${newNumber}`;
 
@@ -318,7 +350,7 @@ export const addCompany = async (userData) => {
         message: "Company and branch added successfully, along with 5 fire extinguishers.",
         company_id,
         branch_id,
-        fire_count: 5,
+        fire_count: quantity,
       };
     }
   } catch (error) {
@@ -610,8 +642,8 @@ export const getAssign = async () => {
 export const sendAssign = async (assign) => {
   try {
     const sql = `
-        INSERT INTO Assigns (date, time, assign_by, report_id, insp_id)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO Assigns (date, time, assign_by, report_id, insp_id, fire_id, description)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
     const params = [
       assign.date,
@@ -619,8 +651,17 @@ export const sendAssign = async (assign) => {
       assign.assign_by,
       assign.report_id,
       assign.insp_id,
+      assign.fire_id,
+      assign.description,
     ];
-    return await query(sql, params);
+    const result = await query(sql, params);
+
+    const sqlUpdate = `UPDATE Fires SET status = 'report' WHERE fire_id = ?`;
+    const paramsUpdate = [assign.fire_id];
+    await query(sqlUpdate, paramsUpdate);
+
+    return result;
+
   } catch (error) {
     console.error("Error adding report:", error);
     throw error;
