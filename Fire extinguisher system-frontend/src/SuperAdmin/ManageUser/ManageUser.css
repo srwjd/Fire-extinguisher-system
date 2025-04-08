@@ -145,14 +145,14 @@
 }
 
 .manage-user-table-container {
-  border: 1px solid #f97316;
+  /* border: 1px solid #f97316; */
   border-radius: 10px;
   overflow-x: auto;
 }
 
 table {
   width: 100%;
-  border-collapse: collapse;
+  /* border-collapse: collapse; */
 }
 
 th,

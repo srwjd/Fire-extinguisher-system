@@ -375,7 +375,7 @@ const ManageUser = () => {
           />
         </div>
         <div className="manage-user-table-container">
-          <table>
+          <table style={{ borderColor: "#f97316"}}>
             <thead>
               <tr>
                 <th>ID</th>
