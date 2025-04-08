@@ -1,6 +1,5 @@
 .container {
-  max-width: 600px;
-  margin: 30px auto;
+  width: 600px;
   padding: 20px;
   border: 1px solid #fd6e2b;
   border-radius: 10px;
@@ -34,7 +33,7 @@ button:disabled {
 /* ปรับแต่ง input file */
 .file-input {
   display: block;
-  margin: 10px auto;
+  width: 100%;
   padding: 10px;
   border: 1px solid #fd6e2b;
   border-radius: 10px;
