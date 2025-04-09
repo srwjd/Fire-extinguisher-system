@@ -246,6 +246,21 @@ const ManageUnit = () => {
                     : null
                 }
                 placeholder="Type or select company name"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    width: "70vw", // Ensure full width
+                    height: "35px", // Adjust to match other inputs height
+                    border: "1px solid #ccc",
+                    borderRadius: "5px",
+                  }),
+                  input: (base) => ({
+                    ...base,
+                  }),
+                  placeholder: (base) => ({
+                    ...base,
+                  }),
+                }}
               />
             </div>
             <div className="manage-unit-form-group">
@@ -271,10 +286,10 @@ const ManageUnit = () => {
                 styles={{
                   control: (base) => ({
                     ...base,
-                    width: '100%', // Ensure full width
-                    height: '35px', // Adjust to match other inputs height
-                    border: '1px solid #ccc',
-                    borderRadius: '5px',
+                    width: "70vw", // Ensure full width
+                    height: "35px", // Adjust to match other inputs height
+                    border: "1px solid #ccc",
+                    borderRadius: "5px",
                   }),
                   input: (base) => ({
                     ...base,
@@ -291,9 +306,15 @@ const ManageUnit = () => {
                 type="number"
                 name="quantity"
                 value={newCompany.quantity}
-                onChange={(e) =>
-                  setNewCompany({ ...newCompany, quantity: e.target.value })
-                }
+                onChange={(e) => {
+                  // Only update the quantity if it's greater than or equal to 1
+                  const value = e.target.value;
+                  if (value >= 1 || value === "") {
+                    // Allow empty input to clear the value
+                    setNewCompany({ ...newCompany, quantity: value });
+                  }
+                }}
+                min="1" // Ensure the input cannot be lower than 1
               />
             </div>
             <button className="confirm-add-unit-btn" onClick={handleAddCompany}>
