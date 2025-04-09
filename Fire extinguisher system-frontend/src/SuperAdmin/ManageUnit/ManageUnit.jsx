@@ -268,6 +268,21 @@ const ManageUnit = () => {
                     : null
                 }
                 placeholder="Type or select branch name"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    width: '100%', // Ensure full width
+                    height: '35px', // Adjust to match other inputs height
+                    border: '1px solid #ccc',
+                    borderRadius: '5px',
+                  }),
+                  input: (base) => ({
+                    ...base,
+                  }),
+                  placeholder: (base) => ({
+                    ...base,
+                  }),
+                }}
               />
             </div>
             <div className="manage-unit-form-group">
@@ -386,21 +401,6 @@ const ManageUnit = () => {
                     onChange={handleEditChange}
                   />
                 </div>
-                {/* <div className="manage-unit-form-group">
-                  <label>Add Quantity :</label>
-                  <input
-                    type="number"
-                    name="quantity"
-                    value={editUnit.quantity || ""}
-                    onChange={(e) =>
-                      setEditUnit({
-                        ...editUnit,
-                        quantity: parseInt(e.target.value) || 0,
-                      })
-                    }
-                  />
-                </div> */}
-
                 <button
                   className="confirm-manage-unit-btn"
                   onClick={handleSaveEdit}
