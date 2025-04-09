@@ -141,7 +141,7 @@ export const addUser = async (userData) => {
 
 // อัปเดตข้อมูล user
 export const updateUser = async (userId, userData) => {
-  const { username, email, firstName, surname, role, company_id, branch_id } = userData;
+  const { username, email, firstName, surname, role, company_id, branch_id, fire_count } = userData;
 
   let sql = `UPDATE Users 
              SET username = ?, email = ?, firstname = ?, surname = ?, 
@@ -151,11 +151,37 @@ export const updateUser = async (userId, userData) => {
 
   // เพิ่ม company_id หรือ branch_id เฉพาะ MainBranch หรือ SubBranch
   if (role === "MainBranch") {
+    if (!company_id) {
+      throw new Error("Company ID is required for MainBranch role.");
+    }
     sql += `, company_id = ?`;
     params.push(company_id);
+
+    // อัปเดตจำนวนถังดับเพลิง (fire_count) สำหรับ MainBranch
+    if (fire_count !== undefined) {
+      sql += `, fire_count = ?`;
+      params.push(fire_count);
+
+      // อัปเดต fire_count ใน Fires สำหรับ MainBranch
+      const updateFireCountSql = `UPDATE Fires SET fire_count = ? WHERE company_id = ?`;
+      await query(updateFireCountSql, [fire_count, company_id]);
+    }
   } else if (role === "SubBranch") {
+    if (!branch_id) {
+      throw new Error("Branch ID is required for SubBranch role.");
+    }
     sql += `, branch_id = ?`;
     params.push(branch_id);
+
+    // อัปเดตจำนวนถังดับเพลิง (fire_count) สำหรับ SubBranch
+    if (fire_count !== undefined) {
+      sql += `, fire_count = ?`;
+      params.push(fire_count);
+
+      // อัปเดต fire_count ใน Fires สำหรับ SubBranch
+      const updateFireCountSql = `UPDATE Fires SET fire_count = ? WHERE branch_id = ?`;
+      await query(updateFireCountSql, [fire_count, branch_id]);
+    }
   }
 
   sql += ` WHERE user_id = ?`;
@@ -169,6 +195,8 @@ export const updateUser = async (userId, userData) => {
     throw error;
   }
 };
+
+
 
 // ลบ user
 export const deleteUser = async (userId) => {
@@ -337,7 +365,7 @@ export const editCompany = async (company_id, branch_id, newCompanyData) => {
     console.error("Error updating branch:", error.message);
     throw new Error("Failed to update branch. " + error.message);
   }
-};
+}; 
 
 // ลบ Branch และ Fire extinguishers ที่เกี่ยวข้อง
 export const deleteBranchAndFires = async (branch_id) => {
