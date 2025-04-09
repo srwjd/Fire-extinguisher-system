@@ -197,6 +197,7 @@ const ManageUnit = () => {
   };
 
   return (
+    <div className="manage-unit-allpage">
     <div className="manage-unit-container">
       {/* Add Unit Section */}
       <div className="add-unit">
@@ -323,7 +324,7 @@ const ManageUnit = () => {
           {/* Edit Section */}
           {editUnit && (
             <div className="unit-details">
-              {/* <h3 className="edit-unit-title">Edit Unit ID : {editUnit.unit_id}</h3> */}
+              <h3 className="edit-unit-title">Edit Unit ID : {editUnit.unit_id}</h3>
               <div className="manage-unit-form-group">
                 <label>Company Name :</label>
                 <input
@@ -352,6 +353,7 @@ const ManageUnit = () => {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 };

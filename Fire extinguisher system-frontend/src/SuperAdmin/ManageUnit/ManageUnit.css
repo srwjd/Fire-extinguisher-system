@@ -1,11 +1,18 @@
+.manage-unit-allpage{
+  height: 90vh;
+  overflow-y: auto;      /* แสดง scroll bar เฉพาะแนวตั้ง */
+  overflow-x: hidden;    /* ซ่อน scroll bar แนวนอน */
+  padding-right: 20px;
+}
+
 .manage-unit-container{
   width: 100%;
   margin: 20px auto;
   margin-left: 10px;
-  /* padding: 10px; */
+  padding-right: 10px;
   justify-content: center;
   /* border: 1px solid #ccc; */
-  /* max-height: 90vh; */
+  /* max-height: 100vh; */
   /* overflow-y: scroll; */
 }
 
