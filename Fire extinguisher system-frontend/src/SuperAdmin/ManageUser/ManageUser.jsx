@@ -3,7 +3,7 @@ import axios from "axios";
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
 import "./ManageUser.css";
 
-const AddUserForm = ({ isOpen, toggleForm, addUser, setUserList }) => {
+const AddUserForm = ({ isOpen, toggleForm, addUser, setUserList, fetchUsers }) => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -39,21 +39,27 @@ const AddUserForm = ({ isOpen, toggleForm, addUser, setUserList }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     if (!formData.role) {
       alert("Please select a role before adding.");
       return;
     }
-
+  
+    if (!formData.firstName.trim() || !formData.surname.trim()) {
+      alert("First name and Surname are required.");
+      return;
+    }
+  
     try {
       const response = await axios.post(
         "http://localhost:3000/fire/addUser",
         formData
       );
       alert("User added successfully!");
-      setUserList((prevUsers) => [
-        ...prevUsers,
-        { ...formData, id: Date.now().toString() },
-      ]);
+  
+      // fetch users ใหม่
+      fetchUsers();
+  
       setFormData({
         username: "",
         password: "",
@@ -69,6 +75,7 @@ const AddUserForm = ({ isOpen, toggleForm, addUser, setUserList }) => {
       alert("Failed to add user.");
     }
   };
+  
 
   return (
     <div>
@@ -230,18 +237,18 @@ const ManageUser = () => {
   }, []);
 
   // ดูรายชื่อ User
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3000/fire/showAllUser"
-        );
-        setUserList(response.data);
-      } catch (error) {
-        console.error("Error fetching user data :", error);
-      }
-    };
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/fire/showAllUser"
+      );
+      setUserList(response.data);
+    } catch (error) {
+      console.error("Error fetching user data :", error);
+    }
+  };
 
+  useEffect(() => {
     fetchUsers();
   }, []);
 
@@ -295,16 +302,16 @@ const ManageUser = () => {
       alert("Please select a role before saving.");
       return;
     }
-  
+
     console.log(editUser); // ตรวจสอบค่าของ editUser ก่อนส่ง
-  
+
     try {
       await axios.put(
         `http://localhost:3000/fire/updateUser/${editUser.id}`,
         editUser
       );
       alert("User updated successfully!");
-      
+
       setUserList((prevUsers) =>
         prevUsers.map((user) =>
           user.id === editUser.id ? { ...user, ...editUser } : user
@@ -315,7 +322,7 @@ const ManageUser = () => {
       console.error("Error updating user:", error);
       alert("Failed to update user.");
     }
-  };  
+  };
 
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm("Are you sure you want to delete?");
@@ -323,14 +330,13 @@ const ManageUser = () => {
       try {
         await axios.delete(`http://localhost:3000/fire/deleteUser/${id}`);
         alert("User deleted successfully!");
-
-        setUserList((prevUsers) => prevUsers.filter((user) => user.id !== id));
+        fetchUsers(); // <-- เรียกใหม่
       } catch (error) {
         console.error("Error deleting user:", error);
         alert("Failed to delete user.");
       }
     }
-  };
+  };  
 
   const handlePreviousPage = () => {
     if (currentPage > 1) {
@@ -356,7 +362,8 @@ const ManageUser = () => {
         isOpen={isOpen}
         toggleForm={() => setIsOpen(!isOpen)}
         addUser={addUser}
-        setUserList={setUserList} // <-- Ensure this is passed as a prop
+        setUserList={setUserList}
+        fetchUsers={fetchUsers}
       />
 
       <div className="manage-user-header">
@@ -375,7 +382,7 @@ const ManageUser = () => {
           />
         </div>
         <div className="manage-user-table-container">
-          <table style={{ borderColor: "#f97316"}}>
+          <table style={{ borderColor: "#f97316" }}>
             <thead>
               <tr>
                 <th>ID</th>
