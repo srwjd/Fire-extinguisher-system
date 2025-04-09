@@ -3,7 +3,13 @@ import axios from "axios";
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
 import "./ManageUser.css";
 
-const AddUserForm = ({ isOpen, toggleForm, addUser, setUserList, fetchUsers }) => {
+const AddUserForm = ({
+  isOpen,
+  toggleForm,
+  addUser,
+  setUserList,
+  fetchUsers,
+}) => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -39,27 +45,27 @@ const AddUserForm = ({ isOpen, toggleForm, addUser, setUserList, fetchUsers }) =
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!formData.role) {
       alert("Please select a role before adding.");
       return;
     }
-  
+
     if (!formData.firstName.trim() || !formData.surname.trim()) {
       alert("First name and Surname are required.");
       return;
     }
-  
+
     try {
       const response = await axios.post(
         "http://localhost:3000/fire/addUser",
         formData
       );
       alert("User added successfully!");
-  
+
       // fetch users ใหม่
       fetchUsers();
-  
+
       setFormData({
         username: "",
         password: "",
@@ -75,10 +81,9 @@ const AddUserForm = ({ isOpen, toggleForm, addUser, setUserList, fetchUsers }) =
       alert("Failed to add user.");
     }
   };
-  
 
   return (
-    <div>
+    <div className="manage-user-addUser-allpage-container">
       <div className="manage-user-section-header" onClick={toggleForm}>
         <span style={{ fontSize: "18px", fontWeight: "bold" }}>Add User</span>
         <span className="manage-user-triangle">{isOpen ? "▲" : "▼"}</span>
@@ -336,7 +341,7 @@ const ManageUser = () => {
         alert("Failed to delete user.");
       }
     }
-  };  
+  };
 
   const handlePreviousPage = () => {
     if (currentPage > 1) {
@@ -351,213 +356,216 @@ const ManageUser = () => {
   };
 
   return (
-    <div
-      className="manage-user-container"
-      style={{
-        height: "100vh",
-        overflowY: "auto",
-      }}
-    >
-      <AddUserForm
-        isOpen={isOpen}
-        toggleForm={() => setIsOpen(!isOpen)}
-        addUser={addUser}
-        setUserList={setUserList}
-        fetchUsers={fetchUsers}
-      />
+    <div>
+      <div
+        className="manage-user-container"
+        style={{
+          height: "100vh",
+          overflowY: "auto",
+          paddingRight: "20px",
+        }}
+      >
+        <AddUserForm
+          isOpen={isOpen}
+          toggleForm={() => setIsOpen(!isOpen)}
+          addUser={addUser}
+          setUserList={setUserList}
+          fetchUsers={fetchUsers}
+        />
 
-      <div className="manage-user-header">
-        <span style={{ fontSize: "18px", fontWeight: "bold" }}>
-          Manage User
-        </span>
-      </div>
-      <div className="manage-user-manageUserContainer">
-        <div className="manage-user-search-bar">
-          <FaSearch className="manage-user-search-icon" />
-          <input
-            type="text"
-            placeholder="Search : username, email, name, role"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        <div className="manage-user-header">
+          <span style={{ fontSize: "18px", fontWeight: "bold" }}>
+            Manage User
+          </span>
         </div>
-        <div className="manage-user-table-container">
-          <table style={{ borderColor: "#f97316" }}>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Name</th>
-                <th>Role</th>
-                <th>Edit</th>
-                <th>Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredUsers.length > 0 ? (
-                currentUsers.map((user, index) => (
-                  <tr key={user.user_id || `user-${index}`}>
-                    <td>{user.user_id}</td>
-                    <td>{user.username}</td>
-                    <td>{user.email}</td>
-                    <td>
-                      {user.firstname} {user.surname}
-                    </td>
-                    <td>{user.role_name}</td>
-                    <td>
-                      <FaEdit
-                        className="manage-user-edit-icon"
-                        onClick={() => handleEdit(user)}
-                      />
-                    </td>
-                    <td>
-                      <FaTrash
-                        className="manage-user-delete-icon"
-                        onClick={() => handleDelete(user.user_id)}
-                      />
+        <div className="manage-user-manageUserContainer">
+          <div className="manage-user-search-bar">
+            <FaSearch className="manage-user-search-icon" />
+            <input
+              type="text"
+              placeholder="Search : username, email, name, role"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div className="manage-user-table-container">
+            <table style={{ borderColor: "#f97316" }}>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Name</th>
+                  <th>Role</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredUsers.length > 0 ? (
+                  currentUsers.map((user, index) => (
+                    <tr key={user.user_id || `user-${index}`}>
+                      <td>{user.user_id}</td>
+                      <td>{user.username}</td>
+                      <td>{user.email}</td>
+                      <td>
+                        {user.firstname} {user.surname}
+                      </td>
+                      <td>{user.role_name}</td>
+                      <td>
+                        <FaEdit
+                          className="manage-user-edit-icon"
+                          onClick={() => handleEdit(user)}
+                        />
+                      </td>
+                      <td>
+                        <FaTrash
+                          className="manage-user-delete-icon"
+                          onClick={() => handleDelete(user.user_id)}
+                        />
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" style={{ textAlign: "center" }}>
+                      ไม่พบข้อมูลที่ค้นหา
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7" style={{ textAlign: "center" }}>
-                    ไม่พบข้อมูลที่ค้นหา
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="manage-user-pagination">
-          <button onClick={handlePreviousPage} disabled={currentPage === 1}>
-            &lt;
-          </button>
-          <span>
-            {currentPage} out of {totalPages}
-          </span>
-          <button
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-          >
-            &gt;
-          </button>
-        </div>
-
-        {editUser && (
-          <div className="manage-user-edit-form-container">
-            <hr />
-            <h3>Edit User</h3>
-            <form onSubmit={handleSave}>
-              <div className="manage-user-form-group">
-                <label>Username :</label>
-                <input
-                  type="text"
-                  value={editUser.username}
-                  onChange={(e) =>
-                    setEditUser({ ...editUser, username: e.target.value })
-                  }
-                />
-              </div>
-              <div className="manage-user-form-group">
-                <label>Email :</label>
-                <input
-                  type="email"
-                  value={editUser.email}
-                  onChange={(e) =>
-                    setEditUser({ ...editUser, email: e.target.value })
-                  }
-                />
-              </div>
-              <div className="manage-user-form-group">
-                <label>First name :</label>
-                <input
-                  type="text"
-                  value={editUser.firstName}
-                  onChange={(e) =>
-                    setEditUser({ ...editUser, firstName: e.target.value })
-                  }
-                />
-              </div>
-              <div className="manage-user-form-group">
-                <label>Surname :</label>
-                <input
-                  type="text"
-                  value={editUser.surname}
-                  onChange={(e) =>
-                    setEditUser({ ...editUser, surname: e.target.value })
-                  }
-                />
-              </div>
-              <div className="manage-user-form-group">
-                <label>Role :</label>
-                <select
-                  value={editUser.role}
-                  onChange={(e) =>
-                    setEditUser({ ...editUser, role: e.target.value })
-                  }
-                >
-                  <option value="">--- Select ---</option>
-                  <option value="Super Admin">Super Admin</option>
-                  <option value="Admin">Admin</option>
-                  <option value="User">User</option>
-                  <option value="MainBranch">Main Branch</option>
-                  <option value="SubBranch">Sub Branch</option>
-                </select>
-              </div>
-
-              {editUser.role === "MainBranch" && (
-                <div className="manage-user-form-group">
-                  <label>Company :</label>
-                  <select
-                    value={editUser.company_id || ""}
-                    onChange={(e) =>
-                      setEditUser({ ...editUser, company_id: e.target.value })
-                    }
-                    required
-                  >
-                    <option value="">--- Select Company ---</option>
-                    {companys.map((company) => (
-                      <option
-                        key={company.company_id}
-                        value={company.company_id}
-                      >
-                        {company.company_name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              {editUser.role === "SubBranch" && (
-                <div className="manage-user-form-group">
-                  <label>Branch :</label>
-                  <select
-                    value={editUser.branch_id || ""}
-                    onChange={(e) =>
-                      setEditUser({ ...editUser, branch_id: e.target.value })
-                    }
-                    required
-                  >
-                    <option value="">--- Select Branch ---</option>
-                    {branches.map((branch) => (
-                      <option key={branch.branch_id} value={branch.branch_id}>
-                        {branch.branch_name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-              <button
-                type="submit"
-                className="manage-user-confirmManageUser-button"
-              >
-                Confirm
-              </button>
-            </form>
+                )}
+              </tbody>
+            </table>
           </div>
-        )}
+
+          <div className="manage-user-pagination">
+            <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+              &lt;
+            </button>
+            <span>
+              {currentPage} out of {totalPages}
+            </span>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+            >
+              &gt;
+            </button>
+          </div>
+
+          {editUser && (
+            <div className="manage-user-edit-form-container">
+              <hr />
+              <h3>Edit User</h3>
+              <form onSubmit={handleSave}>
+                <div className="manage-user-form-group">
+                  <label>Username :</label>
+                  <input
+                    type="text"
+                    value={editUser.username}
+                    onChange={(e) =>
+                      setEditUser({ ...editUser, username: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="manage-user-form-group">
+                  <label>Email :</label>
+                  <input
+                    type="email"
+                    value={editUser.email}
+                    onChange={(e) =>
+                      setEditUser({ ...editUser, email: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="manage-user-form-group">
+                  <label>First name :</label>
+                  <input
+                    type="text"
+                    value={editUser.firstName}
+                    onChange={(e) =>
+                      setEditUser({ ...editUser, firstName: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="manage-user-form-group">
+                  <label>Surname :</label>
+                  <input
+                    type="text"
+                    value={editUser.surname}
+                    onChange={(e) =>
+                      setEditUser({ ...editUser, surname: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="manage-user-form-group">
+                  <label>Role :</label>
+                  <select
+                    value={editUser.role}
+                    onChange={(e) =>
+                      setEditUser({ ...editUser, role: e.target.value })
+                    }
+                  >
+                    <option value="">--- Select ---</option>
+                    <option value="Super Admin">Super Admin</option>
+                    <option value="Admin">Admin</option>
+                    <option value="User">User</option>
+                    <option value="MainBranch">Main Branch</option>
+                    <option value="SubBranch">Sub Branch</option>
+                  </select>
+                </div>
+
+                {editUser.role === "MainBranch" && (
+                  <div className="manage-user-form-group">
+                    <label>Company :</label>
+                    <select
+                      value={editUser.company_id || ""}
+                      onChange={(e) =>
+                        setEditUser({ ...editUser, company_id: e.target.value })
+                      }
+                      required
+                    >
+                      <option value="">--- Select Company ---</option>
+                      {companys.map((company) => (
+                        <option
+                          key={company.company_id}
+                          value={company.company_id}
+                        >
+                          {company.company_name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {editUser.role === "SubBranch" && (
+                  <div className="manage-user-form-group">
+                    <label>Branch :</label>
+                    <select
+                      value={editUser.branch_id || ""}
+                      onChange={(e) =>
+                        setEditUser({ ...editUser, branch_id: e.target.value })
+                      }
+                      required
+                    >
+                      <option value="">--- Select Branch ---</option>
+                      {branches.map((branch) => (
+                        <option key={branch.branch_id} value={branch.branch_id}>
+                          {branch.branch_name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+                <button
+                  type="submit"
+                  className="manage-user-confirmManageUser-button"
+                >
+                  Confirm
+                </button>
+              </form>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
