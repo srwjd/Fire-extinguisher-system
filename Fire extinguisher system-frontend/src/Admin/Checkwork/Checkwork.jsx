@@ -153,7 +153,7 @@ function checkWork() {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // จำนวนรายการต่อหน้า
+  const itemsPerPage = 10;
   const totalPages = Math.ceil(filteredReport.length / itemsPerPage);
 
   const reportsToDisplay = filteredReport.slice(
