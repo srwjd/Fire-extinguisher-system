@@ -162,12 +162,12 @@ function Inspection() {
         >
           <thead>
             <tr>
-              <th>S/N</th>
-              <th>MFD</th>
-              <th>EXP</th>
-              <th>Last check</th>
-              <th>Next check</th>
-              <th>Check</th>
+              <th style={{ textAlign: "center" }}>S/N</th>
+              <th style={{ textAlign: "center" }}>MFD</th>
+              <th style={{ textAlign: "center" }}>EXP</th>
+              <th style={{ textAlign: "center" }}>Last check</th>
+              <th style={{ textAlign: "center" }}>Next check</th>
+              <th style={{ textAlign: "center" }}>Check</th>
             </tr>
           </thead>
           <tbody>

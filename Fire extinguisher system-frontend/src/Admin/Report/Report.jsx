@@ -181,10 +181,10 @@ function Report() {
           >
             <thead>
               <tr>
-                <th>S/N</th>
-                <th>By</th>
-                <th>Date</th>
-                <th>Check</th>
+                <th style={{ textAlign: "center" }}>S/N</th>
+                <th style={{ textAlign: "center" }}>By</th>
+                <th style={{ textAlign: "center" }}>Date</th>
+                <th style={{ textAlign: "center" }}>Check</th>
               </tr>
             </thead>
             <tbody>
