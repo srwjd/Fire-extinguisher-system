@@ -67,10 +67,12 @@ router.post('/login', async (req, res) => {
     const companyId = result[0].company_id || null
     const branchId = result[0].branch_id || null
     const userID = result[0].user_id
+    const firstname = result[0].firstname;
+    const surname = result[0].surname;
 
     console.log("User ID:", result[0].user_id);
     console.log("Company ID:", result[0].company_id);
-    return res.status(200).json({ message: 'OK success', token, role, companyId, userID, branchId });
+    return res.status(200).json({ message: 'OK success', token, role, companyId, userID, branchId, firstname, surname });
   } catch (error) {
     res.status(500).json({ message: 'error' });
   }

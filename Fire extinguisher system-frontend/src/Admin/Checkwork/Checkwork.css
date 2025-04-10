@@ -98,7 +98,7 @@ button:hover {
   padding: 20px;
   border-radius: 10px;
   border: 2px solid #ddd;
-  background: #FFD3BE;
+  /* background: #FFD3BE; */
   text-align: center;
   font-family: Arial, sans-serif;
   align-self: start;

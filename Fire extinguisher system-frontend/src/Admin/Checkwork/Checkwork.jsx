@@ -223,9 +223,6 @@ function checkWork() {
             onClick={handlePopupClose}
           >
             <div onClick={(e) => e.stopPropagation()}>
-              <button className="close-btn" onClick={handlePopupClose}>
-                ✖
-              </button>
               <h2>Report Details</h2>
               <div
                 className="image-placeholder"

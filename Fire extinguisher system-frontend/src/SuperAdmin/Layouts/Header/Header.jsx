@@ -11,12 +11,16 @@ function Header() {
         window.location.href = "/"; // กลับไปหน้า login
     };
 
+    const firstname = localStorage.getItem('firstname') || '';
+    const surname = localStorage.getItem('surname') || '';
+    const role = localStorage.getItem('role') || '';
+
     return (
         <div className='headerContainer'>
             <div className='logo'></div>
             <div className='title' onClick={() => setShowMenu(!showMenu)} style={{ position: 'relative', cursor: 'pointer' }}>
                 <FaRegCircleUser size={50} />
-                <div>Super Admin</div>
+                <div>{`${firstname} ${surname} (${role})`}</div>
                 {showMenu && (
                     <div className="dropdownMenu">
                         <div className="dropdownItem" onClick={handleLogout}>
