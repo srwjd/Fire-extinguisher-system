@@ -10,7 +10,7 @@ function Header() {
 
     const handleLogout = () => {
         localStorage.clear();
-        window.location.href = "/login"; // กลับไปหน้า login
+        window.location.href = "/"; // กลับไปหน้า login
     };
 
     return (
