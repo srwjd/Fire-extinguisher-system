@@ -269,10 +269,6 @@ function Report() {
 
               {selectedReport && (
                 <>
-                  <div>
-                    <img src={`http://localhost:3000/fire/uploads/${selectedReport.filename}`} alt=""
-                      style={{ width: "100px", height: "auto" }} />
-                  </div>
                   <p>
                     <strong>S/N :</strong> {selectedReport.serial_number}
                   </p>
