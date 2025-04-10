@@ -106,6 +106,7 @@ export const getCompanyIdByBranch = async (branchId) => {
   }
 };
 
+// add user
 export const addUser = async (userData) => {
   const {
     username,
@@ -138,83 +139,53 @@ export const addUser = async (userData) => {
   }
 };
 
-// export const addUser = async (userData) => {
-//   const {
-//     username,
-//     password,
-//     email,
-//     firstName,
-//     surname,
-//     role,
-//     company_id,
-//     branch_id,
-//   } = userData;
-
-//   let sql;
-//   let params;
-
-//   // เช็คว่าเลือก role เป็น Main Branch หรือ Sub Branch
-//   if (role === "MainBranch") {
-//     // สำหรับ Main Branch เก็บแค่ company_id
-//     sql = `INSERT INTO Users (username, password, email, firstname, surname, role_id, company_id, create_at)
-//            VALUES (?, ?, ?, ?, ?, (SELECT role_id FROM Roles WHERE role_name = ?), ?, NOW())`;
-//     params = [username, password, email, firstName, surname, role, company_id];
-//   } else if (role === "SubBranch") {
-//     // สำหรับ Sub Branch ให้ดึง company_id ที่สังกัดอยู่กับ branch_id
-//     const companyId = await getCompanyIdByBranch(branch_id); // ดึง company_id จาก branch_id
-
-//     if (!companyId) {
-//       throw new Error("Branch does not belong to any company.");
-//     }
-
-//     // สำหรับ Sub Branch เก็บแค่ branch_id และ company_id ที่ดึงมา
-//     sql = `INSERT INTO Users (username, password, email, firstname, surname, role_id, company_id, branch_id, create_at)
-//            VALUES (?, ?, ?, ?, ?, (SELECT role_id FROM Roles WHERE role_name = ?), ?, ?, NOW())`;
-//     params = [
-//       username,
-//       password,
-//       email,
-//       firstName,
-//       surname,
-//       role,
-//       companyId,
-//       branch_id,
-//     ];
-//   }
-
-//   try {
-//     const result = await query(sql, params);
-//     return result;
-//   } catch (error) {
-//     console.error("Error inserting user:", error.message);
-//     throw error;
-//   }
-// };
-
 // อัปเดตข้อมูล user
 export const updateUser = async (userId, userData) => {
-  const { username, email, firstName, surname, role, company_id, branch_id } =
-    userData;
+  const { username, email, firstName, surname, role, company_id, branch_id, fire_count } = userData;
 
   let sql = `UPDATE Users 
              SET username = ?, email = ?, firstname = ?, surname = ?, 
-                 role_id = (SELECT role_id FROM Roles WHERE role_name = ?),`;
+                 role_id = (SELECT role_id FROM Roles WHERE role_name = ?)`;
 
-  // เพิ่มการอัพเดต company_id หรือ branch_id ถ้าเป็น MainBranch หรือ SubBranch
+  const params = [username, email, firstName, surname, role];
+
+  // เพิ่ม company_id หรือ branch_id เฉพาะ MainBranch หรือ SubBranch
   if (role === "MainBranch") {
-    sql += ` company_id = ? `;
+    if (!company_id) {
+      throw new Error("Company ID is required for MainBranch role.");
+    }
+    sql += `, company_id = ?`;
+    params.push(company_id);
+
+    // อัปเดตจำนวนถังดับเพลิง (fire_count) สำหรับ MainBranch
+    if (fire_count !== undefined) {
+      sql += `, fire_count = ?`;
+      params.push(fire_count);
+
+      // อัปเดต fire_count ใน Fires สำหรับ MainBranch
+      const updateFireCountSql = `UPDATE Fires SET fire_count = ? WHERE company_id = ?`;
+      await query(updateFireCountSql, [fire_count, company_id]);
+    }
   } else if (role === "SubBranch") {
-    sql += ` branch_id = ? `;
+    if (!branch_id) {
+      throw new Error("Branch ID is required for SubBranch role.");
+    }
+    sql += `, branch_id = ?`;
+    params.push(branch_id);
+
+    // อัปเดตจำนวนถังดับเพลิง (fire_count) สำหรับ SubBranch
+    if (fire_count !== undefined) {
+      sql += `, fire_count = ?`;
+      params.push(fire_count);
+
+      // อัปเดต fire_count ใน Fires สำหรับ SubBranch
+      const updateFireCountSql = `UPDATE Fires SET fire_count = ? WHERE branch_id = ?`;
+      await query(updateFireCountSql, [fire_count, branch_id]);
+    }
   }
 
-  sql += `WHERE user_id = ?`;
-
-  const params =
-    role === "MainBranch"
-      ? [username, email, firstName, surname, role, company_id, userId]
-      : role === "SubBranch"
-      ? [username, email, firstName, surname, role, branch_id, userId]
-      : [username, email, firstName, surname, role, userId];
+  sql += ` WHERE user_id = ?`;
+  params.push(userId);
 
   try {
     const result = await query(sql, params);
@@ -224,6 +195,8 @@ export const updateUser = async (userId, userData) => {
     throw error;
   }
 };
+
+
 
 // ลบ user
 export const deleteUser = async (userId) => {
@@ -392,7 +365,7 @@ export const editCompany = async (company_id, branch_id, newCompanyData) => {
     console.error("Error updating branch:", error.message);
     throw new Error("Failed to update branch. " + error.message);
   }
-};
+}; 
 
 // ลบ Branch และ Fire extinguishers ที่เกี่ยวข้อง
 export const deleteBranchAndFires = async (branch_id) => {

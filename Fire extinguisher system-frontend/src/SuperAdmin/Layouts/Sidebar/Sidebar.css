@@ -1,4 +1,4 @@
-.sidebarContainer {
+.sidebarContainer { 
     height: 100vh;
     width: 15%;
     border-right: 2px solid #FD6E2B;
@@ -7,7 +7,6 @@
     font-size: 20px;
     padding: 10px 20px;
     gap: 10px;
-    /* background-color: #fff; */
 }
 
 .dashboardSB,
@@ -26,14 +25,14 @@
 .manageunitSB:hover {
     background-color: #FD6E2B;
     color: #fff;
-    transform: scale(1.05); /* ขยายเล็กน้อยให้ดู smooth */
+    transform: scale(1.05); 
 }
 
 .dashboardSB:active,
 .manageuserSB:active,
 .manageunitSB:active {
     background-color: #FFD3BE;
-    transform: scale(0.98); /* หดลงเล็กน้อยเมื่อกด */
+    transform: scale(0.98);
 }
 
 .dashboardSB:focus,
@@ -41,4 +40,11 @@
 .manageunitSB:focus {
     background-color: #FFD3BE;
     outline: none;
+}
+
+/* สำหรับลิงก์ที่เลือกแล้ว */
+.activeLink {
+    background-color: #FD6E2B;
+    color: #fff;
+    transform: scale(1.05); /* ขยายเล็กน้อย */
 }

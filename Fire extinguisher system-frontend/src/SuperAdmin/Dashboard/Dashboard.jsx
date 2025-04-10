@@ -85,7 +85,7 @@ function Dashboard() {
   }, []);
 
   return (
-    <div>
+    <div className="dashboardContainer">
       <div className="dashboardContainerTop">
         {/* Users Card */}
         <div className="dashboard-user-card">

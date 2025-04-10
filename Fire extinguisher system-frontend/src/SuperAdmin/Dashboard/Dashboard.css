@@ -1,3 +1,8 @@
+.dashboardContainer{
+  overflow: scroll;
+  height: 100vh;
+}
+
 /* containerTop */
 .dashboardContainerTop {
   display: flex;
@@ -13,6 +18,7 @@
   width: 50%; /* ปรับให้เท่ากัน */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin: 16px;
+  height: 100%;
 }
 
 .dashboard-users-title {
@@ -33,6 +39,8 @@
   grid-template-columns: 1fr 1fr;
   gap: 8px;
   /* width: 320px; */
+  max-height: calc(3 * 48px + 16px); /* ความสูงของ 3 บรรทัด (ปรับได้ตามความสูงของแต่ละ item) */
+  overflow-y: auto;
 }
 
 .dashboard-user-item {
@@ -79,6 +87,8 @@
   grid-template-columns: 1fr 1fr;
   gap: 8px;
   /* width: 320px; */
+  max-height: calc(3 * 48px + 16px); /* ความสูงของ 3 บรรทัด (ปรับได้ตามความสูงของแต่ละ item) */
+  overflow-y: auto;
 }
 
 .dashboard-unit-item {
