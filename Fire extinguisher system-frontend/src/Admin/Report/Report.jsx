@@ -272,10 +272,15 @@ function Report() {
                 isClearable
                 isSearchable
                 styles={{
-                  control: (base) => ({
+                  control: (base, state) => ({
                     ...base,
                     fontSize: "16px",
                     minHeight: "38px",
+                    borderColor: "#f97316", // สีขอบส้ม
+                    boxShadow: state.isFocused ? "0 0 0 1px #f97316" : "none", // ขอบตอน focus
+                    "&:hover": {
+                      borderColor: "#f97316", // ขอบตอน hover
+                    },
                   }),
                   menu: (base) => ({
                     ...base,
