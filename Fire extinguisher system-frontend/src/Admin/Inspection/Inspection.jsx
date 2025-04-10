@@ -15,7 +15,7 @@ function Inspection() {
   const [users, setUsers] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredReport.slice(indexOfFirstItem, indexOfLastItem);
@@ -163,12 +163,12 @@ function Inspection() {
         >
           <thead>
             <tr>
-              <th>S/N</th>
-              <th>MFD</th>
-              <th>EXP</th>
-              <th>Last check</th>
-              <th>Next check</th>
-              <th>Check</th>
+              <th style={{ textAlign: "center" }}>S/N</th>
+              <th style={{ textAlign: "center" }}>MFD</th>
+              <th style={{ textAlign: "center" }}>EXP</th>
+              <th style={{ textAlign: "center" }}>Last check</th>
+              <th style={{ textAlign: "center" }}>Next check</th>
+              <th style={{ textAlign: "center" }}>Check</th>
             </tr>
           </thead>
           <tbody>
@@ -191,9 +191,8 @@ function Inspection() {
                         fontSize: "20px",
                         backgroundColor: "transparent",
                         borderRadius: "100%",
-                        padding: "5px",
-                        width: "40px",
-                        height: "40px",
+                        margin: "0 auto",
+                        padding: "0px",
                       }}
                     >
                       <GoChecklist />
@@ -261,10 +260,15 @@ function Inspection() {
                 isClearable
                 isSearchable
                 styles={{
-                  control: (base) => ({
+                  control: (base, state) => ({
                     ...base,
                     fontSize: "16px",
                     minHeight: "38px",
+                    borderColor: "#f97316", // สีขอบส้ม
+                    boxShadow: state.isFocused ? "0 0 0 1px #f97316" : "none", // ขอบตอน focus
+                    "&:hover": {
+                      borderColor: "#f97316", // ขอบตอน hover
+                    },
                   }),
                   menu: (base) => ({
                     ...base,

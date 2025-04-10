@@ -5,17 +5,15 @@
   align-items: flex-start;
 }
 
-.table-container{
+.table-container {
   width: 50%;
   border-radius: 10px;
   align-self: start;
-
-} 
+}
 
 .checkwork-title {
   color: #ff7043;
 }
-
 
 .search-bar {
   display: flex;
@@ -31,7 +29,6 @@
   border: none;
   outline: none;
   padding: 5px;
- 
 }
 
 .search-bar span {
@@ -40,7 +37,6 @@
   margin-left: 5px;
 }
 
-
 table {
   width: 80%;
   border-collapse: collapse;
@@ -48,7 +44,8 @@ table {
   border-radius: 10px;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #ff7043;
   padding: 10px;
   text-align: center;
@@ -56,7 +53,7 @@ th, td {
 
 th {
   background-color: #ff7043;
-color: white;
+  color: white;
 }
 
 /* tbody tr:nth-child(even) {
@@ -88,21 +85,27 @@ button:hover {
   background-color: #e05530;
 }
 
-.search-icon{
-  color : black
+.search-icon {
+  color: black;
 }
-
-
 
 .checkwork-container {
-  padding: 20px;
-  border-radius: 10px;
-  border: 2px solid #ddd;
-  background: #FFD3BE;
-  text-align: center;
-  font-family: Arial, sans-serif;
-  align-self: start;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none; /* ซ่อนไว้ก่อน */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
+
+.checkwork-container.open {
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.5); /* สีดำโปร่งแสง */
+}
+
 
 .image-placeholder {
   width: 100%;
@@ -146,7 +149,8 @@ p {
   margin-top: 10px;
 }
 
-.fail-btn, .pass-btn {
+.fail-btn,
+.pass-btn {
   width: 45%;
   padding: 10px;
   font-size: 16px;
@@ -166,13 +170,13 @@ p {
   color: white;
 }
 
-.input{
+.input {
   border-radius: 10px;
   height: 35px;
   border: none;
 }
 
-.close-button{
+.close-button {
   padding: 10px;
   font-size: 16px;
   font-weight: bold;
@@ -230,12 +234,12 @@ p {
 /* Animation for fade-in effect */
 @keyframes fadeIn {
   0% {
-      opacity: 0;
-      transform: translateY(-20px);
+    opacity: 0;
+    transform: translateY(-20px);
   }
   100% {
-      opacity: 1;
-      transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -289,7 +293,7 @@ p {
   resize: none;
 }
 
-.checkwork-details-popup{
+.checkwork-details-popup {
   text-align: left;
   width: 100%;
 }

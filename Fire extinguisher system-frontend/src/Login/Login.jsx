@@ -21,6 +21,8 @@ function Login() {
             const role = res.data.role;
             const companyId = res.data.companyId;
             const userID = res.data.userID;
+            const firstname = res.data.firstname;
+            const surname = res.data.surname;
 
             localStorage.setItem('userID', userID);
             localStorage.setItem('role', role);
@@ -28,6 +30,8 @@ function Login() {
             localStorage.setItem('companyId', companyId)
             localStorage.setItem('branchId', res.data.branchId)
             localStorage.setItem('userID', userID)
+            localStorage.setItem('firstname', firstname)
+            localStorage.setItem('surname', surname)
 
 
 

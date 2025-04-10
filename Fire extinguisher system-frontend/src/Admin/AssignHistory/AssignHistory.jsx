@@ -54,11 +54,11 @@ function AssignHistory() {
           <table>
             <thead>
               <tr>
-                <th>S/N</th>
-                <th>Assign to</th>
-                <th>Assign By</th>
-                <th>Date</th>
-                <th>Time</th>
+                <th style={{ textAlign: "center" }}>S/N</th>
+                <th style={{ textAlign: "center" }}>Assign to</th>
+                <th style={{ textAlign: "center" }}>Assign By</th>
+                <th style={{ textAlign: "center" }}>Date</th>
+                <th style={{ textAlign: "center" }}>Time</th>
               </tr>
             </thead>
             <tbody>
