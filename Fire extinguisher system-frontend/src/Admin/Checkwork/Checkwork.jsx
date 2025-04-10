@@ -227,10 +227,12 @@ function checkWork() {
                 ✖
               </button>
               <h2>Report Details</h2>
-              <div
-                className="image-placeholder"
-                onClick={(e) => e.stopPropagation()}
-              ></div>
+             
+              <div>
+                <img src={`http://localhost:3000/fire/uploads/${selectedReport.filename}`} alt=""
+                style={{ width: "100px", height: "auto" }} />
+
+              </div>
               {selectedReport && (
                 <>
                   <p style={{ textAlign: "left" }}>
@@ -299,7 +301,7 @@ function checkWork() {
                 </label>
                 <br />
               </div>
-              <textarea className="remarks" placeholder="หมายเหตุ :" />{" "}
+              <p style={{ textAlign: "left" }}>หมายเหตุ : {selectedReport.description}</p>
               &nbsp;&nbsp;&nbsp;&nbsp;
               <button onClick={handleFail} className="checkwork-assign-button">
                 Fail

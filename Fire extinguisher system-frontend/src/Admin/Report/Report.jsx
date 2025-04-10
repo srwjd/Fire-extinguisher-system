@@ -41,6 +41,9 @@ function Report() {
     fetchUsers();
   }, []);
 
+
+
+
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
@@ -59,6 +62,8 @@ function Report() {
       );
     }
   };
+
+
 
   const handleRowClick = (item) => {
     setSelectedReport(item);
@@ -132,6 +137,8 @@ function Report() {
       alert("An error occurred while assigning.");
     }
   };
+
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -249,6 +256,13 @@ function Report() {
           <div className="admin-checkwork-container" onClick={handlePopupClose}>
             <div className="admin-checkwork-popup-box" onClick={(e) => e.stopPropagation()}>
               <h2>Report Details</h2>
+
+              <div>
+                <img src={`http://localhost:3000/fire/uploads/${selectedReport.filename}`} alt=""
+                style={{ width: "100px", height: "auto" }} />
+
+              </div>
+
               {selectedReport && (
                 <>
                   <p>
