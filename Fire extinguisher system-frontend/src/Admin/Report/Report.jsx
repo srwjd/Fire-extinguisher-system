@@ -134,7 +134,7 @@ function Report() {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredReport.slice(indexOfFirstItem, indexOfLastItem);
@@ -208,9 +208,8 @@ function Report() {
                           fontSize: "20px",
                           backgroundColor: "transparent",
                           borderRadius: "100%",
-                          padding: "5px",
-                          width: "40px",
-                          height: "40px",
+                          margin: "0 auto",
+                          padding: "0px",
                         }}
                       >
                         <GoChecklist />
