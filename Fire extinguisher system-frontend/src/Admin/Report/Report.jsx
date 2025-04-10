@@ -82,6 +82,7 @@ function Report() {
   const handleAssign = async () => {
     if (!selectedReport || !assignUser) {
       alert("Please select a report and assign a user.");
+      
       return;
     }
 
@@ -110,6 +111,7 @@ function Report() {
           description: null,
         }
       );
+      setIsPopupOpen(false);
       console.log(reportResponse.data);
 
       // const report_id = reportResponse.data.data.data.insertId;

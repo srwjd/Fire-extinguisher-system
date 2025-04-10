@@ -116,6 +116,7 @@ function Inspection() {
           description: "ถึงรอบตรวจถังดับเพลิง",
         }
       );
+      setIsPopupOpen(false);
       console.log(reportResponse);
     } catch (error) {
       console.error("Error assigning report:", error);
