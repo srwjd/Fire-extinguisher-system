@@ -300,3 +300,20 @@ p {
   margin-bottom: 5px;
   font-size: 16px;
 }
+
+.checkwork-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none; /* ซ่อนไว้ก่อน */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.checkwork-container.open {
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.5); /* สีดำโปร่งแสง */
+}
