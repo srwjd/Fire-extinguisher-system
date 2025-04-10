@@ -35,25 +35,41 @@ function checkWork() {
     fetchReports();
   }, []);
 
+  // const handleSearch = (e) => {
+  //   const term = e.target.value.toLocaleLowerCase();
+  //   setSearchTerm(term);
+
+  //   if (!term) {
+  //     setFilteredReport(report);
+  //   } else {
+  //     setFilteredReport(
+  //       report.filter((item) => {
+  //         const serial = item.serial_number
+  //           ? String(item.serial_number).toLocaleLowerCase()
+  //           : "";
+  //         const user = item.user_id
+  //           ? String(item.user_id).toLocaleLowerCase()
+  //           : "";
+  //         return serial.includes(term) || user.includes(term);
+  //       })
+  //     );
+  //   }
+  // };
+
   const handleSearch = (e) => {
-    const term = e.target.value.toLocaleLowerCase();
+    const term = e.target.value.toLowerCase();
     setSearchTerm(term);
 
-    if (!term) {
-      setFilteredReport(report);
-    } else {
-      setFilteredReport(
-        report.filter((item) => {
-          const serial = item.serial_number
-            ? String(item.serial_number).toLocaleLowerCase()
-            : "";
-          const user = item.user_id
-            ? String(item.user_id).toLocaleLowerCase()
-            : "";
+    const filtered = term
+      ? report.filter((item) => {
+          const serial = item.serial_number?.toLowerCase() || "";
+          const user = item.user_id?.toLowerCase() || "";
           return serial.includes(term) || user.includes(term);
         })
-      );
-    }
+      : report;
+
+    setFilteredReport(filtered);
+    setCurrentPage(1); // reset page on search
   };
 
   const handleRowClick = (item) => {
@@ -136,6 +152,23 @@ function checkWork() {
     }
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // จำนวนรายการต่อหน้า
+  const totalPages = Math.ceil(filteredReport.length / itemsPerPage);
+
+  const reportsToDisplay = filteredReport.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  };
+
   return (
     <div>
       <div className="admin-header">
@@ -155,27 +188,21 @@ function checkWork() {
           <table>
             <thead>
               <tr>
-                <th>S/N</th>
-                <th>By</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Check</th>
+                <th style={{ textAlign: "center" }}>S/N</th>
+                <th style={{ textAlign: "center" }}>By</th>
+                <th style={{ textAlign: "center" }}>Date</th>
+                <th style={{ textAlign: "center" }}>Status</th>
+                <th style={{ textAlign: "center" }}>Check</th>
               </tr>
             </thead>
             <tbody>
-              {filteredReport.length > 0 ? (
-                filteredReport.map((item, index) => (
-                  <tr key={index} onClick={() => handleRowClick(item)}>
+              {reportsToDisplay.length > 0 ? (
+                reportsToDisplay.map((item) => (
+                  <tr key={item.inspection_id} onClick={() => setSelectedReport(item)}>
                     <td>{item.serial_number}</td>
                     <td>{item.username}</td>
                     <td>{item.date.split("T")[0]}</td>
-                    <td
-                      className={
-                        item.status === "process"
-                          ? "status-process"
-                          : "status-other"
-                      }
-                    >
+                    <td className={item.status === "process" ? "status-process" : "status-other"}>
                       {item.status}
                     </td>
                     <td>
@@ -185,6 +212,7 @@ function checkWork() {
                           handlePopupOpen(item);
                         }}
                         className="checkwork-button"
+                        title="Check"
                         style={{
                           color: "black",
                           border: "none",
@@ -210,10 +238,22 @@ function checkWork() {
             </tbody>
           </table>
 
-          <div className="pagination">
-            <button>{"<"}</button>
-            <span>1 out of 10</span>
-            <button>{">"}</button>
+          <div className="admin-unit-pagination">
+            <button
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1 || totalPages === 0}
+            >
+              &lt;
+            </button>
+            <span>
+              {currentPage} out of {totalPages > 0 ? totalPages : 1}
+            </span>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages || totalPages === 0}
+            >
+              &gt;
+            </button>
           </div>
         </div>
 
@@ -223,16 +263,11 @@ function checkWork() {
             onClick={handlePopupClose}
           >
             <div onClick={(e) => e.stopPropagation()}>
-              <button className="close-btn" onClick={handlePopupClose}>
-                ✖
-              </button>
               <h2>Report Details</h2>
-             
-              <div>
-                <img src={`http://localhost:3000/fire/uploads/${selectedReport.filename}`} alt=""
-                style={{ width: "100px", height: "auto" }} />
-
-              </div>
+              <div
+                className="image-placeholder"
+                onClick={(e) => e.stopPropagation()}
+              ></div>
               {selectedReport && (
                 <>
                   <p style={{ textAlign: "left" }}>
@@ -301,7 +336,7 @@ function checkWork() {
                 </label>
                 <br />
               </div>
-              <p style={{ textAlign: "left" }}>หมายเหตุ : {selectedReport.description}</p>
+              <textarea className="remarks" placeholder="หมายเหตุ :" />{" "}
               &nbsp;&nbsp;&nbsp;&nbsp;
               <button onClick={handleFail} className="checkwork-assign-button">
                 Fail
