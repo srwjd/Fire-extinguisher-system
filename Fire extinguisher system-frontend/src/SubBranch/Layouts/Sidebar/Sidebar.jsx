@@ -1,17 +1,30 @@
 import "./Sidebar.css";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect } from 'react';
 
 function Sidebar() {
-  const location = useLocation();
+  useEffect(() => {
+    // ตรวจสอบ URL ปัจจุบัน
+    const currentPath = window.location.pathname;
+
+    // ลบคลาส 'activeLink' ทั้งหมด
+    const links = document.querySelectorAll('.sidebarContainer a');
+    links.forEach(link => link.classList.remove('activeLink'));
+
+    // เพิ่มคลาส 'activeLink' ให้กับลิงก์ที่ตรงกับ URL ปัจจุบัน
+    const activeLink = document.querySelector(`.sidebarContainer a[href="${currentPath}"]`);
+    if (activeLink) {
+        activeLink.classList.add('activeLink');
+    }
+}, []); // การทำงานครั้งเดียวเมื่อ component mount
 
   return (
     <div className="sidebarContainer">
       {/* <Link to="/home" className="dashboardSB">
         Home
       </Link> */}
-      <Link to="/report" className="dashboardSB">
+      <a href="/report" className="dashboardSB">
         Report
-      </Link>
+      </a>
     </div>
   );
 }
