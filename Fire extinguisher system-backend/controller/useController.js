@@ -523,14 +523,34 @@ export const getFiresById = async (fire_id) => {
 };
 // sirawan
 export const getReport = async (insp_id) => {
-  const sql = `
-              SELECT *
-              FROM Assigns RIGHT JOIN Reports ON Assigns.report_id = Reports.report_id
-              WHERE Assigns.insp_id = ?
-              `;
-  const params = [insp_id];
-  return await query(sql, params);
+  // 1. ดึงข้อมูลจาก Assigns ทั้งหมด
+  const assignSql = `SELECT * FROM Assigns WHERE insp_id = ?`;
+  const assignResult = await query(assignSql, [insp_id]);
+
+  // 2. แยกกรณี: สำหรับแต่ละแถว
+  const results = [];
+
+  for (let row of assignResult) {
+    if (row.report_id) {
+      // 3. ถ้ามี report_id → JOIN กับ Reports
+      const sql = `
+        SELECT *
+        FROM Assigns
+        LEFT JOIN Reports ON Assigns.report_id = Reports.report_id
+        WHERE Assigns.insp_id = ? AND Assigns.report_id = ?
+      `;
+      const report = await query(sql, [insp_id, row.report_id]);
+      results.push(report[0]);  // ใช้แค่แถวแรกจาก JOIN
+    } else {
+      // 4. ถ้าไม่มี report_id → ไม่ทำ JOIN
+      results.push(row);
+    }
+  }
+
+  return results;
 };
+
+
 
 export const getFiresByIds = async (fire_ids) => {
   if (!Array.isArray(fire_ids) || fire_ids.length === 0) {

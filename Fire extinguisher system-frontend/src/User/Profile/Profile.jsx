@@ -8,11 +8,7 @@ function Profile() {
     const [isEditName, setIsEditName] = useState(false);
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
-        localStorage.removeItem('branchId');
-        localStorage.removeItem('companyId');
-        localStorage.removeItem('userID');
+        localStorage.clear();
         window.location.href = '/';
     }; 
     

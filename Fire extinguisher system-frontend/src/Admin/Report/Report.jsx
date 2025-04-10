@@ -98,40 +98,44 @@ function Report() {
     const formattedTime = now.toLocaleTimeString("en-GB");
 
     try {
-      const reportResponse = await axios.put(
+      const reportResponse = await axios.post(
         "http://localhost:3000/fire/sendAssign",
         {
-          description: "ถึงรอบตรวจถังดับเพลิง",
           date: formattedDate,
           time: formattedTime,
-          fire_id: selectedReport.fire_id,
-          user_id: assignBy,
+          assign_by: assignBy,
+          report_id: selectedReport.report_id,
+          insp_id: inspectorID,
+          fire_id: null,
+          description: null,
         }
       );
+      console.log(reportResponse.data);
 
-      const report_id = reportResponse.data.data.data.insertId;
+      // const report_id = reportResponse.data.data.data.insertId;
+      // const report_id = selectedReport.report_id;
 
-      if (reportResponse.status === 201) {
-        const assignResponse = await axios.post(
-          "http://localhost:3000/fire/assign",
-          {
-            date: formattedDate,
-            time: formattedTime,
-            assign_by: assignBy,
-            report_id: report_id,
-            insp_id: inspectorID, // ส่ง user_id ไปที่ API
-          }
-        );
+      // if (reportResponse.status === 201) {
+      //   const assignResponse = await axios.post(
+      //     "http://localhost:3000/fire/assign",
+      //     {
+      //       date: formattedDate,
+      //       time: formattedTime,
+      //       assign_by: assignBy,
+      //       report_id: report_id,
+      //       insp_id: inspectorID, // ส่ง user_id ไปที่ API
+      //     }
+      //   );
 
-        if (assignResponse.status === 201) {
-          alert("Assignment successful!");
-          handlePopupClose();
-        } else {
-          alert("Failed to assign inspector.");
-        }
-      } else {
-        alert("Failed to create report.");
-      }
+      //   if (assignResponse.status === 201) {
+      //     alert("Assignment successful!");
+      //     handlePopupClose();
+      //   } else {
+      //     alert("Failed to assign inspector.");
+      //   }
+      // } else {
+      //   alert("Failed to create report.");
+      // }
     } catch (error) {
       console.error("Error assigning report:", error);
       alert("An error occurred while assigning.");
@@ -265,6 +269,10 @@ function Report() {
 
               {selectedReport && (
                 <>
+                  <div>
+                    <img src={`http://localhost:3000/fire/uploads/${selectedReport.filename}`} alt=""
+                      style={{ width: "100px", height: "auto" }} />
+                  </div>
                   <p>
                     <strong>S/N :</strong> {selectedReport.serial_number}
                   </p>
