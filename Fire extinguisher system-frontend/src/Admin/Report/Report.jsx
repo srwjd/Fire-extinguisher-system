@@ -82,6 +82,7 @@ function Report() {
   const handleAssign = async () => {
     if (!selectedReport || !assignUser) {
       alert("Please select a report and assign a user.");
+      
       return;
     }
 
@@ -110,6 +111,7 @@ function Report() {
           description: null,
         }
       );
+      setIsPopupOpen(false);
       console.log(reportResponse.data);
 
       // const report_id = reportResponse.data.data.data.insertId;
@@ -269,10 +271,6 @@ function Report() {
 
               {selectedReport && (
                 <>
-                  <div>
-                    <img src={`http://localhost:3000/fire/uploads/${selectedReport.filename}`} alt=""
-                      style={{ width: "100px", height: "auto" }} />
-                  </div>
                   <p>
                     <strong>S/N :</strong> {selectedReport.serial_number}
                   </p>
