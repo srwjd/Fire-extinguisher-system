@@ -45,10 +45,10 @@ function Home() {
       <table className="Table-MainBranch">
         <thead>
           <tr>
-            <th>Branch ({branches.length})</th>
-            <th>Fire extinguisher</th>
-            <th>Report</th>
-            <th>Complete</th>
+            <th style={{ textAlign: "center" }}>Branch ({branches.length})</th>
+            <th style={{ textAlign: "center" }}>Fire extinguisher</th>
+            <th style={{ textAlign: "center" }}>Report</th>
+            <th style={{ textAlign: "center" }}>Complete</th>
           </tr>
         </thead>
         <tbody>

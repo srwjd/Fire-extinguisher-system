@@ -80,13 +80,13 @@ function Report() {
         <table className="styled-table">
           <thead>
             <tr>
-              <td>S/N</td>
-              <td>MFD</td>
-              <td>EXP</td>
-              <td>Last check</td>
-              <td>Next check</td>
-              <td>Status</td>
-              <td>Report</td>
+              <td style={{ textAlign: "center" }}>S/N</td>
+              <td style={{ textAlign: "center" }}>MFD</td>
+              <td style={{ textAlign: "center" }}>EXP</td>
+              <td style={{ textAlign: "center" }}>Last check</td>
+              <td style={{ textAlign: "center" }}>Next check</td>
+              <td style={{ textAlign: "center" }}>Status</td>
+              <td style={{ textAlign: "center" }}>Report</td>
             </tr>
           </thead>
           <tbody>

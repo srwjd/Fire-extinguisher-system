@@ -347,11 +347,11 @@ const ManageUnit = () => {
               <table>
                 <thead>
                   <tr>
-                    <th>Company Name</th>
-                    <th>Branch</th>
-                    <th>Quantity</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <th style={{ textAlign: "center" }}>Company Name</th>
+                    <th style={{ textAlign: "center" }}>Branch</th>
+                    <th style={{ textAlign: "center" }}>Quantity</th>
+                    <th style={{ textAlign: "center" }}>Edit</th>
+                    <th style={{ textAlign: "center" }}>Delete</th>
                   </tr>
                 </thead>
                 <tbody>

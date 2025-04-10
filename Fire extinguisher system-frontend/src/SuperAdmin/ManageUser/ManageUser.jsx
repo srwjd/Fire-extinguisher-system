@@ -392,13 +392,13 @@ const ManageUser = () => {
             <table style={{ borderColor: "#f97316" }}>
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>Username</th>
-                  <th>Email</th>
-                  <th>Name</th>
-                  <th>Role</th>
-                  <th>Edit</th>
-                  <th>Delete</th>
+                  <th style={{ textAlign: "center" }}>ID</th>
+                  <th style={{ textAlign: "center" }}>Username</th>
+                  <th style={{ textAlign: "center" }}>Email</th>
+                  <th style={{ textAlign: "center" }}>Name</th>
+                  <th style={{ textAlign: "center" }}>Role</th>
+                  <th style={{ textAlign: "center" }}>Edit</th>
+                  <th style={{ textAlign: "center" }}>Delete</th>
                 </tr>
               </thead>
               <tbody>
