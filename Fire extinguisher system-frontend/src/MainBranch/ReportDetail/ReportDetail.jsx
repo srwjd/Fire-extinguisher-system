@@ -11,7 +11,9 @@ function ReportDetail() {
     const [currentTime, setCurrentTime] = useState(new Date());
     const [description, setDescription] = useState("");
     const [file, setFile] = useState(null);
+    const [previewURL, setPreviewURL] = useState(null);
     const userID = localStorage.getItem("userID");
+
 
     useEffect(() => {
         if (!fire_id) {
@@ -35,8 +37,14 @@ function ReportDetail() {
             setCurrentTime(new Date());
         }, 1000);
     
-        return () => clearInterval(interval);
-    }, [fire_id]);
+        return () => {
+            clearInterval(interval);
+            if (previewURL) {
+                URL.revokeObjectURL(previewURL);
+            }
+        };
+    }, [fire_id, previewURL]); // 👈 ต้องใส่ previewURL ไว้ใน dependency ด้วย
+    
 
     const handleReportSubmit = async () => {
         if (!fire || !userID || !file) {
@@ -78,7 +86,24 @@ function ReportDetail() {
             <div className="container">
                 {fire ? (
                     <>
-                        <input className="inputFile" type="file" onChange={(e) => setFile(e.target.files[0])} />
+                        <input
+                            className="inputFile"
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                                const selectedFile = e.target.files[0];
+                                setFile(selectedFile);
+
+                                if (selectedFile) {
+                                setPreviewURL(URL.createObjectURL(selectedFile));
+                                }
+                            }}
+                            />
+                            {previewURL && (
+                                <div className="image-preview">
+                                    <img src={previewURL} alt="Preview" style={{ maxWidth: "300px", marginTop: "10px" }} />
+                                </div>
+                                )}
                                             
                         <input className="inputText" type="text" placeholder="หมายเหตุ : " value={description} onChange={(e) => setDescription(e.target.value)} />
 

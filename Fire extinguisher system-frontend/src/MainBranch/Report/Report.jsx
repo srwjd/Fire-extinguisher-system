@@ -25,25 +25,43 @@ function Report() {
     const url = selectedBranchId
       ? `http://localhost:3000/fire/branches/${selectedBranchId}`
       : `http://localhost:3000/fire/company/${companyId}/fires`;
-
+  
     axios
       .get(url)
-      .then((response) => setFires(response.data))
-      .catch((error) => console.error("Error fetching fires:", error));
+      .then((response) => {
+        // กรณีเลือกสาขา (ได้เป็น object ที่มี key ชื่อว่า "branch")
+        if (selectedBranchId && Array.isArray(response.data.branch)) {
+          setFires(response.data.branch);
+        } 
+        // กรณีทั้งหมด (ได้เป็น array ตรง ๆ)
+        else if (Array.isArray(response.data)) {
+          setFires(response.data);
+        } 
+        else {
+          console.warn("Unexpected response structure:", response.data);
+          setFires([]);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching fires:", error);
+        setFires([]);
+      });
   }, [selectedBranchId, companyId]);
 
-  const filteredFires = fires.filter((fire) => {
-    const latestCheckDate = fire.latestCheck
-      ? fire.latestCheck.split("T")[0]
-      : "N/A";
-    return (
-      fire.serial_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      fire.fire_mfd.split("T")[0].includes(searchTerm) ||
-      fire.fire_exp.split("T")[0].includes(searchTerm) ||
-      latestCheckDate.includes(searchTerm) ||
-      fire.status.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  });
+  const filteredFires = Array.isArray(fires)
+  ? fires.filter((fire) => {
+      const latestCheckDate = fire.latest_check
+        ? fire.latest_check.split("T")[0]
+        : "N/A";
+      return (
+        fire.serial_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        fire.fire_mfd.split("T")[0].includes(searchTerm) ||
+        fire.fire_exp.split("T")[0].includes(searchTerm) ||
+        latestCheckDate.includes(searchTerm) ||
+        fire.status.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    })
+  : [];
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
