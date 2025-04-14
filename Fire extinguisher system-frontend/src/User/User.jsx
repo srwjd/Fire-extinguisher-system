@@ -8,6 +8,7 @@ import 'react-device-frameset/styles/marvel-devices.min.css'
 import Home from "./Home/Home";
 import Profile from './Profile/Profile';
 import FireDetails from './Fire_details/Fire_details';
+import ScanQR from './ScanQR/ScanQR';
 
 function User() {
     return (
@@ -19,6 +20,7 @@ function User() {
                             <Route path="/home" element={<Home />} />
                             <Route path='/profile' element={<Profile />} />
                             <Route path="/fire-details/:fire_id" element={<FireDetails />} />
+                            <Route path="/qr-scan" element={<ScanQR />} />
                         </Routes>
                     </Router>
             </DeviceFrameset>

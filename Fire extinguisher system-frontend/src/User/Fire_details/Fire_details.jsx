@@ -33,7 +33,7 @@ function FireDetails() {
             month: '2-digit',
             year: 'numeric'
           });
-          
+
 
           setFire({
             ...fireResponse.data.result[0],
@@ -119,11 +119,13 @@ function FireDetails() {
                 <div className="fireImageContainer">
                   {/* ตรวจสอบหากมี URL รูปภาพ */}
                   {fire.filename ? (
-                    <img src={`http://localhost:3000/fire/uploads/${fire.filename}`} 
-                    alt="Fire Extinguisher" 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '10px' }} />
+                    <img src={`http://localhost:3000/fire/uploads/${fire.filename}`}
+                      alt="Fire Extinguisher"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '10px' }} />
                   ) : (
-                    <FaCamera size={30} color="#888" />
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%', backgroundColor: '#f2f2f2', borderRadius: '10px' }}>
+                      ไม่พบรูปภาพ
+                    </div>
                   )}
                 </div>
               </div>
@@ -148,7 +150,7 @@ function FireDetails() {
 
             </div>
             <div className="fireInspectionContent">
-              <table>
+              <table className="inspectionTable">
                 <tbody>
                   <tr>
                     <td><p>สภาพของถังไม่เสียหาย</p></td>

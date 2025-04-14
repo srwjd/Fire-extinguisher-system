@@ -206,3 +206,7 @@ button {
     cursor: pointer;
     font-family: 'prompt';
 }
+
+.inspectionTable {
+    border-radius: 0; 
+}

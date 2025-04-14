@@ -10,12 +10,20 @@ body {
 }
 .profileContent {
     padding: 30px 20px;
+    height: 100%;
 }
 
 .profileTitle {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.profileImageContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
 .profileImage {
@@ -27,6 +35,19 @@ body {
     overflow: hidden;
     display: flex;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.profileEditImage {
+    font-size: 12px;
+    color: #FD6E2B;
+    cursor: pointer;
+}
+
+.profileInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 15px;
 }
 
 .profileNameContainer {
@@ -48,15 +69,6 @@ body {
     margin: 5px;
 }
 
-.profileDetails {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    border: #ccc solid 1px;
-    border-radius: 5px;
-    min-height: 100px;
-}
 
 .profileLogout {
     display: flex;
@@ -64,21 +76,26 @@ body {
     align-items: center;
     min-height: 100px;
     width: 100%;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 /* CSS for isEditName */
 .formEditName {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #fd6d2b;
-    padding: 20px;
+    background-color: #fd6d2bb6;
+    padding: 10px;
     border-radius: 5px;
     animation: editName 0.4s ease-in-out both;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
 }
 
 @keyframes editName {
@@ -94,6 +111,41 @@ body {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
     }
+}
+
+.inputEditName {
+    font-size: 16px;
+    font-family: 'prompt', sans-serif;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    width: 200px;
+}
+.inputEditName:focus {
+    outline: none;
+}
+
+.closeButton {
+    color: #000000;
+    font-size: 18px;
+    display: flex;
+    justify-content: end;
+    cursor: pointer;
+    align-self: flex-end;
+}
+
+.saveButton {
+    color: #000000;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0;
+}
+.saveButton:hover {
+    background-color: transparent;
+    color: #000000;
 }
 
 /* CSS for the bar */
