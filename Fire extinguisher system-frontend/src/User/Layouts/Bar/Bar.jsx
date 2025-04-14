@@ -18,9 +18,11 @@ function Bar() {
                         </span>
                     </div>
                 </Link>
-                <div className='qrIcon'>
-                    <RiQrScan2Line size={40} />
-                </div>
+                <Link to="/qr-scan" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <div className='qrIcon'>
+                        <RiQrScan2Line size={40} />
+                    </div>
+                </Link> 
                 <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
                     <div className='userIcon'>
                         <HiOutlineUserCircle size={40} />

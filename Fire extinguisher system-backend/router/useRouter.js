@@ -4,7 +4,8 @@ import {
   getUserByUsername, getAllBranchs, getAllBranches, getAllCompanys, getBranchById, getBranchesByCompanyId, getFiresByBranchId, getFiresByCompanyId, addReport, getFiresById,
   getUserCountByRole, getAllCompaniesWithBranches, getFireExtinguishersByMonth, getAllUser, addUser, updateUser, deleteUser, getAllUnit,
   addCompany, editCompany, deleteBranchAndFires, getReport, getFiresByIds, insertInspection, updateStatus, getReportAdmin, getInspection,
-  getAssign, sendAssign, getFire, fireUpdateStatus, sendReports, deleteProcess, updatedStatus, updatedStatusComplete, getAllUserUser
+  getAssign, sendAssign, getFire, fireUpdateStatus, sendReports, deleteProcess, updatedStatus, updatedStatusComplete, getAllUserUser,
+  getUserById, editNameAndImage
 } from "../controller/useController.js";
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -658,6 +659,38 @@ router.get('/getAllUserUser', async (req, res) => {
       return res.status(404).json({ message: 'No users with role User found' });
     }
     return res.status(200).json({ message: 'OK success', result });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+// ดึง user จาก user_id
+router.get('/getUserById/:user_id', async (req, res) => {
+  const { user_id } = req.params;
+  try {
+    const result = await getUserById(user_id);
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    return res.status(200).json({ message: 'OK success', result });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+})
+
+// เปลี่ยนชื่อ เปลี่ยนรูป
+router.put('/updatenameandimage/:user_id', upload.single('image'), async (req, res) => {
+  const { user_id } = req.params;
+  const { firstname, surname } = req.body;
+  const image = req.file ? req.file.filename : null;
+  try {
+    const result = await editNameAndImage(firstname, surname, image, user_id);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    return res.status(200).json({ message: 'OK success'});
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Internal Server Error' });

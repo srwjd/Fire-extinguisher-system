@@ -772,3 +772,27 @@ export const getAllUserUser = async () => {
     throw error;
   }
 };
+
+// ดึงข้อมูล user จาก user_id
+export const getUserById = async (user_id) => {
+  try {
+    const sql = `SELECT * FROM Users WHERE user_id = ?`;
+    const params = [user_id];
+    return await query(sql, params);
+  } catch (error) {
+    console.error("Error executing SQL query:", error.message);
+    throw error;
+  }
+}
+
+// เปลี่ยนชื่อ เปลี่ยนรูป
+export const editNameAndImage = async (firstname, surname, image, user_id) => {
+  try {
+    const sql = `UPDATE Users SET firstname = ?, surname = ?, profile_img = ? WHERE user_id = ?`;
+    const params = [firstname, surname, image, user_id];
+    return await query(sql, params);
+  } catch (error) {
+    console.error("Error executing SQL query:", error.message);
+    throw error;
+  }
+}
