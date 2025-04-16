@@ -15,18 +15,18 @@ function Report() {
   const [users, setUsers] = useState([]); // เก็บข้อมูลผู้ใช้
 
   useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/fire/report");
-        setReport(response.data);
-        setFilteredReport(response.data);
-      } catch (error) {
-        console.error("Error fetching reports:", error);
-      }
-    };
-
     fetchReports();
   }, []);
+
+  const fetchReports = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/fire/report");
+      setReport(response.data);
+      setFilteredReport(response.data);
+    } catch (error) {
+      console.error("Error fetching reports:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -82,7 +82,7 @@ function Report() {
   const handleAssign = async () => {
     if (!selectedReport || !assignUser) {
       alert("Please select a report and assign a user.");
-      
+
       return;
     }
 
@@ -112,32 +112,8 @@ function Report() {
         }
       );
       setIsPopupOpen(false);
+      window.location.reload();
       console.log(reportResponse.data);
-
-      // const report_id = reportResponse.data.data.data.insertId;
-      // const report_id = selectedReport.report_id;
-
-      // if (reportResponse.status === 201) {
-      //   const assignResponse = await axios.post(
-      //     "http://localhost:3000/fire/assign",
-      //     {
-      //       date: formattedDate,
-      //       time: formattedTime,
-      //       assign_by: assignBy,
-      //       report_id: report_id,
-      //       insp_id: inspectorID, // ส่ง user_id ไปที่ API
-      //     }
-      //   );
-
-      //   if (assignResponse.status === 201) {
-      //     alert("Assignment successful!");
-      //     handlePopupClose();
-      //   } else {
-      //     alert("Failed to assign inspector.");
-      //   }
-      // } else {
-      //   alert("Failed to create report.");
-      // }
     } catch (error) {
       console.error("Error assigning report:", error);
       alert("An error occurred while assigning.");
@@ -264,7 +240,7 @@ function Report() {
 
               <div>
                 <img src={`http://localhost:3000/fire/uploads/${selectedReport.filename}`} alt=""
-                style={{ width: "100px", height: "auto" }} />
+                  style={{ width: "100px", height: "auto" }} />
 
               </div>
 

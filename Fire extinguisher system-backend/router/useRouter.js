@@ -425,9 +425,9 @@ router.get('/getreports/:userID', async (req, res) => {
   const { userID } = req.params;
   try {
     const result = await getReport(userID);
-    if (result.length === 0) {
-      return res.status(404).json({ message: 'Not found' });
-    }
+    // if (result.length === 0) {
+    //   return res.status(404).json({ message: 'No reports found',result });
+    // }
     return res.status(200).json({ message: 'OK success', result });
   } catch (error) {
     console.error(error);

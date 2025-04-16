@@ -31,6 +31,9 @@ function Home() {
     const fetchFireIdList = async () => {
         try {
             const response = await axios.get(`http://localhost:3000/fire/getreports/${userID}`);
+            if (response.data.result.length === 0) {
+                return;
+            }
             const idList = response.data.result.map((fire) => fire.fire_id);
             const descriptions = response.data.result.map((fire) => fire.description);
             setFireIdList(idList); // เก็บ fire_id
@@ -126,7 +129,7 @@ function Home() {
                             </Link>
                         ))
                     ) : (
-                        <p>ไม่พบข้อมูลที่ค้นหา</p>
+                        <p style={{ textAlign: 'center' }}>ไม่พบข้อมูลที่ค้นหา</p>
                     )}
                 </div>
 
@@ -142,7 +145,6 @@ function Home() {
                     </div>
                 )}
             </div>
-
             <div className='barHome'>
                 <Bar />
             </div>

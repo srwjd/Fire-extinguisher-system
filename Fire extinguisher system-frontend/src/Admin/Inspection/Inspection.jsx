@@ -117,6 +117,7 @@ function Inspection() {
         }
       );
       setIsPopupOpen(false);
+      window.location.reload();
       console.log(reportResponse);
     } catch (error) {
       console.error("Error assigning report:", error);

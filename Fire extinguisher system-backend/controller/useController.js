@@ -365,7 +365,7 @@ export const editCompany = async (company_id, branch_id, newCompanyData) => {
     console.error("Error updating branch:", error.message);
     throw new Error("Failed to update branch. " + error.message);
   }
-}; 
+};
 
 // ลบ Branch และ Fire extinguishers ที่เกี่ยวข้อง
 export const deleteBranchAndFires = async (branch_id) => {
@@ -608,7 +608,9 @@ export const updateStatus = async (data) => {
 export const getReportAdmin = async () => {
   const sql = `SELECT * FROM Reports
     LEFT JOIN Fires ON Reports.fire_id = Fires.fire_id
-    ORDER BY Reports.report_id;`;
+    WHERE isAssign = 0
+    ORDER BY Reports.report_id
+    `;
 
   return await query(sql);
 };
@@ -634,9 +636,10 @@ export const getAssign = async () => {
 
 export const sendAssign = async (assign) => {
   try {
+    // 1. INSERT
     const sql = `
-        INSERT INTO Assigns (date, time, assign_by, report_id, insp_id, fire_id, description)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO Assigns (date, time, assign_by, report_id, insp_id, fire_id, description)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
     const params = [
       assign.date,
@@ -649,9 +652,13 @@ export const sendAssign = async (assign) => {
     ];
     const result = await query(sql, params);
 
-    const sqlUpdate = `UPDATE Fires SET status = 'report' WHERE fire_id = ?`;
-    const paramsUpdate = [assign.fire_id];
-    await query(sqlUpdate, paramsUpdate);
+    // 2. UPDATE Fires
+    const sqlUpdateFires = `UPDATE Fires SET status = 'report' WHERE fire_id = ?`;
+    await query(sqlUpdateFires, [assign.fire_id]);
+
+    // 3. UPDATE Reports
+    const sqlUpdateReports = `UPDATE Reports SET isAssign = 1 WHERE report_id = ?`;
+    await query(sqlUpdateReports, [assign.report_id]);
 
     return result;
 
@@ -660,6 +667,7 @@ export const sendAssign = async (assign) => {
     throw error;
   }
 };
+
 
 export const getFire = async () => {
   const sql = `SELECT * FROM Fires
