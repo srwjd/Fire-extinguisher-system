@@ -38,15 +38,15 @@ function Login() {
             setLoginSuccess(true);
             setTimeout(() => {
                 setLoginSuccess(false);
-                window.location.reload();  // รีเฟรชหน้า
+                window.location.reload();
             }, 1000);
         } catch (err) {
             setLoginFailed(true);
+            setUsername('');
+            setPassword('');
             setTimeout(() => {
                 setLoginFailed(false);
-                setUsername('');
-                setPassword('');
-            }, 1000);
+            }, 2000);
             console.error("Login error:", err);
         }
     }

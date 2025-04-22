@@ -4,19 +4,19 @@ import "./Checkwork.css";
 import { FaSearch } from "react-icons/fa";
 import { GoChecklist } from "react-icons/go";
 
-function checkWork() {
+function Checkwork() {
   const [report, setReport] = useState([]);
   const [filteredReport, setFilteredReport] = useState([]);
   const [selectedReport, setSelectedReport] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [checkboxes, setCheckboxes] = useState({
-    damage: false,
-    pressure: false,
-    headValve: false,
-    safetySeal: false,
-    position: false,
-  });
+  // const [checkboxes, setCheckboxes] = useState({
+  //   damage: false,
+  //   pressure: false,
+  //   headValve: false,
+  //   safetySeal: false,
+  //   position: false,
+  // });
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -57,24 +57,19 @@ function checkWork() {
   // };
 
   const handleSearch = (e) => {
-    const term = e.target.value.toLowerCase();
-    setSearchTerm(term);
+    setSearchTerm(e.target.value.toLowerCase());
+  };
 
-    const filtered = term
-      ? report.filter((item) => {
-          const serial = item.serial_number?.toLowerCase() || "";
-          const user = item.user_id?.toLowerCase() || "";
-          return serial.includes(term) || user.includes(term);
-        })
-      : report;
-
+  useEffect(() => {
+    const filtered = report.filter((item) => {
+      const term = searchTerm.toLowerCase();
+      return (
+        item.serial_number.toLowerCase().includes(term) ||
+        item.status.toLowerCase().includes(term)
+      );
+    });
     setFilteredReport(filtered);
-    setCurrentPage(1); // reset page on search
-  };
-
-  const handleRowClick = (item) => {
-    setSelectedReport(item);
-  };
+  }, [searchTerm, report]);
 
   const handlePopupOpen = (item) => {
     setSelectedReport(item);
@@ -85,9 +80,6 @@ function checkWork() {
     setIsPopupOpen(false);
   };
 
-  const handleCheckboxChange = (e) => {
-    setCheckboxes({ ...checkboxes, [e.target.name]: e.target.checked });
-  };
 
   const handleFail = async () => {
     if (!selectedReport) return;
@@ -160,7 +152,7 @@ function checkWork() {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-  
+
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
@@ -263,12 +255,20 @@ function checkWork() {
           >
             <div onClick={(e) => e.stopPropagation()}>
               <h2>Report Details</h2>
-              <div
-                className="image-placeholder"
-                onClick={(e) => e.stopPropagation()}
-              ></div>
               {selectedReport && (
                 <>
+                  <div
+                    className="image-placeholder"
+                  >
+                    {selectedReport.filename ? (
+                      <img
+                        src={`http://localhost:3000/fire/uploads/${selectedReport.filename}`}
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : (
+                      <p style={{ display: "flex", alignItems: "center", justifyContent: "center", color: "gray", height: "100%" }}>No image available</p>
+                    )}
+                  </div>
                   <p style={{ textAlign: "left" }}>
                     <strong>S/N : </strong> {selectedReport.serial_number}
                   </p>
@@ -335,7 +335,7 @@ function checkWork() {
                 </label>
                 <br />
               </div>
-              <textarea className="remarks" placeholder="หมายเหตุ :" />{" "}
+              <p className="remarks">หมายเหตุ : {selectedReport?.description}</p>
               &nbsp;&nbsp;&nbsp;&nbsp;
               <button onClick={handleFail} className="checkwork-assign-button">
                 Fail
@@ -351,4 +351,4 @@ function checkWork() {
   );
 }
 
-export default checkWork;
+export default Checkwork;

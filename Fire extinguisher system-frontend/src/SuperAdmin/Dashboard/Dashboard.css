@@ -1,6 +1,7 @@
 .dashboardContainer{
-  overflow: scroll;
-  height: 100vh;
+  overflow: auto;
+  height: 90vh;
+  scrollbar-width: none;
 }
 
 /* containerTop */
@@ -41,6 +42,7 @@
   /* width: 320px; */
   max-height: calc(3 * 48px + 16px); /* ความสูงของ 3 บรรทัด (ปรับได้ตามความสูงของแต่ละ item) */
   overflow-y: auto;
+  scrollbar-width: none;
 }
 
 .dashboard-user-item {
@@ -89,6 +91,7 @@
   /* width: 320px; */
   max-height: calc(3 * 48px + 16px); /* ความสูงของ 3 บรรทัด (ปรับได้ตามความสูงของแต่ละ item) */
   overflow-y: auto;
+  scrollbar-width: none;
 }
 
 .dashboard-unit-item {

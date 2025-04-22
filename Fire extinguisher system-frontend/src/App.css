@@ -1,3 +1,7 @@
 * {
     font-family: 'prompt', sans-serif !important;
 }
+.custom-toast-all {
+    position: top-center !important;
+    margin-top: 60px !important;
+}

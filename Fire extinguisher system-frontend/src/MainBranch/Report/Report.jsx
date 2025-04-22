@@ -69,7 +69,7 @@ function Report() {
   const totalPages = Math.ceil(filteredFires.length / itemsPerPage);
 
   return (
-    <div>
+    <div style={{ height: '90vh', overflow: 'auto' }}>
       <div className="search-bar">
         <FaSearch className="search-icon" />
         <input

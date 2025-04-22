@@ -158,6 +158,9 @@ th {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   position: relative;
   animation: fadeIn 0.3s ease-in-out;
+  height: 90vh;
+  overflow-y: auto;
+  scrollbar-width: none;
 }
 
 .admin-checkwork-popup-box h2 {

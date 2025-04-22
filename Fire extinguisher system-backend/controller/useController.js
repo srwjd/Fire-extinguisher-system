@@ -557,7 +557,6 @@ export const getFiresByIds = async (fire_ids) => {
     throw new Error("fire_ids ต้องเป็นอาเรย์และมีค่าอย่างน้อย 1 ค่า");
   }
 
-  // 🔥 ใช้ Dynamic Query แทน `IN (?)` เพื่อรองรับอาร์เรย์หลายค่า
   const placeholders = fire_ids.map(() => "?").join(",");
   const sql = `
       SELECT * 

@@ -1,7 +1,12 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify"
 import axios from "axios";
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
 import "./ManageUser.css";
+import './Modal.css';
+import Swal from "sweetalert2";
 
 const AddUserForm = ({
   isOpen,
@@ -47,12 +52,12 @@ const AddUserForm = ({
     e.preventDefault();
 
     if (!formData.role) {
-      alert("Please select a role before adding.");
+      toast.warning("Please select a role before adding.", { autoClose: 3000, className: "custom-toast-super", position: "top-center" });
       return;
     }
 
     if (!formData.firstName.trim() || !formData.surname.trim()) {
-      alert("First name and Surname are required.");
+      toast.warning("Please enter your full name.", { autoClose: 3000, className: "custom-toast-super", position: "top-center" });
       return;
     }
 
@@ -61,7 +66,7 @@ const AddUserForm = ({
         "http://localhost:3000/fire/addUser",
         formData
       );
-      alert("User added successfully!");
+      toast.success("User successfully added.", { className: "custom-toast-super", position: "top-center" });
 
       // fetch users ใหม่
       fetchUsers();
@@ -78,7 +83,7 @@ const AddUserForm = ({
       });
     } catch (error) {
       console.error("Error adding user:", error);
-      alert("Failed to add user.");
+      toast.error("User addition failed.", { position: "top-center" });
     }
   };
 
@@ -209,6 +214,7 @@ const AddUserForm = ({
   );
 };
 
+
 const ManageUser = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -304,7 +310,7 @@ const ManageUser = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     if (!editUser.role) {
-      alert("Please select a role before saving.");
+      toast.warning("Please select a role.", { autoClose: 3000, className: "custom-toast-super", position: "top-center" });
       return;
     }
 
@@ -315,7 +321,8 @@ const ManageUser = () => {
         `http://localhost:3000/fire/updateUser/${editUser.id}`,
         editUser
       );
-      alert("User updated successfully!");
+      fetchUsers();
+      toast.success("User updated successfully.", { className: "custom-toast-super", position: "top-center" });
 
       setUserList((prevUsers) =>
         prevUsers.map((user) =>
@@ -325,22 +332,36 @@ const ManageUser = () => {
       setEditUser(null);
     } catch (error) {
       console.error("Error updating user:", error);
-      alert("Failed to update user.");
+      toast.error("User update failed.", { position: "top-center" });
     }
   };
 
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete?");
-    if (confirmDelete) {
+
+
+  const confirmDelete = async (id) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone!",
+      // icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#FD6E2B",
+      cancelButtonColor: "#FD6E2B",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+      width: "350px",
+      height: "300px",
+    });
+
+    if (result.isConfirmed) {
       try {
         await axios.delete(`http://localhost:3000/fire/deleteUser/${id}`);
-        alert("User deleted successfully!");
+        toast.success("User deleted successfully.", { className: "custom-toast-super", position: "top-center" });
         fetchUsers(); // <-- เรียกใหม่
       } catch (error) {
         console.error("Error deleting user:", error);
-        alert("Failed to delete user.");
+        toast.error("User deletion failed.");
       }
-    }
+    };
   };
 
   const handlePreviousPage = () => {
@@ -356,11 +377,11 @@ const ManageUser = () => {
   };
 
   return (
-    <div>
+    <div style={{ height: "90vh" }}>
       <div
         className="manage-user-container"
         style={{
-          height: "100vh",
+          height: "100%",
           overflowY: "auto",
           paddingRight: "20px",
         }}
@@ -411,7 +432,23 @@ const ManageUser = () => {
                       <td>
                         {user.firstname} {user.surname}
                       </td>
-                      <td>{user.role_name}</td>
+                      <td>
+                        {(() => {
+                          if (user.role_name === "SuperAdmin") {
+                            return "Super Admin";
+                          } else if (user.role_name === "Admin") {
+                            return "Admin";
+                          } else if (user.role_name === "MainBranch") {
+                            return "Main Branch";
+                          } else if (user.role_name === "SubBranch") {
+                            return "Sub Branch";
+                          } else if (user.role_name === "User") {
+                            return "User";
+                          } else {
+                            return "Unknown";
+                          }
+                        })()}
+                      </td>
                       <td>
                         <FaEdit
                           className="manage-user-edit-icon"
@@ -421,7 +458,7 @@ const ManageUser = () => {
                       <td>
                         <FaTrash
                           className="manage-user-delete-icon"
-                          onClick={() => handleDelete(user.user_id)}
+                          onClick={() => confirmDelete(user.user_id)}
                         />
                       </td>
                     </tr>
@@ -506,7 +543,7 @@ const ManageUser = () => {
                     }
                   >
                     <option value="">--- Select ---</option>
-                    <option value="Super Admin">Super Admin</option>
+                    <option value="SuperAdmin">Super Admin</option>
                     <option value="Admin">Admin</option>
                     <option value="User">User</option>
                     <option value="MainBranch">Main Branch</option>

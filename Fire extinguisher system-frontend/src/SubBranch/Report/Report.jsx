@@ -36,16 +36,18 @@ function Report() {
   }, [branchId]);
 
   return (
-    <div>
+    <div style={{height: '90vh', overflow: 'auto'}}>
       <div className="reportTable">
         <table className="tableContainer">
           <thead className="tableHeaderSubBranch">
             <tr>
-              <th style={{ textAlign: "center" }}>S/N</th>
-              <th style={{ textAlign: "center" }}>MFD</th>
-              <th style={{ textAlign: "center" }}>EXP</th>
-              <th style={{ textAlign: "center" }}>Last Check</th>
-              <th style={{ textAlign: "center" }}>Report</th>
+              <td style={{ textAlign: "center" }}>S/N</td>
+              <td style={{ textAlign: "center" }}>MFD</td>
+              <td style={{ textAlign: "center" }}>EXP</td>
+              <td style={{ textAlign: "center" }}>Last check</td>
+              <td style={{ textAlign: "center" }}>Next check</td>
+              <td style={{ textAlign: "center" }}>Status</td>
+              <td style={{ textAlign: "center" }}>Report</td>
             </tr>
           </thead>
           <tbody>
@@ -53,13 +55,15 @@ function Report() {
               data.map((fire, index) => (
                 <tr key={index}>
                   <td>{fire.serial_number}</td>
-                  <td>{fire.fire_mfd ? fire.fire_mfd.split("T")[0] : "N/A"}</td>
-                  <td>{fire.fire_exp ? fire.fire_exp.split("T")[0] : "N/A"}</td>
-                  <td>
-                    {fire.latest_check
-                      ? fire.latest_check.split("T")[0]
-                      : "N/A"}
-                  </td>
+                <td>{fire.fire_mfd.split("T")[0]}</td>
+                <td>{fire.fire_exp.split("T")[0]}</td>
+                <td>
+                  {fire.latest_check ? fire.latest_check.split("T")[0] : "N/A"}
+                </td>
+                <td>
+                  {fire.next_check ? fire.next_check.split("T")[0] : "N/A"}
+                </td>
+                <td>{fire.status}</td>
                   <td>
                     <a
                       href={`/report/${fire.fire_id}`}

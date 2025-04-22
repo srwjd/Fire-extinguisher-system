@@ -52,10 +52,12 @@ function Home() {
             const filteredFires = response.data.result.filter(fire => fire.status === "report");
 
             // เพิ่ม description ให้กับ fireList โดยการจับคู่ fire_id
-            const fireListWithDescriptions = filteredFires.map(fire => {
-                const description = descriptionList[fireIdList.indexOf(fire.fire_id)] || '';
-                return { ...fire, description };
-            });
+            const fireListWithDescriptions = filteredFires
+                .sort((a, b) => fireIdList.indexOf(a.fire_id) - fireIdList.indexOf(b.fire_id)) // เรียงตาม fireIdList
+                .map(fire => {
+                    const description = descriptionList[fireIdList.indexOf(fire.fire_id)] || '';
+                    return { ...fire, description };
+                });
 
             setFireList(fireListWithDescriptions);
         } catch (error) {
@@ -64,19 +66,19 @@ function Home() {
     };
 
 
-    const filteredList = fireList.filter((fire) => {
-        const serialNumber = fire.serial_number ? fire.serial_number.toLowerCase() : '';
-        const company = fire.company ? fire.company.toLowerCase() : '';
-        const branch = fire.branch ? fire.branch.toLowerCase() : '';
-        const description = fire.description ? fire.description.toLowerCase() : '';
+    const filteredList = fireList
+        .filter((fire) => {
+            const serialNumber = fire.serial_number ? fire.serial_number.toLowerCase() : '';
+            const company = fire.company_name ? fire.company_name.toLowerCase() : '';
+            const branch = fire.branch_name ? fire.branch_name.toLowerCase() : '';
 
-        return (
-            serialNumber.includes(searchTerm.toLowerCase()) ||
-            company.includes(searchTerm.toLowerCase()) ||
-            branch.includes(searchTerm.toLowerCase()) ||
-            description.includes(searchTerm.toLowerCase())
-        );
-    });
+            return (
+                serialNumber.includes(searchTerm.toLowerCase()) ||
+                company.includes(searchTerm.toLowerCase()) ||
+                branch.includes(searchTerm.toLowerCase())
+            );
+        })
+
 
     const totalPages = Math.ceil(filteredList.length / itemsPerPage);
     const indexOfLastItem = currentPage * itemsPerPage;

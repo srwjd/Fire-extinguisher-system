@@ -1,7 +1,8 @@
 import './App.css'
 
 // import { useEffect } from 'react'
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Login from './Login/Login'
 import SuperAdmin from './SuperAdmin/SuperAdmin'
 import Admin from './Admin/Admin'
@@ -24,6 +25,11 @@ function App() {
   } else {
     return (
       <div>
+        <ToastContainer
+          autoClose={1500}
+          position="top-center"
+          className="custom-toast-all"
+        />
         {role === 'SuperAdmin' && <SuperAdmin />}
         {role === 'Admin' && <Admin />}
         {role === 'User' && <User />}

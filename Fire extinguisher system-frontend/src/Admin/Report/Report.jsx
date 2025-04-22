@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify"
 import Select from "react-select";
 import axios from "axios";
 import "./Report.css";
@@ -81,7 +82,7 @@ function Report() {
 
   const handleAssign = async () => {
     if (!selectedReport || !assignUser) {
-      alert("Please select a report and assign a user.");
+      toast.error("Please select a report and assign a user.");
 
       return;
     }
@@ -240,7 +241,7 @@ function Report() {
 
               <div>
                 <img src={`http://localhost:3000/fire/uploads/${selectedReport.filename}`} alt=""
-                  style={{ width: "100px", height: "auto" }} />
+                  style={{ width: "100%", height: "200px", objectFit: "cover" }} />
 
               </div>
 

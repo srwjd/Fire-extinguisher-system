@@ -6,10 +6,21 @@
     justify-content: space-between;
 }
 .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: 50px;
     width: 50px;
-    background: #ffffff;
+    background: #473366;
     border-radius: 50%;
+    margin-left: 0.5%;
+}
+.logoAdmin {
+    height: 30px;
+    width: 30px;
+    background-image: url('/newLogo.png');
+    background-size: contain;
+    background-repeat: no-repeat;
     margin-left: 0.5%;
 }
 .title {

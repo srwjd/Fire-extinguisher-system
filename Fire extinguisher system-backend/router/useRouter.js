@@ -425,9 +425,6 @@ router.get('/getreports/:userID', async (req, res) => {
   const { userID } = req.params;
   try {
     const result = await getReport(userID);
-    // if (result.length === 0) {
-    //   return res.status(404).json({ message: 'No reports found',result });
-    // }
     return res.status(200).json({ message: 'OK success', result });
   } catch (error) {
     console.error(error);
@@ -690,7 +687,7 @@ router.put('/updatenameandimage/:user_id', upload.single('image'), async (req, r
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
-    return res.status(200).json({ message: 'OK success'});
+    return res.status(200).json({ message: 'OK success' });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Internal Server Error' });

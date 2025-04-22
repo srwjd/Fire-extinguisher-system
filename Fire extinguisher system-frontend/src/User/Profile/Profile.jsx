@@ -32,11 +32,12 @@ function Profile() {
             const formData = new FormData();
             formData.append('firstname', newFirstName || profileInfo.firstname);
             formData.append('surname', newSurName || profileInfo.surname);
+            
 
             if (fileInputRef.current.files[0]) {
                 formData.append('image', fileInputRef.current.files[0]);
             } else {
-                formData.append('image', profileInfo.profile_img); // ถ้า backend รองรับส่ง path เดิม
+               formData.append('image', profileInfo.profile_img); // ถ้า backend รองรับส่ง path เดิม
             }
 
             await axios.put(
@@ -46,6 +47,7 @@ function Profile() {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
+                    
                 }
             );
 

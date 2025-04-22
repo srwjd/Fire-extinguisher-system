@@ -210,3 +210,11 @@ button {
 .inspectionTable {
     border-radius: 0; 
 }
+
+.custom-toast {
+    font-size: 14px;
+    margin-top: 30px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    width: 87%;
+    text-wrap: wrap;
+  }  

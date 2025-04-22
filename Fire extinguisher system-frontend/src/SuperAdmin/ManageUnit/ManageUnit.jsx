@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
-import Select from "react-select";
+// import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 import "./ManageUnit.css";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const ManageUnit = () => {
   const [units, setUnits] = useState([]);
@@ -81,7 +83,7 @@ const ManageUnit = () => {
   // Function to handle adding a company
   const handleAddCompany = async () => {
     if (!newCompany.company_name || !newCompany.branch_name) {
-      alert("Please fill in all fields.");
+      toast.warning("Please fill in all fields.");
       return;
     }
 
@@ -94,7 +96,7 @@ const ManageUnit = () => {
       if (response.data) {
         const { company_id, branch_id, fire_count } = response.data;
 
-        alert("Company and branch added successfully!");
+        toast.success("Company and branch added successfully!");
 
         // Update the units array with new branch and fire count
         setUnits((prevUnits) => [
@@ -115,20 +117,20 @@ const ManageUnit = () => {
           quantity: "",
         });
       } else {
-        alert("Error: No valid response from server.");
+        toast.error("Error: No valid response from server.");
       }
     } catch (error) {
       console.error(
         "Error adding unit:",
         error.response ? error.response.data : error.message
       );
-      alert("Failed to add unit. Please try again.");
+      toast.error("Failed to add unit. Please try again.");
     }
   };
 
   const handleSaveEdit = async () => {
     if (!editUnit.branch_name) {
-      alert("Please fill in all fields.");
+      toast.warning("Please fill in all fields.");
       return;
     }
 
@@ -143,31 +145,31 @@ const ManageUnit = () => {
       );
 
       if (response.data) {
-        alert("Company and branch updated successfully!");
+        toast.success("Company and branch updated successfully!");
 
         // อัปเดตข้อมูลใน UI หลังจากที่ทำการแก้ไขสำเร็จ
         setUnits((prevUnits) =>
           prevUnits.map((unit) =>
             unit.company_id === editUnit.company_id &&
-            unit.branch_id === editUnit.branch_id
+              unit.branch_id === editUnit.branch_id
               ? {
-                  ...unit,
-                  branch_name: editUnit.branch_name, // อัปเดตชื่อ branch ที่ถูกแก้ไข
-                }
+                ...unit,
+                branch_name: editUnit.branch_name, // อัปเดตชื่อ branch ที่ถูกแก้ไข
+              }
               : unit
           )
         );
 
         setEditUnit(null); // รีเซ็ตสถานะการแก้ไข
       } else {
-        alert("Error: No valid response from server.");
+        toast.error("Error: No valid response from server.");
       }
     } catch (error) {
       console.error(
         "Error updating company:",
         error.response?.data || error.message
       );
-      alert("Failed to update company. Please try again.");
+      toast.error("Failed to update company. Please try again.");
     }
   };
 
@@ -188,33 +190,42 @@ const ManageUnit = () => {
   };
 
   const handleDelete = async (unitId) => {
-    // ถามผู้ใช้ก่อนลบข้อมูล
-    if (!window.confirm("Are you sure you want to delete this unit?")) return;
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone!",
+      // icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#FD6E2B",
+      cancelButtonColor: "#FD6E2B",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+      width: "350px",
+      height: "300px",
+    });
 
-    try {
-      // ใช้ `branch_id` แทน `unit_id` ในการลบ
-      const response = await axios.delete(
-        `http://localhost:3000/fire/deleteBranchAndFires/${unitId}`
-      );
-
-      if (response.data) {
-        alert("Unit deleted successfully.");
-        // ลบหน่วยงานที่มี `branch_id` ตรงกับ `unitId`
-        setUnits((prevUnits) =>
-          prevUnits.filter((unit) => unit.branch_id !== unitId)
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.delete(
+          `http://localhost:3000/fire/deleteBranchAndFires/${unitId}`
         );
-      } else {
-        alert("Error: No valid response from server.");
+
+        if (response.data) {
+          toast.success("Unit deleted successfully.");
+          setUnits((prevUnits) =>
+            prevUnits.filter((unit) => unit.branch_id !== unitId)
+          );
+        } else {
+          toast.error("Error: No valid response from server.");
+        }
+      } catch (error) {
+        console.error(
+          "Error deleting unit:",
+          error.response?.data || error.message
+        );
+        toast.error("Failed to delete unit. Please try again.");
       }
-    } catch (error) {
-      console.error(
-        "Error deleting unit:",
-        error.response?.data || error.message
-      );
-      alert("Failed to delete unit. Please try again.");
     }
   };
-
   return (
     <div className="manage-unit-allpage">
       <div className="manage-unit-container">
@@ -240,9 +251,9 @@ const ManageUnit = () => {
                 value={
                   newCompany.company_name
                     ? {
-                        label: newCompany.company_name,
-                        value: newCompany.company_name,
-                      }
+                      label: newCompany.company_name,
+                      value: newCompany.company_name,
+                    }
                     : null
                 }
                 placeholder="Type or select company name"
@@ -277,9 +288,9 @@ const ManageUnit = () => {
                 value={
                   newCompany.branch_name
                     ? {
-                        label: newCompany.branch_name,
-                        value: newCompany.branch_name,
-                      }
+                      label: newCompany.branch_name,
+                      value: newCompany.branch_name,
+                    }
                     : null
                 }
                 placeholder="Type or select branch name"

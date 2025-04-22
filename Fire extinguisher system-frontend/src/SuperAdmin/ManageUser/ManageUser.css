@@ -5,8 +5,9 @@
   /* padding: 10px; */
   justify-content: center;
   /* border: 1px solid #ccc; */
-  max-height: 90vh;
+  height: 90vh;
   overflow-y: scroll;
+  scrollbar-width: none;
 }
 
 .manage-user-header {
@@ -20,7 +21,6 @@
   border-bottom-left-radius: 0px;
   border-bottom-right-radius: 0px;
   margin-top: 10px;
-  /* cursor: pointer; */
 }
 
 .manage-user-form-container {
@@ -205,4 +205,48 @@ th {
 hr {
   border: 1px solid #f97316;
   margin-top: 15px;
+}
+.custom-toast-super {
+  margin-top: 60px;
+}
+.confirm-toast {
+  background-color: white;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  max-width: 300px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.btn {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-danger {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b;
+}
+
+.btn-cancel {
+  background-color: #eee;
+  color: #333;
+}
+
+.btn-cancel:hover {
+  background-color: #ddd;
 }

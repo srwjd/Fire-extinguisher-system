@@ -1,5 +1,6 @@
 import './Fire_details.css';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaArrowLeft, FaCamera } from "react-icons/fa";
@@ -78,7 +79,11 @@ function FireDetails() {
 
       await axios.post(`http://localhost:3000/fire/updatestatus`, { fire_id });
 
-      alert("บันทึกผลการตรวจสอบเรียบร้อย");
+      toast.success("Inspection saved successfully.", {
+        autoClose: 1000,
+        position: "top-center",
+        className: "custom-toast",
+      });      
       window.history.back();
     } catch (error) {
       console.error("Error saving inspection:", error);
@@ -90,7 +95,7 @@ function FireDetails() {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       if (!selectedFile.type.startsWith("image/")) {
-        alert("กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น");
+        toast.error("Please select an image file.");
         return;
       }
       setFile(selectedFile);

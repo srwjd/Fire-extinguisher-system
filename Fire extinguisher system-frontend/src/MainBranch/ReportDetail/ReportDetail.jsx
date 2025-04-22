@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "./ReportDetail.css";
@@ -20,7 +21,7 @@ function ReportDetail() {
             console.error("fire_id is undefined");
             return;
         }
-    
+
         axios
             .get(`http://localhost:3000/fire/fire/${fire_id}`)
             .then((response) => {
@@ -32,11 +33,11 @@ function ReportDetail() {
                 console.error("Error fetching fire details:", error);
                 setLoading(false);
             });
-    
+
         const interval = setInterval(() => {
             setCurrentTime(new Date());
         }, 1000);
-    
+
         return () => {
             clearInterval(interval);
             if (previewURL) {
@@ -44,14 +45,14 @@ function ReportDetail() {
             }
         };
     }, [fire_id, previewURL]); // 👈 ต้องใส่ previewURL ไว้ใน dependency ด้วย
-    
+
 
     const handleReportSubmit = async () => {
         if (!fire || !userID || !file) {
-            alert("ไม่สามารถบันทึกรายงานได้ กรุณาลองใหม่");
+            toast.error("Failed to save the report. Please try again.");
             return;
         }
-    
+
         const formData = new FormData();
         formData.append("filename", file);
         formData.append("description", description);
@@ -59,28 +60,28 @@ function ReportDetail() {
         formData.append("time", currentTime.toTimeString().split(" ")[0]); // HH:MM:SS
         formData.append("fire_id", fire_id);
         formData.append("user_id", userID);
-    
+
         console.log("Report Data Sent:", formData);
-    
+
         try {
             const response = await axios.post("http://localhost:3000/fire/reports", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            alert("บันทึกข้อมูลเรียบร้อยแล้ว");
+            toast.success("Issue reported successfully.");
             console.log("Report Response:", response.data);
             navigate(-1);
         } catch (error) {
             console.error("Error submitting report:", error);
-            alert("เกิดข้อผิดพลาดในการบันทึกรายงาน");
+            toast.error("Failed to report the issue. Please try again.");
         }
     };
 
     if (loading) return <p>Loading...</p>;
 
     return (
-        <div>
+        <div style={{ height: "90vh", overflow: "auto" }}>
             <button className="back-button" onClick={() => navigate(-1)}>Back</button>
 
             <div className="container">
@@ -95,16 +96,16 @@ function ReportDetail() {
                                 setFile(selectedFile);
 
                                 if (selectedFile) {
-                                setPreviewURL(URL.createObjectURL(selectedFile));
+                                    setPreviewURL(URL.createObjectURL(selectedFile));
                                 }
                             }}
-                            />
-                            {previewURL && (
-                                <div className="image-preview">
-                                    <img src={previewURL} alt="Preview" style={{ maxWidth: "300px", marginTop: "10px" }} />
-                                </div>
-                                )}
-                                            
+                        />
+                        {previewURL && (
+                            <div className="image-preview">
+                                <img src={previewURL} alt="Preview" style={{ maxWidth: "300px", marginTop: "10px" }} />
+                            </div>
+                        )}
+
                         <input className="inputText" type="text" placeholder="หมายเหตุ : " value={description} onChange={(e) => setDescription(e.target.value)} />
 
                         <p><strong>Date : </strong> {currentTime.toLocaleDateString()}</p>
