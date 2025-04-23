@@ -25,7 +25,7 @@
 /* Modal Header */
 .modal-header {
   padding: 16px;
-  background: #f97316; /* เปลี่ยนเป็นสีส้ม */
+  background: #FD6E2B; /* เปลี่ยนเป็นสีส้ม */
   color: white;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
@@ -54,7 +54,7 @@
   display: flex;
   justify-content: space-evenly;
   gap: 16px;
-  /* background: #f97316; */
+  /* background: #FD6E2B; */
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
@@ -71,7 +71,7 @@
 }
 
 .btn-cancel {
-  background-color: #f97316; /* สีส้ม */
+  background-color: #FD6E2B; /* สีส้ม */
   color: white;
 }
 
@@ -80,7 +80,7 @@
 }
 
 .btn-confirm {
-  background-color: #f97316; /* สีส้ม */
+  background-color: #FD6E2B; /* สีส้ม */
   color: white;
 }
 

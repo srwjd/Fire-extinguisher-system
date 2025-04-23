@@ -13,7 +13,7 @@
 
 /* userCard show data */
 .dashboard-user-card{
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   border-radius: 10px;
   width: 50%; /* ปรับให้เท่ากัน */
@@ -60,7 +60,7 @@
 
 /* unitCard show data */
 .dashboard-unit-card {
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   border-radius: 10px;
   width: 50%; /* ปรับให้เท่ากัน */
@@ -125,7 +125,7 @@ span {
   padding: 16px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   border-radius: 10px;
   width: 100%;

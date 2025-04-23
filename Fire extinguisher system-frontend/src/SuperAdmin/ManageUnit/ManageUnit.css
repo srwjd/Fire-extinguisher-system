@@ -28,7 +28,7 @@
 }
 
 .add-unit-header{
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   padding: 10px;
   font-size: 18px;
@@ -42,7 +42,7 @@
 }
 
 .manage-unit-table-container{
-  /* border: 1px solid #f97316; */
+  /* border: 1px solid #FD6E2B; */
   border-radius: 10px;
   overflow-x: auto;
 }
@@ -90,7 +90,7 @@
 }
 
 .manage-unit-header{
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   padding: 10px;
   font-size: 18px;
@@ -109,14 +109,14 @@
   align-items: center;
   margin: 10px 0;
   margin-top: -1px;
-  border: 1px solid #f97316;
+  border: 1px solid #FD6E2B;
   padding: 5px;
   border-radius: 10px;
   background-color: white;
 }
 
 .manage-unit-search-icon {
-  color: #f97316;
+  color: #FD6E2B;
   margin-right: 5px;
 }
 
@@ -157,7 +157,7 @@
 }
 
 h3 {
-  background-color: #f97316;
+  background-color: #FD6E2B;
   padding: 10px;
   color: white;
   border-radius: 3px;
@@ -178,7 +178,7 @@ label {
 } */
 
 .confirm-manage-unit-btn {
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   padding: 10px;
   margin-top: 10px;
@@ -191,7 +191,7 @@ label {
 }
 
 .confirm-add-unit-btn {
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   padding: 10px;
   margin-top: 10px;
@@ -212,7 +212,7 @@ table {
 th, td {
   padding: 10px;
   text-align: left;
-  border-bottom: 1px solid #f97316;
+  border-bottom: 1px solid #FD6E2B;
 }
 
 th {
@@ -224,7 +224,7 @@ th {
 }
 
 .edit-unit-title{
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   padding: 10px;
   font-size: 16px;
@@ -242,13 +242,13 @@ th {
 }
 
 hr{
-  border: 1px solid #f97316;
+  border: 1px solid #FD6E2B;
   margin-top: 15px;
   margin-bottom: 15px;
 }
 
 .confirm-btn{
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   border: none;
   padding: 8px 15px;
@@ -259,7 +259,7 @@ hr{
 }
 
 .confirm-btn:hover {
-  background-color: #f97316;
+  background-color: #FD6E2B;
 }
 
 .manage-unit-pagination {
@@ -270,7 +270,7 @@ hr{
 }
 
 .manage-unit-pagination button {
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   border: none;
   padding: 5px 10px;

@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   margin: 10px 0;
-  border: 1px solid #f97316;
+  border: 1px solid #FD6E2B;
   padding: 5px;
   border-radius: 10px;
   background-color: white;
@@ -15,7 +15,7 @@
 }
 
 .admin-search-bar-icon {
-  color: #f97316;
+  color: #FD6E2B;
   margin-right: 10px;
   margin-left: 10px;
 }
@@ -35,7 +35,7 @@ table {
 th, td {
   padding: 10px;
   text-align: left;
-  border-bottom: 1px solid #f97316;
+  border-bottom: 1px solid #FD6E2B;
 }
 
 th {
@@ -50,7 +50,7 @@ th {
 }
 
 .admin-unit-pagination button {
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   border: none;
   padding: 5px 10px;
@@ -102,7 +102,7 @@ th {
   margin-top: 15px;
   width: calc(100% - 10px);
   padding: 10px;
-  border: 1px solid #f97316;
+  border: 1px solid #FD6E2B;
   border-radius: 10px;
   outline: none;
 }

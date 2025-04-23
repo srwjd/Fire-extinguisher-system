@@ -11,7 +11,7 @@
 
 /* ปรับแต่งปุ่ม */
 button {
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   border: none;
   padding: 10px 15px;
@@ -61,7 +61,7 @@ p {
 .back-button {
   display: start;
   margin: 20px auto;
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   border: none;
   padding: 10px 15px;

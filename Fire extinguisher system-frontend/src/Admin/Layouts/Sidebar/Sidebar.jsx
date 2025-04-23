@@ -16,15 +16,15 @@ function Sidebar() {
             activeLink.classList.add('activeLink');
         }
     }, []); // การทำงานครั้งเดียวเมื่อ component mount
-    
-    return ( 
+
+    return (
         <div className='sidebarContainer'>
+            <a href="/report" className='dashboardSB'>Report</a>
             <a href="/inspection" className='dashboardSB'>Inspection</a>
             <a href="/checkwork" className='dashboardSB'>Checkwork</a>
-            <a href="/report" className='dashboardSB'>Report</a>
             <a href="/assignhistory" className='dashboardSB'>Assign History</a>
         </div>
-     );
+    );
 }
 
 export default Sidebar;
