@@ -410,7 +410,7 @@ const ManageUser = () => {
             />
           </div>
           <div className="manage-user-table-container">
-            <table style={{ borderColor: "#f97316" }}>
+            <table style={{ borderColor: "#FD6E2B" }}>
               <thead>
                 <tr>
                   <th style={{ textAlign: "center" }}>ID</th>

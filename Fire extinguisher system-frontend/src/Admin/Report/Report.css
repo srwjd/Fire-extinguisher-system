@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   margin: 10px 0;
-  border: 1px solid #f97316;
+  border: 1px solid #FD6E2B;
   padding: 5px;
   border-radius: 10px;
   background-color: white;
@@ -62,7 +62,7 @@ th,
 td {
   padding: 10px;
   text-align: left;
-  border-bottom: 1px solid #f97316;
+  border-bottom: 1px solid #FD6E2B;
 }
 
 th {
@@ -108,7 +108,7 @@ button:hover {
 }
 
 .admin-search-bar-icon {
-  color: #f97316;
+  color: #FD6E2B;
   margin-right: 10px;
   margin-left: 10px;
 }
@@ -129,7 +129,7 @@ th,
 td {
   padding: 10px;
   text-align: left;
-  border-bottom: 1px solid #f97316;
+  border-bottom: 1px solid #FD6E2B;
 }
 
 th {
@@ -179,7 +179,7 @@ th {
   margin-top: 10px;
   width: 100%;
   padding: 10px;
-  border: 1px solid #f97316;
+  border: 1px solid #FD6E2B;
   border-radius: 8px;
   outline: none;
 }
@@ -237,7 +237,7 @@ th {
 }
 
 .admin-report-pagination button {
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   border: none;
   padding: 5px 10px;
@@ -254,7 +254,7 @@ th {
 .assign-user-dropdown {
   width: 100%;
   padding: 10px;
-  border: 1px solid #f97316;
+  border: 1px solid #FD6E2B;
   border-radius: 10px;
   outline: none;
   background-color: white;
@@ -264,7 +264,7 @@ th {
 }
 
 .assign-user-dropdown:focus {
-  border-color: #f97316;
+  border-color: #FD6E2B;
 }
 
 .assign-user-dropdown option {
@@ -289,7 +289,7 @@ th {
   margin-top: 10px;
   padding: 10px;
   width: 100%;
-  border: 1px solid #f97316;
+  border: 1px solid #FD6E2B;
   border-radius: 10px;
   background-color: white;
   font-size: 16px;
@@ -298,7 +298,7 @@ th {
 }
 
 .assign-user-dropdown:focus {
-  border-color: #f97316;
+  border-color: #FD6E2B;
 }
 
 /* .admin-inspection-container {
@@ -350,7 +350,7 @@ th,
 td {
   padding: 10px;
   text-align: left;
-  border-bottom: 1px solid #f97316;
+  border-bottom: 1px solid #FD6E2B;
 }
 
 th {

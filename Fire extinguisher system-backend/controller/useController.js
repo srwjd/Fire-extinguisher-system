@@ -607,6 +607,8 @@ export const updateStatus = async (data) => {
 export const getReportAdmin = async () => {
   const sql = `SELECT * FROM Reports
     LEFT JOIN Fires ON Reports.fire_id = Fires.fire_id
+    LEFT JOIN Companys ON Fires.company_id = Companys.company_id
+    LEFT JOIN Branchs ON Fires.branch_id = Branchs.branch_id
     WHERE isAssign = 0
     ORDER BY Reports.report_id
     `;

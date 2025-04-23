@@ -12,10 +12,10 @@ function Admin() {
             <Router>
                 <MyLayout>
                     <Routes>
-                        <Route path="/" element={<Inspection />} />
+                        <Route path="/" element={<Report />} />
+                        <Route path="/report" element={<Report />} />
                         <Route path="/inspection" element={<Inspection />} />
                         <Route path="/checkwork" element={<Checkwork />} />
-                        <Route path="/report" element={<Report />} />
                         <Route path="/assignhistory" element={<AssignHistory />} />
                     </Routes>
                 </MyLayout>

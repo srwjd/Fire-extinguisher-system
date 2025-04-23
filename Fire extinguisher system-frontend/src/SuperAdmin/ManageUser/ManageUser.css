@@ -11,7 +11,7 @@
 }
 
 .manage-user-header {
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   padding: 10px;
   font-size: 16px;
@@ -24,7 +24,7 @@
 }
 
 .manage-user-form-container {
-  border: 1px solid #f97316;
+  border: 1px solid #FD6E2B;
   background-color: #fff;
   padding: 15px;
   border-radius: 10px;
@@ -65,7 +65,7 @@
 }
 
 .manage-user-confirmAddUser-button {
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   border: none;
   padding: 8px 15px;
@@ -76,7 +76,7 @@
 }
 
 .manage-user-confirmManageUser-button {
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   border: none;
   padding: 8px 15px;
@@ -87,7 +87,7 @@
 }
 
 .manage-user-confirm-button:hover {
-  background-color: #f97316;
+  background-color: #FD6E2B;
 }
 
 /* manage user */
@@ -95,7 +95,7 @@
   width: 100%;
   background-color: #fff;
   justify-content: center;
-  border: #f97316 1px solid;
+  border: #FD6E2B 1px solid;
   border-radius: 10px;
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
@@ -103,7 +103,7 @@
 }
 
 .manage-user-section-header {
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   padding: 10px;
   font-size: 16px;
@@ -127,14 +127,14 @@
   align-items: center;
   margin: 10px 0;
   margin-top: -1px;
-  border: 1px solid #f97316;
+  border: 1px solid #FD6E2B;
   padding: 5px;
   border-radius: 10px;
   background-color: white;
 }
 
 .manage-user-search-icon {
-  color: #f97316;
+  color: #FD6E2B;
   margin-right: 5px;
 }
 
@@ -145,7 +145,7 @@
 }
 
 .manage-user-table-container {
-  /* border: 1px solid #f97316; */
+  /* border: 1px solid #FD6E2B; */
   border-radius: 10px;
   overflow-x: auto;
 }
@@ -159,7 +159,7 @@ th,
 td {
   padding: 10px;
   text-align: left;
-  border-bottom: 1px solid #f97316;
+  border-bottom: 1px solid #FD6E2B;
 }
 
 th {
@@ -188,7 +188,7 @@ th {
 }
 
 .manage-user-pagination button {
-  background-color: #f97316;
+  background-color: #FD6E2B;
   color: white;
   border: none;
   padding: 5px 10px;
@@ -203,7 +203,7 @@ th {
 }
 
 hr {
-  border: 1px solid #f97316;
+  border: 1px solid #FD6E2B;
   margin-top: 15px;
 }
 .custom-toast-super {

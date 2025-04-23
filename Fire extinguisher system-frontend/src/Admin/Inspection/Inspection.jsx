@@ -159,7 +159,7 @@ function Inspection() {
           style={{
             width: "100%",
             marginTop: "20px",
-            border: "1px solid #f97316",
+            border: "1px solid #FD6E2B",
             borderRadius: "10px",
           }}
         >
@@ -266,10 +266,10 @@ function Inspection() {
                     ...base,
                     fontSize: "16px",
                     minHeight: "38px",
-                    borderColor: "#f97316", // สีขอบส้ม
-                    boxShadow: state.isFocused ? "0 0 0 1px #f97316" : "none", // ขอบตอน focus
+                    borderColor: "#FD6E2B", // สีขอบส้ม
+                    boxShadow: state.isFocused ? "0 0 0 1px #FD6E2B" : "none", // ขอบตอน focus
                     "&:hover": {
-                      borderColor: "#f97316", // ขอบตอน hover
+                      borderColor: "#FD6E2B", // ขอบตอน hover
                     },
                   }),
                   menu: (base) => ({
