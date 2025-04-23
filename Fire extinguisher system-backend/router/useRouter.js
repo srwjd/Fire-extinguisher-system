@@ -1319,32 +1319,32 @@ router.get('/fire', async (req, res) => {
   }
 });
 
-/**
- * @swagger
- * /fireUpdateStatus:
- *   put:
- *     description: Update fire extinguisher status
- *     summary: Update fire extinguisher status
- *     tags: [Fire]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               report_id:
- *                 type: string
- *               status:
- *                 type: string
- *     responses:
- *       200: 
- *         description: OK success
- *       404:
- *         description: No fire extinguishers found
- *       500:
- *         description: Internal Server Error
- */
+// /**
+//  * @swagger
+//  * /fireUpdateStatus:
+//  *   put:
+//  *     description: Update fire extinguisher status
+//  *     summary: Update fire extinguisher status
+//  *     tags: [Fire]
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           schema:
+//  *             type: object
+//  *             properties:
+//  *               report_id:
+//  *                 type: string
+//  *               status:
+//  *                 type: string
+//  *     responses:
+//  *       200: 
+//  *         description: OK success
+//  *       404:
+//  *         description: No fire extinguishers found
+//  *       500:
+//  *         description: Internal Server Error
+//  */
 
 router.put('/fireUpdateStatus', async (req, res) => {
   const { report_id, status } = req.body;
@@ -1361,38 +1361,38 @@ router.put('/fireUpdateStatus', async (req, res) => {
   }
 });
 
-/**
- * @swagger
- * /sendReports:
- *   post:
- *     description: Send reports
- *     summary: Send reports
- *     tags: [Reports]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               description:
- *                 type: string
- *               date:
- *                 type: string
- *               time:
- *                 type: string
- *               fire_id:
- *                 type: string
- *               user_id:
- *                 type: string
- *     responses:
- *       201:
- *         description: Report added successfully
- *       400: 
- *         description: Missing required fields
- *       500:
- *         description: Internal Server Error
- */
+// /**
+//  * @swagger
+//  * /sendReports:
+//  *   post:
+//  *     description: Send reports
+//  *     summary: Send reports
+//  *     tags: [Reports]
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           schema:
+//  *             type: object
+//  *             properties:
+//  *               description:
+//  *                 type: string
+//  *               date:
+//  *                 type: string
+//  *               time:
+//  *                 type: string
+//  *               fire_id:
+//  *                 type: string
+//  *               user_id:
+//  *                 type: string
+//  *     responses:
+//  *       201:
+//  *         description: Report added successfully
+//  *       400: 
+//  *         description: Missing required fields
+//  *       500:
+//  *         description: Internal Server Error
+//  */
 
 router.post("/sendReports", async (req, res) => {
   try {

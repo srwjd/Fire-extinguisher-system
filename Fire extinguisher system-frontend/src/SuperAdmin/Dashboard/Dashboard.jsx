@@ -144,7 +144,7 @@ function Dashboard() {
           </h2>
           <div className="dashboard-status-content">
           <ResponsiveContainer width="100%" height={450}>
-              <BarChart data={fireExtinguishers}>
+              <BarChart data={fireExtinguishers.sort((a, b) => new Date(a.month) - new Date(b.month))}>
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip
