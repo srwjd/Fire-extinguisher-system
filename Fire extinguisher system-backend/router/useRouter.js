@@ -21,24 +21,36 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 /**
- * @Swagger
- * /uploads:
+ * @swagger
+ * /uploads/{filename}:
  *   get:
- *     description: Retrieve a list of uploaded files
- *     summary: Get uploaded files
- *     tags: User
+ *     summary: show image
+ *     tags: [Image]
+ *     parameters:
+ *       - in: path
+ *         name: filename
+ *         required: true
+ *         description: get image by name
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
- *         description: A list of uploaded files
+ *         description: Success
  *         content:
- *           application/json:
+ *           image/jpeg:
  *             schema:
- *               type: array
- *               items:
- *                 type: string
- *                 format: binary
- *                 description: The uploaded file
- * 
+ *               type: string
+ *               format: binary
+ *           image/png:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *           application/octet-stream:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       404:
+ *         description: File not found
  */
 
 router.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -858,6 +870,10 @@ router.post("/reports", upload.single('filename'), async (req, res) => {
 
     // สมมุติว่าใช้ฟังก์ชันเพิ่มรายงาน
     const result = await addReport(report);
+
+    if (!result.success) {
+      return res.status(400).json({ message: result.message });
+    }
 
     res.status(201).json({ message: "Report added successfully", data: result });
   } catch (error) {

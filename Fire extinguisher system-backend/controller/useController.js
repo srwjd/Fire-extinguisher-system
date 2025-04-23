@@ -370,32 +370,51 @@ export const editCompany = async (company_id, branch_id, newCompanyData) => {
 // ลบ Branch และ Fire extinguishers ที่เกี่ยวข้อง
 export const deleteBranchAndFires = async (branch_id) => {
   try {
-    // Step 1: Delete fires associated with the branch
+    // 🔍 Step 0: ตรวจสอบ company_id ของ branch นี้
+    const getCompanySql = `SELECT company_id FROM Branchs WHERE branch_id = ?`;
+    const companyResult = await query(getCompanySql, [branch_id]);
+
+    if (companyResult.length === 0) {
+      throw new Error("Branch not found.");
+    }
+
+    const company_id = companyResult[0].company_id;
+
+    // 🔢 Step 1: เช็คว่าบริษัทนี้มี branch กี่อัน
+    const countBranchSql = `SELECT COUNT(*) AS count FROM Branchs WHERE company_id = ?`;
+    const countResult = await query(countBranchSql, [company_id]);
+    const branchCount = countResult[0].count;
+
+    // 🔥 Step 2: ลบถังดับเพลิงที่เกี่ยวข้องกับสาขานี้
     const deleteFiresSql = `DELETE FROM Fires WHERE branch_id = ?`;
     await query(deleteFiresSql, [branch_id]);
 
-    // Step 2: Delete the branch itself
+    // 🧹 Step 3: ลบ branch นี้
     const deleteBranchSql = `DELETE FROM Branchs WHERE branch_id = ?`;
-    const result = await query(deleteBranchSql, [branch_id]);
+    await query(deleteBranchSql, [branch_id]);
 
-    if (result.affectedRows === 0) {
-      throw new Error("No branch found with the given ID.");
+    let deletedCompany = false;
+
+    // 🏢 Step 4: ถ้าเหลือแค่ branch เดียวและลบไปแล้ว → ลบบริษัทด้วย
+    if (branchCount === 1) {
+      const deleteCompanySql = `DELETE FROM Companys WHERE company_id = ?`;
+      await query(deleteCompanySql, [company_id]);
+      deletedCompany = true;
     }
 
     return {
-      message: "Branch and associated fire extinguishers deleted successfully.",
+      success: true,
+      message: `Branch deleted successfully.${deletedCompany ? " Company also deleted." : ""}`,
       branch_id,
+      deletedCompany,
     };
+
   } catch (error) {
-    console.error(
-      "Error deleting branch and fire extinguishers:",
-      error.message
-    );
-    throw new Error(
-      "Failed to delete branch and extinguishers. " + error.message
-    );
+    console.error("Error deleting branch and related data:", error.message);
+    throw new Error("Failed to delete branch and related data. " + error.message);
   }
 };
+
 
 //ดูสาขาทั้งหมด
 export const getAllBranchs = async () => {
@@ -470,32 +489,61 @@ export const getFiresByCompanyId = async (company_id) => {
 //เพิ่มข้อมูลใน Report
 export const addReport = async (report) => {
   try {
-    // 🔹 เพิ่ม Report ลงในตาราง Reports
-    const sqlInsert = `
-            INSERT INTO Reports (filename, description, date, time, fire_id, user_id) 
-            VALUES (?, ?, ?, ?, ?, ?)
-        `;
-    const paramsInsert = [
-      report.filename,
-      report.description,
-      report.date,
-      report.time,
-      report.fire_id,
-      report.user_id,
-    ];
-    await query(sqlInsert, paramsInsert);
+    const sqlGet = `
+      SELECT * 
+      FROM Fires 
+      WHERE fire_id = ?
+    `;
+    const result = await query(sqlGet, [report.fire_id]);
 
-    // 🔹 อัปเดตสถานะของ Fire เป็น "report"
-    const sqlUpdate = `UPDATE Fires SET status = 'report' WHERE fire_id = ?`;
-    await query(sqlUpdate, [report.fire_id]);
+    if (result.length === 0) {
+      return {
+        success: false,
+        message: "Fire not found",
+      };
+    }
 
-    return {
-      success: true,
-      message: "Report added and fire status updated successfully",
-    };
+    if (result[0].status === 'report') {
+      return {
+        success: false,
+        message: "This fire has already been reported.",
+      };
+    } else if (result[0].status === 'process') {
+      return {
+        success: false,
+        message: "This fire is currently being processed.",
+      };
+    } else {
+      const sqlInsert = `
+      INSERT INTO Reports (filename, description, date, time, fire_id, user_id) 
+      VALUES (?, ?, ?, ?, ?, ?)
+    `;
+      const paramsInsert = [
+        report.filename,
+        report.description,
+        report.date,
+        report.time,
+        report.fire_id,
+        report.user_id,
+      ];
+      await query(sqlInsert, paramsInsert);
+
+      // Optional: อัปเดตสถานะเป็น 'report'
+      const sqlUpdate = `UPDATE Fires SET status = 'report' WHERE fire_id = ?`;
+      await query(sqlUpdate, [report.fire_id]);
+
+      return {
+        success: true,
+        message: "Report added and fire status updated successfully",
+      };
+    }
   } catch (error) {
     console.error("Error adding report:", error);
-    throw error;
+    return {
+      success: false,
+      message: "Error adding report",
+      error,
+    };
   }
 };
 

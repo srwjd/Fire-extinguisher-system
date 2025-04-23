@@ -34,7 +34,10 @@ function Home() {
             if (response.data.result.length === 0) {
                 return;
             }
-            const idList = response.data.result.map((fire) => fire.fire_id);
+            const idList = response.data.result
+            .sort((a, b) => a.assign_id - b.assign_id)
+            .map((fire) => fire.fire_id);
+            console.log(idList);
             const descriptions = response.data.result.map((fire) => fire.description);
             setFireIdList(idList); // เก็บ fire_id
             setDescriptionList(descriptions); // เก็บ description แยก
