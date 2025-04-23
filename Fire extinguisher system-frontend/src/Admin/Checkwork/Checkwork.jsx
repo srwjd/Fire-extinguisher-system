@@ -3,6 +3,7 @@ import axios from "axios";
 import "./Checkwork.css";
 import { FaSearch } from "react-icons/fa";
 import { GoChecklist } from "react-icons/go";
+import { toast } from "react-toastify";
 
 function Checkwork() {
   const [report, setReport] = useState([]);
@@ -95,7 +96,7 @@ function Checkwork() {
         fire_id: selectedReport.fire_id,
       });
 
-      alert("Report deleted and status updated successfully!");
+      toast.success("Inspection deleted and status updated.");
       setIsPopupOpen(false);
 
       // อัปเดตรายการใหม่
@@ -124,7 +125,7 @@ function Checkwork() {
         fire_id: selectedReport.fire_id,
       });
 
-      alert("Status updated to complete successfully!");
+      toast.success("Status successfully updated to Complete.");
       setIsPopupOpen(false);
 
       // อัปเดตรายการให้ไม่แสดงรายการที่ pass แล้ว

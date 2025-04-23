@@ -26,8 +26,10 @@ function Profile() {
             console.error();
         }
     }
+    console.log(profileInfo)
 
     const editProfile = async () => {
+        const imgbefore = profileInfo.profile_img
         try {
             const formData = new FormData();
             formData.append('firstname', newFirstName || profileInfo.firstname);
@@ -37,7 +39,7 @@ function Profile() {
             if (fileInputRef.current.files[0]) {
                 formData.append('image', fileInputRef.current.files[0]);
             } else {
-               formData.append('image', profileInfo.profile_img); // ถ้า backend รองรับส่ง path เดิม
+               formData.append('image', imgbefore);
             }
 
             await axios.put(

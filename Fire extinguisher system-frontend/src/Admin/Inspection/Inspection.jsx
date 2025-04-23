@@ -3,6 +3,7 @@ import Select from "react-select";
 import axios from "axios";
 import { FaSearch } from "react-icons/fa";
 import { GoChecklist } from "react-icons/go";
+import { toast } from "react-toastify";
 import "./Inspection.css";
 
 function Inspection() {
@@ -87,7 +88,7 @@ function Inspection() {
 
   const handleAssign = async () => {
     if (!selectedReport || !assignUser) {
-      alert("Please select a report and assign a user.");
+      toast.warning("Please select a report and assign a user.",{style: {textWrap: "wrap", width: "280px"}});
       return;
     }
 
@@ -95,7 +96,7 @@ function Inspection() {
     const assignBy = localStorage.getItem("userID");
 
     if (!assignBy) {
-      alert("No user ID found in localStorage.");
+      toast.error("No user ID found in localStorage.");
       return;
     }
 
