@@ -20,6 +20,26 @@ const router = Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+/**
+ * @Swagger
+ * /uploads:
+ *   get:
+ *     description: Retrieve a list of uploaded files
+ *     summary: Get uploaded files
+ *     tags: User
+ *     responses:
+ *       200:
+ *         description: A list of uploaded files
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: string
+ *                 format: binary
+ *                 description: The uploaded file
+ * 
+ */
 
 router.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -47,6 +67,29 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     description: Login user
+ *     summary: Login user
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User logged in successfully
+ */
 
 
 // 📌 API Login
@@ -80,6 +123,18 @@ router.post('/login', async (req, res) => {
   res.status(200).json({ token: 'token' });
 })
 
+/**
+ * @swagger
+ * /countByRole:
+ *   get:
+ *     description: Get count of users by role
+ *     summary: Get count of users by role
+ *     tags: [User]
+ *     responses:
+ *       200:
+ *         description: Count of users by role
+ */
+
 router.get("/countByRole", async (req, res) => {
   try {
     const result = await getUserCountByRole();
@@ -93,6 +148,18 @@ router.get("/countByRole", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+/**
+ * @swagger
+ * /countUnit:
+ *   get:
+ *     description: Get count of units
+ *     summary: Get count of units
+ *     tags: [Unit]
+ *     responses:
+ *       200:
+ *         description: Count of units
+ */
 
 router.get("/countUnit", async (req, res) => {
   try {
@@ -109,6 +176,19 @@ router.get("/countUnit", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /fireExtinguishersByMonth:
+ *   get:
+ *     description: Get fire extinguishers by month
+ *     summary: Get fire extinguishers by month
+ *     tags: [FireExtinguisher]
+ *     responses:
+ *       200:
+ *         description: Fire extinguishers by month
+ */
+
+
 // ดึงจำนวนถังดับเพลิงและสถานะมาโชว์
 router.get("/fireExtinguishersByMonth", async (req, res) => {
   try {
@@ -123,6 +203,18 @@ router.get("/fireExtinguishersByMonth", async (req, res) => {
     });
   }
 });
+
+/**
+ * @swagger
+ * /showAllUser:
+ *   get:
+ *     description: Get all users
+ *     summary: Get all users
+ *     tags: [User]
+ *     responses:
+ *       200:
+ *         description: All users
+ */
 
 // Manage User
 router.get("/showAllUser", async (req, res) => {
@@ -140,6 +232,35 @@ router.get("/showAllUser", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /addUser:
+ *   post:
+ *     description: Add a new user
+ *     summary: Add a new user
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *               company_id:
+ *                 type: string
+ *               branch_id:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: User added successfully
+ */
+
 // Add user
 router.post("/addUser", async (req, res) => {
   try {
@@ -150,6 +271,44 @@ router.post("/addUser", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });
+
+/**
+ * @swagger
+ * /updateUser/{id}:
+ *   put:
+ *     description: Update a user by ID
+ *     summary: Update a user by ID
+ *     tags: [User]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: ID of the user to update
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *               company_id:
+ *                 type: string
+ *               branch_id:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *       404:
+ *         description: User not found or no changes made
+ */
 
 // อัปเดตข้อมูลผู้ใช้
 router.put("/updateUser/:id", async (req, res) => {
@@ -178,6 +337,27 @@ router.put("/updateUser/:id", async (req, res) => {
 });
 
 
+/**
+ * @swagger
+ * /deleteUser/{id}:
+ *   delete:
+ *     description: Delete a user by ID
+ *     summary: Delete a user by ID
+ *     tags: [User]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: ID of the user to delete
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *       404:
+ *         description: User not found
+ */
+
 // ลบผู้ใช้
 router.delete("/deleteUser/:id", async (req, res) => {
   const userId = req.params.id;
@@ -195,6 +375,26 @@ router.delete("/deleteUser/:id", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /getAllUnit:
+ *   get:
+ *     description: Get all units
+ *     summary: Get all units
+ *     tags: [Unit]
+ *     responses:
+ *       200:
+ *         description: List of units
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Unit'
+ *       500:
+ *         description: Internal server error
+ */
+
 // showAllUnit
 router.get("/getAllUnit", async (req, res) => {
   try {
@@ -208,6 +408,35 @@ router.get("/getAllUnit", async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 });
+
+/**
+ * @swagger
+ * /addCompany:
+ *   post:
+ *     description: Add a new company
+ *     summary: Add a new company
+ *     tags: [Company]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               company_name:
+ *                 type: string
+ *               branch_name:
+ *                 type: string
+ *               quantity:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Company added successfully
+ *       400:
+ *         description: Missing required fields
+ *       409:
+ *         description: Company already exists
+ */
 
 // Add Company
 router.post("/addCompany", async (req, res) => {
@@ -236,6 +465,44 @@ router.post("/addCompany", async (req, res) => {
       .json({ message: "Internal Server Error", error: error.message });
   }
 });
+
+/**
+ * @swagger
+ * /editCompany/{company_id}/{branch_id}:
+ *   put:
+ *     description: Edit a company and branch
+ *     summary: Edit a company and branch
+ *     tags: [Company]
+ *     parameters:
+ *       - name: company_id
+ *         in: path
+ *         description: ID of the company to edit
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - name: branch_id
+ *         in: path
+ *         description: ID of the branch to edit
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:             
+ *             type: object
+ *             properties:
+ *               branch_name:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Company and branch edited successfully
+ *       400:
+ *         description: Branch name must be provided
+ *       500:
+ *         description: Internal server error
+ */
 
 // Edit company and branch
 router.put("/editCompany/:company_id/:branch_id", async (req, res) => {
@@ -269,6 +536,27 @@ router.put("/editCompany/:company_id/:branch_id", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /deleteBranchAndFires/{branch_id}:
+ *   delete:
+ *     description: Delete a branch and its associated fire extinguishers
+ *     summary: Delete a branch and its associated fire extinguishers
+ *     tags: [Branch]
+ *     parameters:
+ *       - name: branch_id
+ *         in: path
+ *         description: ID of the branch to delete
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Branch and fire extinguishers deleted successfully
+ *       500:
+ *         description: Internal server error
+ */
+
 // Delete Branch And Extinguishers
 router.delete("/deleteBranchAndFires/:branch_id", async (req, res) => {
   const branchId = req.params.branch_id; // รับค่า branch_id จาก URL
@@ -280,6 +568,26 @@ router.delete("/deleteBranchAndFires/:branch_id", async (req, res) => {
     res.status(500).json({ message: "Failed to delete branch and extinguishers", error: error.message });
   }
 });
+
+/**
+ * @swagger
+ * /companys:
+ *   get:
+ *     description: Get all companys
+ *     summary: Get all companys
+ *     tags: [Company]
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Company'
+ *       404:
+ *         description: No companys found
+ */
 
 router.get("/companys", async (req, res) => {
   try {
@@ -294,6 +602,26 @@ router.get("/companys", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /branches:
+ *   get:
+ *     description: Get all branches
+ *     summary: Get all branches
+ *     tags: [Branch]
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Branch'
+ *       404:
+ *         description: No branches found
+ */
+
 router.get("/branches", async (req, res) => {
   try {
     const result = await getAllBranchs();
@@ -306,6 +634,31 @@ router.get("/branches", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+/**
+ * @swagger
+ * /branches/{branch_id}:
+ *   get:
+ *     description: Get a branch by ID
+ *     summary: Get a branch by ID
+ *     tags: [Branch]
+ *     parameters:
+ *       - name: branch_id
+ *         in: path
+ *         description: ID of the branch to retrieve
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Branch'
+ *       404:
+ *         description: Branch not found
+ */
 
 // ดึงข้อมูลสาขาและถังดับเพลิงตาม branch_id
 router.get("/branches/:branch_id", async (req, res) => {
@@ -334,6 +687,41 @@ router.get("/branches/:branch_id", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /company/{company_id}:
+ *   get:
+ *     description: Get branches and fires by company ID
+ *     summary: Get branches and fires by company ID
+ *     tags: [Company]
+ *     parameters:
+ *       - name: company_id
+ *         in: path
+ *         description: ID of the company to retrieve branches and fires
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 branches:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Branch'
+ *                 fires:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Fire'
+ *       404:
+ *         description: No branches found for this company
+ *       500:
+ *         description: Internal Server Error
+ */
 
 // ดึงข้อมูลสาขาและถังดับเพลิงตาม company_id
 router.get("/company/:company_id", async (req, res) => {
@@ -361,6 +749,35 @@ router.get("/company/:company_id", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /company/{company_id}/fires:
+ *   get:
+ *     description: Get fires by company ID
+ *     summary: Get fires by company ID
+ *     tags: [Company]
+ *     parameters:
+ *       - name: company_id
+ *         in: path
+ *         description: ID of the company to retrieve fires
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Fire'
+ *       404:
+ *         description: No fires found for this company
+ *       500:
+ *         description: Internal Server Error
+ */
+
 // ดึงถังดับเพลิงตาม company_id
 router.get("/company/:company_id/fires", async (req, res) => {
   try {
@@ -380,6 +797,52 @@ router.get("/company/:company_id/fires", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+/**
+ * @swagger
+ * /reports:
+ *   post:
+ *     description: Add a new report
+ *     summary: Add a new report
+ *     tags: [Report]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               description:
+ *                 type: string
+ *               date:
+ *                 type: string
+ *               time:
+ *                 type: string
+ *               fire_id:
+ *                 type: string
+ *               user_id:
+ *                 type: string
+ *               filename:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       201:
+ *         description: Report added successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/Report'
+ *       400:
+ *         description: Missing required fields
+ *       500:
+ *         description: Internal Server Error
+ */
+
 // API Endpoint สำหรับเพิ่มรายงาน
 router.post("/reports", upload.single('filename'), async (req, res) => {
   try {
@@ -403,6 +866,32 @@ router.post("/reports", upload.single('filename'), async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /fire/{fire_id}:
+ *   get:
+ *     description: Get fire by fire ID
+ *     summary: Get fire by fire ID
+ *     tags: [Fire]
+ *     parameters:
+ *       - name: fire_id
+ *         in: path
+ *         description: ID of the fire to retrieve
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Fire'
+ *       404:
+ *         description: Fire not found
+ *       500:
+ *         description: Internal Server Error
+ */
 
 // ดึงข้อมูลถังดับเพลิงตาม fire_id
 router.get("/fire/:fire_id", async (req, res) => {
@@ -420,6 +909,37 @@ router.get("/fire/:fire_id", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /getreports/{userID}:
+ *   get:
+ *     description: Get reports by user ID
+ *     summary: Get reports by user ID
+ *     tags: [Report]
+ *     parameters:
+ *       - name: userID
+ *         in: path
+ *         description: ID of the user to retrieve reports for
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 result:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Report'
+ *       500:
+ *         description: Internal Server Error
+ */
 
 router.get('/getreports/:userID', async (req, res) => {
   const { userID } = req.params;
@@ -432,6 +952,41 @@ router.get('/getreports/:userID', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /getfire/{fire_ids}:
+ *   get:
+ *     description: Get fires by fire IDs
+ *     summary: Get fires by fire IDs
+ *     tags: [Fire]
+ *     parameters:
+ *       - name: fire_ids
+ *         in: path
+ *         description: Comma-separated list of fire IDs to retrieve
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 result:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Fire'
+ *       400:
+ *         description: Invalid fire IDs
+ *       404:
+ *         description: No fires found for this company
+ *       500:
+ *         description: Internal Server Error
+ */
 
 router.get('/getfire/:fire_ids', async (req, res) => {
   try {
@@ -453,6 +1008,58 @@ router.get('/getfire/:fire_ids', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /insertinspection/{fire_id}:
+ *   put:
+ *     description: Insert inspection data
+ *     summary: Insert inspection data
+ *     tags: [Inspection]
+ *     parameters:
+ *       - name: fire_id
+ *         in: path
+ *         description: ID of the fire to insert inspection data for
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               description:
+ *                 type: string
+ *               date:
+ *                 type: string
+ *               time:
+ *                 type: string
+ *               user_id:
+ *                 type: string
+ *               assign_id:
+ *                 type: string
+ *               filename:
+ *                 type: string
+ *                 format: binary
+ *               condition_ok:
+ *                 type: string
+ *               pressure_ok:
+ *                 type: string
+ *               nozzle_clear:
+ *                 type: string
+ *               pin_sealed:
+ *                 type: string
+ *               placement_correct:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Created successfully
+ *       400: 
+ *         description: Bad Request
+ *       500:
+ *         description: Internal Server Error
+ */
 
 router.put('/insertinspection/:fire_id', upload.single('filename'), async (req, res) => {
   try {
@@ -490,7 +1097,30 @@ router.put('/insertinspection/:fire_id', upload.single('filename'), async (req, 
   }
 });
 
-
+/**
+ * @swagger
+ * /updatestatus:
+ *   post:
+ *     description: Update fire extinguisher status
+ *     summary: Update fire extinguisher status
+ *     tags: [Fire]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fire_id:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: OK success
+ *       404:
+ *         description: Fire extinguisher not found
+ *       500:
+ *         description: Internal Server Error
+ */
 
 router.post('/updatestatus', async (req, res) => {
   const { fire_id } = req.body;
@@ -506,6 +1136,22 @@ router.post('/updatestatus', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /report:
+ *   get:
+ *     description: Get all reports
+ *     summary: Get all reports
+ *     tags: [Report]
+ *     responses:
+ *       200:
+ *         description: OK success
+ *       404:
+ *         description: No reports found
+ *       500:
+ *         description: Internal Server Error
+ */
+
 router.get('/report', async (req, res) => {
   try {
     const result = await getReportAdmin()
@@ -519,7 +1165,21 @@ router.get('/report', async (req, res) => {
   }
 })
 
-
+/**
+ * @swagger
+ * /inspec:
+ *   get:
+ *     description: Get all Inspection
+ *     summary: Get all Inspection
+ *     tags: [Inspection]
+ *     responses:
+ *       200:
+ *         description: OK success
+ *       404:
+ *         description: No Inspection found
+ *       500:
+ *         description: Internal Server Error
+ */
 
 router.get('/inspec', async (req, res) => {
   try {
@@ -534,6 +1194,21 @@ router.get('/inspec', async (req, res) => {
   }
 })
 
+/**
+ * @swagger
+ * /assign:
+ *   get:
+ *     description: Get all assign
+ *     summary: Get all assign
+ *     tags: [Assign]
+ *     responses:
+ *       200:
+ *         description: OK success
+ *       404:
+ *         description: No fire extinguishers found
+ *       500:
+ *         description: Internal Server Error
+ */
 
 router.get('/assign', async (req, res) => {
   try {
@@ -548,6 +1223,42 @@ router.get('/assign', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /sendAssign:
+ *   post:
+ *     description: Send assign
+ *     summary: Send assign
+ *     tags: [Assign]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               date:
+ *                 type: string
+ *               time:
+ *                 type: string
+ *               assign_by:
+ *                 type: string
+ *               report_id:
+ *                 type: string
+ *               insp_id:
+ *                 type: string
+ *               fire_id:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: OK success
+ *       404:
+ *         description: No fire extinguishers found
+ *       500:
+ *         description: Internal Server Error
+ */
 
 router.post('/sendAssign', async (req, res) => {
   try {
@@ -563,6 +1274,22 @@ router.post('/sendAssign', async (req, res) => {
   }
 })
 
+/**
+ * @swagger
+ * /fire:
+ *   get:
+ *     description: Get all fire extinguishers
+ *     summary: Get all fire extinguishers
+ *     tags: [Fire]
+ *     responses:
+ *       200:
+ *         description: OK success
+ *       404:
+ *         description: No fire extinguishers found
+ *       500:
+ *         description: Internal Server Error
+ */
+
 router.get('/fire', async (req, res) => {
   try {
     const result = await getFire();
@@ -576,6 +1303,32 @@ router.get('/fire', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /fireUpdateStatus:
+ *   put:
+ *     description: Update fire extinguisher status
+ *     summary: Update fire extinguisher status
+ *     tags: [Fire]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               report_id:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *     responses:
+ *       200: 
+ *         description: OK success
+ *       404:
+ *         description: No fire extinguishers found
+ *       500:
+ *         description: Internal Server Error
+ */
 
 router.put('/fireUpdateStatus', async (req, res) => {
   const { report_id, status } = req.body;
@@ -591,6 +1344,39 @@ router.put('/fireUpdateStatus', async (req, res) => {
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+/**
+ * @swagger
+ * /sendReports:
+ *   post:
+ *     description: Send reports
+ *     summary: Send reports
+ *     tags: [Reports]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               description:
+ *                 type: string
+ *               date:
+ *                 type: string
+ *               time:
+ *                 type: string
+ *               fire_id:
+ *                 type: string
+ *               user_id:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Report added successfully
+ *       400: 
+ *         description: Missing required fields
+ *       500:
+ *         description: Internal Server Error
+ */
 
 router.post("/sendReports", async (req, res) => {
   try {
@@ -614,6 +1400,28 @@ router.post("/sendReports", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /deleteProcess:
+ *   delete:
+ *     description: Delete process
+ *     summary: Delete process
+ *     tags: [Process]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               inspection_id:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Report deleted successfully
+ *       500:
+ *         description: Internal Server Error
+ */
 
 router.delete("/deleteProcess", async (req, res) => {
   try {
@@ -626,6 +1434,29 @@ router.delete("/deleteProcess", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /updatedStatus:
+ *   post:
+ *     description: Update status
+ *     summary: Update status
+ *     tags: [Process]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fire_id:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Status updated successfully
+ *       500:
+ *         description: Internal Server Error
+ */
+
 router.post("/updatedStatus", async (req, res) => {
   try {
     const { fire_id } = req.body;
@@ -637,6 +1468,29 @@ router.post("/updatedStatus", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /updatedStatusComplete:
+ *   post:
+ *     description: Update status
+ *     summary: Update status
+ *     tags: [Process]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fire_id:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Status updated successfully
+ *       500:
+ *         description: Internal Server Error
+ */
+
 router.post("/updatedStatusComplete", async (req, res) => {
   try {
     const { fire_id } = req.body;
@@ -647,6 +1501,22 @@ router.post("/updatedStatusComplete", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });
+
+/**
+ * @swagger
+ * /getAllUserUser:
+ *   get:
+ *     description: Get all users with role User
+ *     summary: Get all users with role User
+ *     tags: [User]
+ *     responses:
+ *       200:
+ *         description: All users with role User
+ *       404:
+ *         description: No users with role User found
+ *       500:
+ *         description: Internal Server Error
+ */
 
 // เอาไว้ดึง user ให้เลือกตอน assign ที่หน้า inspection ของ admin
 router.get('/getAllUserUser', async (req, res) => {
@@ -662,6 +1532,21 @@ router.get('/getAllUserUser', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /getUserById/{user_id}:
+ *   get:
+ *     description: Get user by user_id
+ *     summary: Get user by user_id
+ *     tags: [User]
+ *     parameters:
+ *       - in: path
+ *         name: user_id
+ *         required: true
+ *         schema:
+ *           type: string
+ */
+
 // ดึง user จาก user_id
 router.get('/getUserById/:user_id', async (req, res) => {
   const { user_id } = req.params;
@@ -676,6 +1561,39 @@ router.get('/getUserById/:user_id', async (req, res) => {
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 })
+
+/**
+ * @swagger
+ * /updatenameandimage/{user_id}:
+ *   put:
+ *     description: Update name and image
+ *     summary: Update name and image
+ *     tags: [User]
+ *     parameters:
+ *       - in: path
+ *         name: user_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstname:
+ *                 type: string
+ *               surname:
+ *                 type: string
+ *               image:
+ *                 type: file
+ *     responses:
+ *       200:
+ *         description: Name and image updated successfully
+ *       404:
+ *         description: User not found  
+ */
 
 // เปลี่ยนชื่อ เปลี่ยนรูป
 router.put('/updatenameandimage/:user_id', upload.single('image'), async (req, res) => {
